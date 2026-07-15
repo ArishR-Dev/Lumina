@@ -1,21 +1,13 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader } from "@/components/lumina/PageHeader";
 import { GlassCard } from "@/components/lumina/GlassCard";
 import { ThemeAmbient } from "@/components/lumina/ThemeAmbient";
 
 import { useLumina, type Density, type FontScale } from "@/lib/lumina-store";
-import { Moon, Sun, Download, User, KeyRound, LogOut, Trash2, MoreHorizontal } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useAuth, signOutClean } from "@/lib/lumina-auth";
-import { getAuthRedirectUrl } from "@/lib/lumina-auth-redirect";
-import { supabase } from "@/integrations/supabase/client";
-import { luminaDialog, showSuccess, showError } from "@/lib/lumina-dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { signOutClean } from "@/lib/lumina-auth";
+import { luminaDialog } from "@/lib/lumina-dialog";
 
 
 
@@ -174,20 +166,6 @@ function SettingsPage() {
           </div>
 
 
-          <div className="mt-6 text-xs uppercase tracking-[0.24em] text-muted-foreground">your data</div>
-          <div className="mt-3">
-            <Link
-              to="/app/export"
-              className="lumina-focus-ring flex items-center gap-3 rounded-2xl border border-white/60 bg-white/60 p-4 text-sm transition hover:bg-white/80 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10"
-            >
-              <Download className="h-4 w-4" aria-hidden="true" />
-              <div className="flex-1">
-                <div className="font-medium">Export</div>
-                <div className="text-xs text-muted-foreground">Download everything as a portable file</div>
-              </div>
-            </Link>
-          </div>
-
           <div className="mt-4 rounded-2xl border border-dashed border-white/60 p-4 text-xs text-muted-foreground dark:border-white/10">
             Tip: press <kbd className="mx-1 rounded border border-white/60 bg-white/50 px-1.5 py-0.5 text-[10px] uppercase tracking-widest dark:border-white/10 dark:bg-white/5">⌘K</kbd>
             anywhere to search Lumina.
@@ -197,8 +175,6 @@ function SettingsPage() {
       </div>
 
       <RestForNowCard />
-
-      <AccountSection />
 
     </div>
   );
@@ -245,129 +221,3 @@ function RestForNowCard() {
   );
 }
 
-
-function AccountSection() {
-  const user = useAuth((s) => s.user);
-  const displayName = useAuth((s) => s.displayName);
-
-  const email = user?.email ?? "—";
-  const hasPassword = !!user?.identities?.some((i) => i.provider === "email");
-
-  async function handleChangePassword() {
-    if (!user?.email) {
-      showError("No email on this account.");
-      return;
-    }
-    const ok = await luminaDialog.confirm({
-      title: "Change password?",
-      description: `We'll email a secure reset link to ${user.email}.`,
-      confirmLabel: "Send reset email",
-      tone: "info",
-    });
-    if (!ok) return;
-    const { error } = await supabase.auth.resetPasswordForEmail(user.email, {
-      redirectTo: getAuthRedirectUrl("/reset-password"),
-    });
-    if (error) showError(error.message);
-    else showSuccess("Reset email sent. Check your inbox.");
-  }
-
-  async function handleLogout() {
-    const ok = await luminaDialog.confirm({
-      title: "Sign out?",
-      description: "You'll need to sign back in on this device.",
-      confirmLabel: "Sign out",
-      tone: "warning",
-    });
-    if (!ok) return;
-    await signOutClean();
-  }
-
-  async function handleDeleteAccount() {
-    const ok = await luminaDialog.danger({
-      title: "Delete your account?",
-      description:
-        "This permanently removes your Lumina account and all synced data. This cannot be undone.",
-      confirmLabel: "Delete account",
-    });
-    if (!ok) return;
-    try {
-      const { error } = await supabase.rpc("delete_current_user");
-      if (error) throw error;
-      showSuccess("Account deleted.");
-      await signOutClean();
-    } catch (err) {
-      // Fallback: sign out and instruct user to contact support if RPC isn't set up.
-      showError(
-        err instanceof Error && err.message
-          ? err.message
-          : "Couldn't delete account. Please contact support.",
-      );
-    }
-  }
-
-  return (
-    <GlassCard className="relative overflow-hidden">
-      <div className="text-xs uppercase tracking-[0.24em] text-muted-foreground">account</div>
-      <div className="mt-1 text-[11px] text-muted-foreground">
-        Your identity and access on Lumina.
-      </div>
-
-      <div className="mt-4 flex items-center gap-3 rounded-2xl border border-white/60 bg-white/60 p-4 dark:border-white/10 dark:bg-white/5">
-        <div className="grid h-10 w-10 place-items-center rounded-full bg-white/70 dark:bg-white/10" aria-hidden="true">
-          <User className="h-4 w-4" />
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className="truncate text-sm font-medium">{displayName || "Signed in"}</div>
-          <div className="truncate text-xs text-muted-foreground">{email}</div>
-        </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button
-              type="button"
-              aria-label="Account actions"
-              className="lumina-focus-ring grid h-9 w-9 shrink-0 touch-manipulation place-items-center rounded-full text-foreground/70 transition hover:bg-white/70 hover:text-foreground dark:hover:bg-white/10"
-            >
-              <MoreHorizontal className="h-4 w-4" aria-hidden="true" />
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuItem onSelect={() => void handleLogout()}>
-              <LogOut className="mr-2 h-4 w-4" aria-hidden="true" />
-              Sign out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-
-      {hasPassword && (
-        <div className="mt-3">
-          <button
-            type="button"
-            onClick={handleChangePassword}
-            className="lumina-focus-ring flex min-h-12 w-full touch-manipulation items-center gap-3 rounded-2xl border border-white/60 bg-white/60 p-4 text-left text-sm transition hover:bg-white/80 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10"
-          >
-            <KeyRound className="h-4 w-4" aria-hidden="true" />
-            <div className="flex-1">
-              <div className="font-medium">Change password</div>
-              <div className="text-xs text-muted-foreground">We'll email you a secure link</div>
-            </div>
-          </button>
-        </div>
-      )}
-
-
-      <button
-        type="button"
-        onClick={handleDeleteAccount}
-        className="mt-3 flex w-full min-h-12 touch-manipulation items-center gap-3 rounded-2xl border border-[oklch(0.7_0.18_20_/_0.35)] bg-[oklch(0.98_0.03_20_/_0.7)] p-4 text-left text-sm text-[oklch(0.45_0.18_20)] transition hover:bg-[oklch(0.96_0.05_20_/_0.85)] active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0.7_0.18_20)]/70 dark:border-[oklch(0.55_0.18_20_/_0.35)] dark:bg-[oklch(0.3_0.09_20_/_0.35)] dark:text-[oklch(0.85_0.14_20)]"
-      >
-        <Trash2 className="h-4 w-4" aria-hidden="true" />
-        <div className="flex-1">
-          <div className="font-medium">Delete account</div>
-          <div className="text-xs opacity-80">Permanently remove your data</div>
-        </div>
-      </button>
-    </GlassCard>
-  );
-}

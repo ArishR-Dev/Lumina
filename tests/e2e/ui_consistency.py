@@ -45,7 +45,7 @@ ROUTES = [
     ("journal", "/app/journal"), ("thoughts", "/app/thoughts"),
     ("letters", "/app/letters"), ("memories", "/app/memories"),
     ("calendar", "/app/calendar"), ("tasks", "/app/tasks"),
-    ("habits", "/app/habits"), ("collections", "/app/collections"),
+    ("habits", "/app/habits"),
     ("favorites", "/app/favorites"), ("dashboard", "/app/dashboard"),
     ("insights", "/app/insights"), ("mood", "/app/mood"),
     ("settings", "/app/settings"), ("farewell", "/app/farewell"),

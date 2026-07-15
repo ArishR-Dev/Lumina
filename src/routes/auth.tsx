@@ -7,7 +7,6 @@ import { Petals } from "@/components/lumina/Petals";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/lumina-auth";
 import { getAuthRedirectUrl } from "@/lib/lumina-auth-redirect";
-import { signInWithApple } from "@/lib/google-auth";
 import { GoogleSignInButton } from "@/components/lumina/GoogleSignInButton";
 import { luminaDialog } from "@/lib/lumina-dialog";
 import { z } from "zod";
@@ -93,18 +92,6 @@ function AuthForm() {
       cancelled = true;
     };
   }, []);
-
-  const onApple = async () => {
-    setBusy(true);
-    try {
-      const { error } = await signInWithApple();
-      toast.error(error?.message || "Apple Sign-In isn’t available yet.");
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : String(e));
-    } finally {
-      setBusy(false);
-    }
-  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -209,16 +196,8 @@ function AuthForm() {
         </div>
 
         {mode !== "forgot" && (
-          <div className="mb-5 grid grid-cols-2 gap-2">
+          <div className="mb-5">
             <GoogleSignInButton disabled={busy} />
-            <button
-              type="button"
-              onClick={() => void onApple()}
-              disabled={busy}
-              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/60 bg-white/70 px-3 py-2.5 text-sm font-medium transition hover:bg-white disabled:opacity-50 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10"
-            >
-              <AppleIcon /> Apple
-            </button>
           </div>
         )}
 
@@ -326,13 +305,5 @@ function AuthForm() {
         </div>
       </motion.div>
     </div>
-  );
-}
-
-function AppleIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden>
-      <path d="M16.365 12.36c-.03-2.7 2.2-3.99 2.3-4.05-1.25-1.83-3.19-2.08-3.88-2.11-1.65-.17-3.22.97-4.06.97-.84 0-2.13-.95-3.51-.92-1.8.03-3.47 1.05-4.4 2.66-1.88 3.26-.48 8.07 1.35 10.72.9 1.29 1.96 2.74 3.35 2.69 1.35-.05 1.86-.87 3.49-.87 1.63 0 2.09.87 3.52.85 1.45-.03 2.37-1.31 3.26-2.61 1.03-1.5 1.45-2.96 1.47-3.03-.03-.01-2.83-1.09-2.89-4.3zM13.68 4.4c.74-.9 1.24-2.14 1.1-3.4-1.06.05-2.36.71-3.13 1.6-.69.79-1.29 2.06-1.13 3.28 1.18.09 2.4-.6 3.16-1.48z" />
-    </svg>
   );
 }

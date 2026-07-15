@@ -580,7 +580,7 @@ export function useLuminaSync() {
 }
 
 /* ------------------------------------------------------------------ *
- *  Public API for Export / Backups.
+ *  Public API — flush pending sync (e.g. beforeunload helpers).
  * ------------------------------------------------------------------ */
 
 export function forceFlush() {

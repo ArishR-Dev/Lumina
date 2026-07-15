@@ -1,5 +1,4 @@
 import { supabase } from "@/integrations/supabase/client";
-import { getAuthRedirectUrl } from "@/lib/lumina-auth-redirect";
 import { syncAuthUserProfile } from "@/lib/lumina-auth";
 
 export type GoogleCredentialResponse = { credential?: string };
@@ -105,6 +104,12 @@ export async function mountGoogleButton(
   if (!id) throw new Error("Google Sign-In failed to initialize");
 
   const clientId = getGoogleClientId();
+
+  try {
+    id.cancel();
+  } catch {
+    /* noop */
+  }
   parent.innerHTML = "";
 
   id.initialize({
@@ -135,21 +140,4 @@ export async function mountGoogleButton(
     width,
     logo_alignment: "left",
   });
-}
-
-/** Apple is not configured on this Supabase project — avoid the 400 authorize URL. */
-export async function signInWithApple() {
-  return {
-    data: { provider: "apple" as const, url: null },
-    error: {
-      message: "Apple Sign-In isn’t configured yet. Please use Google or email.",
-      name: "AuthError",
-      status: 400,
-    },
-  };
-}
-
-/** Kept for email-link / recovery redirects that still use Supabase OAuth URLs. */
-export function getOAuthCallbackUrl() {
-  return getAuthRedirectUrl("/auth/callback");
 }

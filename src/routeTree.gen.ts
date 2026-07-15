@@ -31,7 +31,6 @@ import { Route as AppInsightsRouteImport } from './routes/app.insights'
 import { Route as AppHomeRouteImport } from './routes/app.home'
 import { Route as AppHabitsRouteImport } from './routes/app.habits'
 import { Route as AppFavoritesRouteImport } from './routes/app.favorites'
-import { Route as AppExportRouteImport } from './routes/app.export'
 import { Route as AppDashboardRouteImport } from './routes/app.dashboard'
 import { Route as AppCapsulesRouteImport } from './routes/app.capsules'
 import { Route as AppCalendarRouteImport } from './routes/app.calendar'
@@ -167,11 +166,6 @@ const AppHabitsRoute = AppHabitsRouteImport.update({
 const AppFavoritesRoute = AppFavoritesRouteImport.update({
   id: '/favorites',
   path: '/favorites',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppExportRoute = AppExportRouteImport.update({
-  id: '/export',
-  path: '/export',
   getParentRoute: () => AppRoute,
 } as any)
 const AppDashboardRoute = AppDashboardRouteImport.update({
@@ -316,7 +310,6 @@ export interface FileRoutesByFullPath {
   '/app/calendar': typeof AppCalendarRoute
   '/app/capsules': typeof AppCapsulesRouteWithChildren
   '/app/dashboard': typeof AppDashboardRoute
-  '/app/export': typeof AppExportRoute
   '/app/favorites': typeof AppFavoritesRoute
   '/app/habits': typeof AppHabitsRoute
   '/app/home': typeof AppHomeRoute
@@ -365,7 +358,6 @@ export interface FileRoutesByTo {
   '/app/achievements': typeof AppAchievementsRoute
   '/app/calendar': typeof AppCalendarRoute
   '/app/dashboard': typeof AppDashboardRoute
-  '/app/export': typeof AppExportRoute
   '/app/favorites': typeof AppFavoritesRoute
   '/app/habits': typeof AppHabitsRoute
   '/app/home': typeof AppHomeRoute
@@ -411,7 +403,6 @@ export interface FileRoutesById {
   '/app/calendar': typeof AppCalendarRoute
   '/app/capsules': typeof AppCapsulesRouteWithChildren
   '/app/dashboard': typeof AppDashboardRoute
-  '/app/export': typeof AppExportRoute
   '/app/favorites': typeof AppFavoritesRoute
   '/app/habits': typeof AppHabitsRoute
   '/app/home': typeof AppHomeRoute
@@ -464,7 +455,6 @@ export interface FileRouteTypes {
     | '/app/calendar'
     | '/app/capsules'
     | '/app/dashboard'
-    | '/app/export'
     | '/app/favorites'
     | '/app/habits'
     | '/app/home'
@@ -513,7 +503,6 @@ export interface FileRouteTypes {
     | '/app/achievements'
     | '/app/calendar'
     | '/app/dashboard'
-    | '/app/export'
     | '/app/favorites'
     | '/app/habits'
     | '/app/home'
@@ -558,7 +547,6 @@ export interface FileRouteTypes {
     | '/app/calendar'
     | '/app/capsules'
     | '/app/dashboard'
-    | '/app/export'
     | '/app/favorites'
     | '/app/habits'
     | '/app/home'
@@ -762,13 +750,6 @@ declare module '@tanstack/react-router' {
       path: '/favorites'
       fullPath: '/app/favorites'
       preLoaderRoute: typeof AppFavoritesRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/export': {
-      id: '/app/export'
-      path: '/export'
-      fullPath: '/app/export'
-      preLoaderRoute: typeof AppExportRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/dashboard': {
@@ -1061,7 +1042,6 @@ interface AppRouteChildren {
   AppCalendarRoute: typeof AppCalendarRoute
   AppCapsulesRoute: typeof AppCapsulesRouteWithChildren
   AppDashboardRoute: typeof AppDashboardRoute
-  AppExportRoute: typeof AppExportRoute
   AppFavoritesRoute: typeof AppFavoritesRoute
   AppHabitsRoute: typeof AppHabitsRoute
   AppHomeRoute: typeof AppHomeRoute
@@ -1092,7 +1072,6 @@ const AppRouteChildren: AppRouteChildren = {
   AppCalendarRoute: AppCalendarRoute,
   AppCapsulesRoute: AppCapsulesRouteWithChildren,
   AppDashboardRoute: AppDashboardRoute,
-  AppExportRoute: AppExportRoute,
   AppFavoritesRoute: AppFavoritesRoute,
   AppHabitsRoute: AppHabitsRoute,
   AppHomeRoute: AppHomeRoute,

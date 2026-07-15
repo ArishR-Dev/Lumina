@@ -37,10 +37,8 @@ function AppLayout() {
   const user = useAuth((s) => s.user);
   const loading = useAuth((s) => s.loading);
   const isMobile = useIsMobile();
-  // Ambient petals are pure decoration. On mobile they force the GPU to
-  // re-composite the whole viewport every frame under every glass surface,
-  // which is the biggest scroll-jank source on phones — skip entirely there.
-  const petalCount = isMobile ? 0 : 10;
+  // Same ambience on phone and desktop — UI/UX parity.
+  const petalCount = 10;
 
   // Farewell renders as a full-viewport immersive sanctuary — no sidebar,
   // no mobile nav, no search, no seasonal decor. See FarewellShell below.
@@ -147,7 +145,7 @@ function AppLayout() {
             className="relative flex h-[100dvh] flex-col [overflow-x:clip] md:flex-row"
           >
             <Petals count={petalCount} />
-            {!isMobile && <SeasonalDecor />}
+            <SeasonalDecor />
 
             {/* Sidebar: fixed-height column, does NOT scroll with the page */}
             {!hideShell && (

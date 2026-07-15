@@ -1380,18 +1380,4 @@
 .lumina-paper[data-writing="true"] .lumina-toolbar-dock { opacity: 0.55; }
 .lumina-paper[data-writing="true"] .lumina-toolbar-dock:hover { opacity: 1; }
 
-/* ============================================================
-   Mobile perf: strip every backdrop-filter inside the editor
-   paper surface on coarse-pointer devices. Continuous blur while
-   typing is the biggest paint cost on phone GPUs; the paper still
-   reads as translucent because each element already carries a
-   fallback background/color-mix. Desktop is unaffected. */
-@media (max-width: 768px), (pointer: coarse) {
-  .lumina-paper,
-  .lumina-paper *,
-  .lumina-toolbar-dock,
-  .lumina-toolbar-dock * {
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-  }
-}
+/* Editor paper surfaces keep frosted glass on all viewports for UI parity. */

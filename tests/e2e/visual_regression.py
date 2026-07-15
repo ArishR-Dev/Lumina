@@ -62,7 +62,6 @@ ROUTES = [
     ("calendar",     "/app/calendar"),
     ("tasks",        "/app/tasks"),
     ("habits",       "/app/habits"),
-    ("collections",  "/app/collections"),
     ("favorites",    "/app/favorites"),
     ("dashboard",    "/app/dashboard"),
     ("insights",     "/app/insights"),
@@ -70,10 +69,8 @@ ROUTES = [
     ("mood",         "/app/mood"),
     ("settings",     "/app/settings"),
     ("farewell",     "/app/farewell"),
-    ("backups",      "/app/backups"),
     ("timeline",     "/app/timeline"),
     ("scratch",      "/app/scratch"),
-    ("export",       "/app/export"),
 ]
 if os.environ.get("ROUTES"):
     allowed = set(os.environ["ROUTES"].split(","))

@@ -46,7 +46,6 @@ PAGES = [
     ("calendar",     "/app/calendar",     "Calendar"),
     ("tasks",        "/app/tasks",        "Tasks"),
     ("habits",       "/app/habits",       "Habits"),
-    ("collections",  "/app/collections",  "Collections"),
     ("favorites",    "/app/favorites",    "Favorites"),
     ("dashboard",    "/app/dashboard",    "Dashboard"),
     ("achievements", "/app/achievements", "Achievements"),
