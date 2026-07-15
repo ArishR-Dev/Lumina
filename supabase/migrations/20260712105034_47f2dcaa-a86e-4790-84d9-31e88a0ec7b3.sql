@@ -1,0 +1,1 @@
+DELETE FROM public.sync_docs WHERE entity = 'collection';

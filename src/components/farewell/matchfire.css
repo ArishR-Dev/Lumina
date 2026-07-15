@@ -1,0 +1,229 @@
+/* ==========================================================================
+   Match + Fire animation — realistic pass
+   Anchor point: the flame tip sits at (0,0) of .match-fire.
+   Position/rotate the whole element to move the flame anywhere on screen.
+
+   Source of truth: supplied MatchFire stylesheet. Do not modify.
+   ========================================================================== */
+
+.match-fire {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  transform-origin: 0 50%;
+  opacity: 0;
+  transition: opacity 220ms ease;
+  pointer-events: none;
+  z-index: 1000;
+  will-change: transform;
+}
+
+.match-fire.is-lit {
+  opacity: 1;
+}
+
+/* subtle hand tremor — the whole assembly gets a tiny continuous sway,
+   like a hand isn't perfectly still */
+.mf-tremor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  animation: mf-tremor 2300ms ease-in-out infinite alternate;
+}
+
+@keyframes mf-tremor {
+  0%   { transform: rotate(-0.6deg) translateY(0px); }
+  50%  { transform: rotate(0.5deg) translateY(-0.6px); }
+  100% { transform: rotate(-0.4deg) translateY(0.4px); }
+}
+
+/* --- matchstick --- */
+.mf-stick {
+  position: absolute;
+  top: -4px;
+  left: 0;
+  height: 8px;
+  background: linear-gradient(180deg, #ffe0a3 0%, #f0b968 45%, #d99a4c 55%, #c3853d 100%);
+  border-right: 3px solid #7a5326;
+  border-bottom: 3px solid #7a5326;
+  box-sizing: border-box;
+  border-radius: 99px;
+  transform-origin: 0 50%;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.mf-stick::before {
+  /* lit/charring match head */
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -2px;
+  width: 26px;
+  height: 17px;
+  background: radial-gradient(circle at 35% 35%, #ff5b2e 0%, #d31600 55%, #4a0400 100%);
+  border-radius: 100%;
+  transform: translateY(-50%);
+  box-sizing: border-box;
+  box-shadow: 0 0 26px 10px rgba(255, 70, 0, 0.45);
+}
+
+.mf-stick::after {
+  /* ambient ember glow, gently pulsing like real firelight */
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 130px;
+  height: 110px;
+  background: radial-gradient(circle, rgba(255, 150, 50, 0.55) 0%, rgba(220, 60, 0, 0.28) 45%, rgba(220, 60, 0, 0) 75%);
+  border-radius: 100%;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: screen;
+  filter: blur(18px);
+  animation: mf-glow-pulse 900ms ease-in-out infinite;
+}
+
+@keyframes mf-glow-pulse {
+  0%, 100% { opacity: 0.75; transform: translate(-50%, -50%) scale(1); }
+  50%      { opacity: 1;    transform: translate(-50%, -50%) scale(1.1); }
+}
+
+/* --- flame lean wrapper: JS rotates this opposite to drag velocity,
+   so the flame trails behind like it's being dragged through air --- */
+.mf-flame-lean {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 100%;
+  transition: transform 100ms linear;
+}
+
+/* --- outer flame: warm metaball flicker (many small black blobs rising
+   through a colored, blurred/contrasted mask — classic CSS fire trick) --- */
+.mf-flame {
+  display: none;
+  position: absolute;
+  top: -150px;
+  left: -75px;
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(ellipse at 50% 85%, #fff3c4 0%, #ffcf4d 30%, #ff8a1e 58%, #e5390a 82%, #7a1300 100%);
+  filter: blur(6px) contrast(28);
+  border: 75px solid #000;
+  border-bottom-color: transparent;
+  border-radius: 40%;
+  box-sizing: border-box;
+  transform: scale(0.22, 1);
+  opacity: 0.92;
+  mix-blend-mode: screen;
+}
+
+.match-fire.is-lit .mf-flame {
+  display: block;
+}
+
+/* --- inner core flame: hotter blue/white, smaller, screen-blended on top
+   of the outer flame — this is what makes it read as "fire" rather than
+   a flat orange blob --- */
+.mf-flame-core {
+  display: none;
+  position: absolute;
+  top: -104px;
+  left: -40px;
+  width: 80px;
+  height: 80px;
+  background: radial-gradient(ellipse at 50% 85%, #ffffff 0%, #d9f4ff 25%, #7fd4ff 55%, #1a6fb0 85%, #06294f 100%);
+  filter: blur(5px) contrast(26);
+  border: 40px solid #000;
+  border-bottom-color: transparent;
+  border-radius: 40%;
+  box-sizing: border-box;
+  transform: scale(0.22, 1);
+  opacity: 0.85;
+  mix-blend-mode: screen;
+}
+
+.match-fire.is-lit .mf-flame-core {
+  display: block;
+}
+
+.mf-burn {
+  position: absolute;
+  top: 150px;
+  left: -6px;
+  width: 12px;
+  background: #000;
+  border-radius: 100%;
+  animation-name: mf-burning;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in;
+}
+
+.mf-flame-core .mf-burn {
+  top: 80px;
+  width: 7px;
+  animation-name: mf-burning-core;
+}
+
+@keyframes mf-burning {
+  0%   { transform: translate(-75px, 0); }
+  100% { transform: translate(75px, -162px); }
+}
+
+@keyframes mf-burning-core {
+  0%   { transform: translate(-40px, 0); }
+  100% { transform: translate(40px, -92px); }
+}
+
+/* --- rising smoke wisps --- */
+.mf-smoke {
+  display: none;
+  position: absolute;
+  top: -172px;
+  left: -6px;
+  width: 6px;
+  height: 6px;
+  background: rgba(200, 200, 200, 0.5);
+  border-radius: 50%;
+  filter: blur(3px);
+  animation-name: mf-smoke-rise;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-out;
+}
+
+.match-fire.is-lit .mf-smoke {
+  display: block;
+}
+
+@keyframes mf-smoke-rise {
+  0%   { transform: translate(0, 0) scale(0.6); opacity: 0; }
+  15%  { opacity: 0.35; }
+  100% { transform: translate(18px, -120px) scale(2.4); opacity: 0; }
+}
+
+/* --- embers / sparks --- */
+.mf-spark {
+  display: none;
+  position: absolute;
+  top: -138px;
+  left: 0;
+  width: 3px;
+  height: 3px;
+  background: #ffcf6b;
+  border-radius: 50%;
+  box-shadow: 0 0 4px 1px rgba(255, 180, 60, 0.9);
+  animation-name: mf-spark-fly;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-out;
+}
+
+.match-fire.is-lit .mf-spark {
+  display: block;
+}
+
+@keyframes mf-spark-fly {
+  0%   { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--sx, 20px), var(--sy, -60px)) scale(0.2); opacity: 0; }
+}

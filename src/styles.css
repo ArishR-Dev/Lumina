@@ -1,0 +1,2555 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Design system definition.
+ *
+ * The @theme inline block maps CSS custom properties to Tailwind utility
+ * classes (e.g. --color-primary -> bg-primary, text-primary).
+ *
+ * The :root and .dark blocks define the actual color values using oklch.
+ * All colors MUST use oklch format.
+ *
+ * To add a new semantic color:
+ * 1. Add the variable to :root (light value) and .dark (dark value)
+ * 2. Register it in @theme inline as --color-<name>: var(--<name>)
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-blossom: var(--blossom);
+  --color-lilac: var(--lilac);
+  --color-lavender: var(--lavender);
+  --color-cream: var(--cream);
+  --font-display: "Fraunces", "Cormorant Garamond", serif, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Twemoji Mozilla", "EmojiOne Color", "Android Emoji";
+  --font-sans: "Plus Jakarta Sans", "Inter", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Twemoji Mozilla", "EmojiOne Color", "Android Emoji";
+  --font-hand: "Caveat", cursive;
+}
+
+:root {
+  --radius: 1.25rem;
+  --background: oklch(0.995 0.006 60);
+  --foreground: oklch(0.32 0.05 320);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.32 0.05 320);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.32 0.05 320);
+  --primary: oklch(0.72 0.13 340);
+  --primary-foreground: oklch(0.99 0.005 320);
+  --secondary: oklch(0.96 0.03 310);
+  --secondary-foreground: oklch(0.35 0.08 320);
+  --muted: oklch(0.97 0.012 40);
+  --muted-foreground: oklch(0.44 0.05 320);
+  --accent: oklch(0.86 0.09 310);
+  --accent-foreground: oklch(0.28 0.08 320);
+  --destructive: oklch(0.65 0.19 20);
+  --destructive-foreground: oklch(0.99 0.005 320);
+  --border: oklch(0.92 0.02 320 / 60%);
+  --input: oklch(0.94 0.02 320);
+  --ring: oklch(0.78 0.11 330);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0.012 340 / 70%);
+  --sidebar-foreground: oklch(0.35 0.05 320);
+  --sidebar-primary: oklch(0.72 0.13 340);
+  --sidebar-primary-foreground: oklch(0.99 0.005 320);
+  --sidebar-accent: oklch(0.94 0.04 320);
+  --sidebar-accent-foreground: oklch(0.32 0.08 320);
+  --sidebar-border: oklch(0.9 0.03 320 / 50%);
+  --sidebar-ring: oklch(0.78 0.11 330);
+  --blossom: oklch(0.86 0.09 350);
+  --lilac: oklch(0.88 0.06 300);
+  --lavender: oklch(0.84 0.08 300);
+  --cream: oklch(0.98 0.02 70);
+  --glow: oklch(0.72 0.16 340 / 35%);
+
+  /* Elevation scale — one shadow language across the app.
+     Use via .lumina-elev-1..4 or shadow-[var(--shadow-e2)] in Tailwind. */
+  --shadow-e1: 0 1px 2px color-mix(in oklab, var(--glow) 25%, transparent),
+               0 2px 8px -4px color-mix(in oklab, var(--glow) 30%, transparent);
+  --shadow-e2: 0 4px 12px -6px color-mix(in oklab, var(--glow) 35%, transparent),
+               0 8px 24px -12px color-mix(in oklab, var(--glow) 30%, transparent);
+  --shadow-e3: 0 10px 30px -14px color-mix(in oklab, var(--glow) 45%, transparent),
+               0 20px 40px -20px color-mix(in oklab, var(--glow) 35%, transparent);
+  --shadow-e4: 0 20px 50px -20px color-mix(in oklab, var(--glow) 55%, transparent),
+               0 30px 80px -30px color-mix(in oklab, var(--glow) 45%, transparent);
+  --shadow-glow: 0 14px 36px -14px color-mix(in oklab, var(--primary) 55%, transparent),
+                 0 0 26px -2px color-mix(in oklab, var(--glow) 45%, transparent);
+}
+
+.dark {
+  --background: oklch(0.18 0.04 300);
+  --foreground: oklch(0.94 0.02 320);
+  --card: oklch(0.24 0.05 300);
+  --card-foreground: oklch(0.94 0.02 320);
+  --popover: oklch(0.24 0.05 300);
+  --popover-foreground: oklch(0.94 0.02 320);
+  --primary: oklch(0.78 0.12 330);
+  --primary-foreground: oklch(0.2 0.05 300);
+  --secondary: oklch(0.3 0.05 300);
+  --secondary-foreground: oklch(0.94 0.02 320);
+  --muted: oklch(0.28 0.04 300);
+  --muted-foreground: oklch(0.80 0.03 320);
+  --accent: oklch(0.42 0.08 300);
+  --accent-foreground: oklch(0.96 0.02 320);
+  --destructive: oklch(0.65 0.19 20);
+  --destructive-foreground: oklch(0.99 0.005 320);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.7 0.1 330);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.22 0.05 300 / 70%);
+  --sidebar-foreground: oklch(0.94 0.02 320);
+  --sidebar-primary: oklch(0.78 0.12 330);
+  --sidebar-primary-foreground: oklch(0.2 0.05 300);
+  --sidebar-accent: oklch(0.3 0.06 300);
+  --sidebar-accent-foreground: oklch(0.96 0.02 320);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.7 0.1 330);
+  --blossom: oklch(0.62 0.14 340);
+  --lilac: oklch(0.55 0.1 300);
+  --lavender: oklch(0.5 0.1 300);
+  --cream: oklch(0.3 0.04 40);
+  --glow: oklch(0.65 0.18 330 / 45%);
+
+  /* Dark elevation — deeper drops for legibility over dark cards */
+  --shadow-e1: 0 1px 2px rgba(0,0,0,0.35),
+               0 2px 8px -4px rgba(0,0,0,0.4);
+  --shadow-e2: 0 6px 16px -8px rgba(0,0,0,0.5),
+               0 12px 28px -14px rgba(0,0,0,0.45);
+  --shadow-e3: 0 14px 36px -16px rgba(0,0,0,0.6),
+               0 24px 50px -20px rgba(0,0,0,0.5);
+  --shadow-e4: 0 24px 60px -20px rgba(0,0,0,0.7),
+               0 40px 90px -30px rgba(0,0,0,0.55);
+  --shadow-glow: 0 16px 40px -14px color-mix(in oklab, var(--primary) 65%, transparent),
+                 0 0 30px -2px color-mix(in oklab, var(--glow) 55%, transparent);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    background-image:
+      radial-gradient(ellipse 80% 60% at 15% 0%, oklch(0.94 0.08 340 / 45%), transparent 60%),
+      radial-gradient(ellipse 70% 50% at 100% 20%, oklch(0.93 0.06 300 / 50%), transparent 60%),
+      radial-gradient(ellipse 90% 70% at 50% 100%, oklch(0.97 0.05 60 / 55%), transparent 60%);
+    background-attachment: fixed;
+  }
+
+  .dark body {
+    background-image:
+      radial-gradient(ellipse 80% 60% at 15% 0%, oklch(0.32 0.09 320 / 55%), transparent 60%),
+      radial-gradient(ellipse 70% 50% at 100% 20%, oklch(0.28 0.08 280 / 55%), transparent 60%),
+      radial-gradient(ellipse 90% 70% at 50% 100%, oklch(0.24 0.06 320 / 55%), transparent 60%);
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+
+  /* Accessibility baseline — every interactive element gets a visible
+     focus ring, even when a component author reached for `outline-none`.
+     Uses :focus-visible so pointer clicks stay ring-free. */
+  :where(a, button, [role="button"], [role="link"], [role="tab"],
+         [role="menuitem"], [role="option"], [role="switch"],
+         [role="checkbox"], [role="radio"],
+         input, select, textarea, summary, [tabindex]:not([tabindex="-1"])):focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+
+  /* When a component sets `outline-none`, still show a ring via
+     box-shadow so keyboard users are never stranded. */
+  :where(input, textarea, select):focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--color-background),
+                0 0 0 4px color-mix(in oklab, var(--color-ring) 70%, transparent);
+  }
+
+  /* Skip link — visible only on focus */
+  .skip-to-content {
+    position: fixed;
+    top: 0.5rem;
+    left: 0.5rem;
+    z-index: 100;
+    padding: 0.5rem 0.875rem;
+    border-radius: var(--radius-lg);
+    background: var(--color-background);
+    color: var(--color-foreground);
+    box-shadow: var(--shadow-e2);
+    transform: translateY(-150%);
+    transition: transform 180ms ease-out;
+  }
+  .skip-to-content:focus,
+  .skip-to-content:focus-visible {
+    transform: translateY(0);
+  }
+}
+
+/* Global reduced-motion guard — collapses animation and transition
+   durations for users who request it. Individual component-level
+   overrides above still apply. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+@utility glass {
+  background: color-mix(in oklab, var(--color-card) 60%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid color-mix(in oklab, var(--glow, white) 35%, white 25%);
+  box-shadow:
+    0 1px 0 color-mix(in oklab, white 60%, transparent) inset,
+    0 20px 40px -20px color-mix(in oklab, var(--glow, oklch(0.5 0.1 330)) 55%, transparent),
+    0 8px 24px -14px color-mix(in oklab, var(--glow, oklch(0.5 0.1 330)) 40%, transparent);
+}
+
+.dark .glass {
+  background: color-mix(in oklab, var(--color-card) 60%, transparent);
+  border-color: color-mix(in oklab, var(--glow, white) 22%, transparent);
+  box-shadow:
+    0 1px 0 color-mix(in oklab, white 8%, transparent) inset,
+    0 24px 50px -20px color-mix(in oklab, var(--glow, black) 70%, black),
+    0 0 40px -8px color-mix(in oklab, var(--glow, transparent) 45%, transparent);
+}
+
+/* Mobile perf: continuously reblurring full-screen glass surfaces over
+   animated ambient layers is the single biggest scroll-jank source on
+   phone GPUs. Drop backdrop-filter entirely on small screens and use a
+   more opaque fill instead — visually near-identical, dramatically
+   cheaper to composite. Desktop keeps the full glass look. */
+@media (max-width: 768px) {
+  .glass,
+  [class*="backdrop-blur"] {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  .glass {
+    background: color-mix(in oklab, var(--color-card) 92%, transparent);
+  }
+  .dark .glass {
+    background: color-mix(in oklab, var(--color-card) 88%, transparent);
+  }
+}
+
+
+/* ============ Elevation utilities — canonical shadow scale ============ */
+@utility lumina-elev-1 { box-shadow: var(--shadow-e1); }
+@utility lumina-elev-2 { box-shadow: var(--shadow-e2); }
+@utility lumina-elev-3 { box-shadow: var(--shadow-e3); }
+@utility lumina-elev-4 { box-shadow: var(--shadow-e4); }
+@utility lumina-glow   { box-shadow: var(--shadow-glow); }
+
+/* Glass variants — .glass is the canonical surface; use these when a
+   different intensity is required rather than hand-rolling shadow-[…]. */
+@utility glass-strong {
+  background: color-mix(in oklab, var(--color-card) 78%, transparent);
+  backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid color-mix(in oklab, var(--glow, white) 40%, white 20%);
+  box-shadow: var(--shadow-e3);
+}
+.dark .glass-strong {
+  background: color-mix(in oklab, var(--color-card) 72%, transparent);
+  border-color: color-mix(in oklab, var(--glow, white) 25%, transparent);
+  box-shadow: var(--shadow-e3);
+}
+@media (max-width: 768px) {
+  .glass-strong {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: color-mix(in oklab, var(--color-card) 94%, transparent);
+  }
+  .dark .glass-strong {
+    background: color-mix(in oklab, var(--color-card) 90%, transparent);
+  }
+}
+
+
+/* ============ Segmented chip (theme-aware) ============ */
+@utility seg-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: color-mix(in oklab, var(--foreground) 6%, transparent);
+  color: color-mix(in oklab, var(--foreground) 62%, transparent);
+  border: 1px solid transparent;
+  font-weight: 500;
+  transition:
+    background 250ms ease-out,
+    color 250ms ease-out,
+    border-color 250ms ease-out,
+    box-shadow 250ms ease-out,
+    transform 250ms ease-out;
+  will-change: transform, box-shadow;
+  &:hover {
+    background: color-mix(in oklab, var(--foreground) 10%, transparent);
+    color: color-mix(in oklab, var(--foreground) 85%, transparent);
+  }
+}
+.dark .seg-chip {
+  background: color-mix(in oklab, white 6%, transparent);
+  color: color-mix(in oklab, white 62%, transparent);
+}
+.dark .seg-chip:hover {
+  background: color-mix(in oklab, white 10%, transparent);
+  color: color-mix(in oklab, white 90%, transparent);
+}
+
+@utility seg-chip-active {
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--primary) 28%, transparent),
+    color-mix(in oklab, var(--primary) 14%, transparent)
+  );
+  color: var(--foreground);
+  border-color: color-mix(in oklab, var(--primary) 60%, transparent);
+  font-weight: 600;
+  transform: scale(1.03);
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--primary) 45%, transparent),
+    inset 0 1px 0 color-mix(in oklab, white 40%, transparent),
+    inset 0 0 12px color-mix(in oklab, var(--glow, var(--primary)) 30%, transparent),
+    0 8px 24px -8px color-mix(in oklab, var(--glow, var(--primary)) 55%, transparent),
+    0 0 22px -2px color-mix(in oklab, var(--glow, var(--primary)) 40%, transparent);
+}
+.dark .seg-chip-active {
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--primary) 40%, transparent),
+    color-mix(in oklab, var(--primary) 18%, transparent)
+  );
+  border-color: color-mix(in oklab, var(--primary) 70%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--primary) 55%, transparent),
+    inset 0 1px 0 color-mix(in oklab, white 12%, transparent),
+    inset 0 0 16px color-mix(in oklab, var(--glow, var(--primary)) 40%, transparent),
+    0 10px 28px -6px color-mix(in oklab, var(--glow, var(--primary)) 70%, transparent),
+    0 0 26px -2px color-mix(in oklab, var(--glow, var(--primary)) 55%, transparent);
+}
+
+
+@utility text-gradient {
+  background: linear-gradient(120deg, oklch(0.6 0.18 340), oklch(0.55 0.15 290));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@keyframes float-petal {
+  0% { transform: translate3d(0, -10vh, 0) rotate(0deg); opacity: 0; }
+  10% { opacity: 0.9; }
+  100% { transform: translate3d(var(--drift, 40px), 110vh, 0) rotate(360deg); opacity: 0; }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+@keyframes shimmer {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+/* ============ Ambient theme motion ============ */
+@keyframes ambient-drift {
+  0%   { transform: translate3d(0,0,0) scale(1);   opacity: 0; }
+  15%  { opacity: var(--popacity, 0.12); }
+  50%  { transform: translate3d(var(--pdx, 0), var(--pdy, 0), 0) scale(1.08); opacity: calc(var(--popacity, 0.12) * 1.4); }
+  85%  { opacity: var(--popacity, 0.12); }
+  100% { transform: translate3d(calc(var(--pdx, 0) * 0.4), calc(var(--pdy, 0) * -0.6), 0) scale(1); opacity: 0; }
+}
+@keyframes ambient-twinkle {
+  0%, 100% { opacity: 0; transform: scale(0.6); }
+  50%      { opacity: calc(var(--popacity, 0.14) * 1.6); transform: scale(1.1); }
+}
+@keyframes theme-card-float {
+  0%, 100% { transform: translateY(-2px) rotate(-0.25deg); }
+  50%      { transform: translateY(2px)  rotate(0.25deg); }
+}
+@keyframes theme-card-breathe {
+  0%, 100% {
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--primary) 45%, transparent),
+      inset 0 1px 0 color-mix(in oklab, white 40%, transparent),
+      inset 0 0 12px color-mix(in oklab, var(--glow, var(--primary)) 30%, transparent),
+      0 8px 24px -8px color-mix(in oklab, var(--glow, var(--primary)) 55%, transparent),
+      0 0 18px -2px color-mix(in oklab, var(--glow, var(--primary)) 35%, transparent);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--primary) 65%, transparent),
+      inset 0 1px 0 color-mix(in oklab, white 40%, transparent),
+      inset 0 0 18px color-mix(in oklab, var(--glow, var(--primary)) 45%, transparent),
+      0 12px 32px -6px color-mix(in oklab, var(--glow, var(--primary)) 75%, transparent),
+      0 0 34px -2px color-mix(in oklab, var(--glow, var(--primary)) 55%, transparent);
+  }
+}
+@keyframes theme-card-sweep {
+  0%   { transform: translateX(-120%) skewX(-18deg); opacity: 0; }
+  8%   { opacity: 0.55; }
+  22%  { transform: translateX(140%)  skewX(-18deg); opacity: 0; }
+  100% { transform: translateX(140%)  skewX(-18deg); opacity: 0; }
+}
+@keyframes glass-sweep {
+  0%   { transform: translateX(-120%) skewX(-14deg); opacity: 0; }
+  6%   { opacity: 0.35; }
+  18%  { transform: translateX(160%)  skewX(-14deg); opacity: 0; }
+  100% { transform: translateX(160%)  skewX(-14deg); opacity: 0; }
+}
+@keyframes bg-drift {
+  0%   { background-position: 0% 0%, 100% 0%, 50% 100%; }
+  50%  { background-position: 20% 10%, 80% 15%, 55% 90%; }
+  100% { background-position: 0% 0%, 100% 0%, 50% 100%; }
+}
+
+/* Slow-shifting body gradient (all themes inherit). */
+body {
+  background-size: 140% 140%, 140% 140%, 160% 160%;
+  animation: bg-drift 28s ease-in-out infinite;
+}
+
+/* Ambient particle overlay (used inside theme collection card). */
+.ambient-particle {
+  position: absolute;
+  border-radius: 9999px;
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: ambient-drift var(--pdur, 20s) ease-in-out var(--pdelay, 0s) infinite;
+}
+.ambient-dot {
+  background: var(--pcolor, currentColor);
+  box-shadow: 0 0 6px 1px color-mix(in oklab, var(--pcolor, white) 60%, transparent);
+}
+.ambient-bokeh {
+  background: radial-gradient(circle at 40% 40%,
+    color-mix(in oklab, var(--pcolor, white) 90%, transparent),
+    transparent 70%);
+  filter: blur(0.5px);
+}
+.ambient-sparkle {
+  background: var(--pcolor, currentColor);
+  box-shadow: 0 0 8px 2px color-mix(in oklab, var(--pcolor, white) 70%, transparent);
+  animation-name: ambient-twinkle;
+}
+
+/* Floating theme card (subtle organic drift). */
+.theme-card {
+  position: relative;
+  overflow: hidden;
+  animation: theme-card-float var(--float-dur, 8s) ease-in-out var(--float-delay, 0s) infinite;
+  transition:
+    transform 400ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 400ms ease-out,
+    border-color 400ms ease-out,
+    background 400ms ease-out;
+}
+.theme-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  animation-play-state: paused;
+}
+.theme-card.is-active {
+  animation:
+    theme-card-float var(--float-dur, 8s) ease-in-out var(--float-delay, 0s) infinite,
+    theme-card-breathe 3.4s ease-in-out infinite;
+}
+.theme-card.is-active::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    color-mix(in oklab, white 55%, transparent) 45%,
+    color-mix(in oklab, var(--primary) 30%, transparent) 50%,
+    color-mix(in oklab, white 55%, transparent) 55%,
+    transparent 100%
+  );
+  mix-blend-mode: overlay;
+  animation: theme-card-sweep 9s ease-in-out 2s infinite;
+}
+
+/* Slow reflection sweep on any glass surface that opts in. */
+.glass-sweep {
+  position: relative;
+  overflow: hidden;
+}
+.glass-sweep::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    color-mix(in oklab, white 22%, transparent) 42%,
+    color-mix(in oklab, white 45%, transparent) 50%,
+    color-mix(in oklab, white 22%, transparent) 58%,
+    transparent 100%
+  );
+  transform: translateX(-120%) skewX(-14deg);
+  animation: glass-sweep 13s ease-in-out 3s infinite;
+  mix-blend-mode: overlay;
+  border-radius: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body { animation: none !important; }
+  .ambient-particle,
+  .theme-card,
+  .theme-card.is-active,
+  .theme-card.is-active::after,
+  .glass-sweep::before {
+    animation: none !important;
+  }
+  .ambient-particle { opacity: var(--popacity, 0.1); }
+}
+
+
+
+/* ============ Theme variants ============ */
+/* Each theme rewrites the full palette (background, card, sidebar, borders,
+   input, ring, glow, blossom) so switching feels like a different atmosphere,
+   not just an accent swap. Sakura is defined at :root above. */
+
+/* --- Sakura decorative overlay (default palette, extra bloom) --- */
+html[data-theme="sakura"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 20% 30%, oklch(0.9 0.12 340 / 20%), transparent 40%),
+    radial-gradient(circle at 80% 70%, oklch(0.88 0.1 310 / 18%), transparent 45%);
+}
+
+/* ============ ❄️ Arctic — clean, icy, minimal ============ */
+html[data-theme="arctic"]:not(.dark) {
+  --background: oklch(0.985 0.015 235);
+  --foreground: oklch(0.24 0.06 240);
+  --card: oklch(1 0.008 235);
+  --card-foreground: oklch(0.24 0.06 240);
+  --popover: oklch(1 0.008 235);
+  --popover-foreground: oklch(0.24 0.06 240);
+  --primary: oklch(0.62 0.15 240);
+  --primary-foreground: oklch(0.99 0.005 235);
+  --secondary: oklch(0.94 0.03 230);
+  --secondary-foreground: oklch(0.28 0.08 240);
+  --muted: oklch(0.95 0.02 230);
+  --muted-foreground: oklch(0.5 0.05 240);
+  --accent: oklch(0.88 0.08 225);
+  --accent-foreground: oklch(0.24 0.08 240);
+  --border: oklch(0.85 0.06 230 / 60%);
+  --input: oklch(0.94 0.03 230);
+  --ring: oklch(0.7 0.14 235);
+  --sidebar: oklch(0.98 0.02 235 / 80%);
+  --sidebar-foreground: oklch(0.28 0.06 240);
+  --sidebar-primary: oklch(0.62 0.15 240);
+  --sidebar-accent: oklch(0.92 0.04 230);
+  --sidebar-border: oklch(0.85 0.05 230 / 55%);
+  --blossom: oklch(0.85 0.1 230);
+  --glow: oklch(0.78 0.16 230 / 45%);
+}
+html[data-theme="arctic"]:not(.dark) body {
+  background-image:
+    radial-gradient(ellipse 90% 65% at 15% 0%, oklch(0.94 0.06 230 / 60%), transparent 60%),
+    radial-gradient(ellipse 70% 50% at 100% 15%, oklch(0.96 0.04 240 / 55%), transparent 60%),
+    radial-gradient(ellipse 100% 80% at 50% 100%, oklch(0.98 0.02 220 / 65%), transparent 60%);
+}
+html[data-theme="arctic"].dark {
+  --background: oklch(0.18 0.05 240);
+  --foreground: oklch(0.96 0.03 230);
+  --card: oklch(0.24 0.06 240);
+  --card-foreground: oklch(0.96 0.03 230);
+  --popover: oklch(0.24 0.06 240);
+  --popover-foreground: oklch(0.96 0.03 230);
+  --primary: oklch(0.82 0.13 230);
+  --primary-foreground: oklch(0.16 0.06 240);
+  --secondary: oklch(0.28 0.06 240);
+  --muted: oklch(0.26 0.05 240);
+  --muted-foreground: oklch(0.78 0.04 230);
+  --accent: oklch(0.44 0.11 235);
+  --accent-foreground: oklch(0.98 0.02 230);
+  --border: oklch(0.82 0.14 230 / 20%);
+  --input: oklch(0.85 0.14 230 / 22%);
+  --ring: oklch(0.82 0.15 230);
+  --sidebar: oklch(0.22 0.06 240 / 80%);
+  --sidebar-accent: oklch(0.3 0.07 240);
+  --sidebar-border: oklch(0.82 0.13 230 / 18%);
+  --blossom: oklch(0.72 0.13 230);
+  --glow: oklch(0.85 0.18 225 / 55%);
+}
+html[data-theme="arctic"].dark body {
+  background-image:
+    radial-gradient(ellipse 90% 65% at 15% 0%, oklch(0.32 0.14 235 / 70%), transparent 60%),
+    radial-gradient(ellipse 70% 55% at 100% 20%, oklch(0.28 0.12 225 / 65%), transparent 60%),
+    radial-gradient(ellipse 100% 80% at 50% 100%, oklch(0.2 0.09 245 / 75%), transparent 60%);
+}
+html[data-theme="arctic"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 25% 15%, oklch(0.98 0.06 220 / 30%), transparent 40%),
+    radial-gradient(circle at 78% 62%, oklch(0.96 0.08 230 / 25%), transparent 45%);
+  mix-blend-mode: screen;
+}
+
+/* ============ 🌧️ Rain — cozy, misty, rainy evening ============ */
+html[data-theme="rain"]:not(.dark) {
+  --background: oklch(0.95 0.02 250);
+  --foreground: oklch(0.26 0.06 250);
+  --card: oklch(0.98 0.015 250);
+  --card-foreground: oklch(0.26 0.06 250);
+  --popover: oklch(0.98 0.015 250);
+  --popover-foreground: oklch(0.26 0.06 250);
+  --primary: oklch(0.55 0.12 255);
+  --primary-foreground: oklch(0.99 0.005 250);
+  --secondary: oklch(0.92 0.03 250);
+  --secondary-foreground: oklch(0.3 0.08 255);
+  --muted: oklch(0.93 0.025 250);
+  --muted-foreground: oklch(0.5 0.05 250);
+  --accent: oklch(0.82 0.07 255);
+  --accent-foreground: oklch(0.28 0.08 255);
+  --border: oklch(0.82 0.05 250 / 55%);
+  --input: oklch(0.92 0.03 250);
+  --ring: oklch(0.62 0.12 255);
+  --sidebar: oklch(0.96 0.025 250 / 78%);
+  --sidebar-foreground: oklch(0.28 0.06 250);
+  --sidebar-primary: oklch(0.55 0.12 255);
+  --sidebar-accent: oklch(0.9 0.04 250);
+  --sidebar-border: oklch(0.82 0.05 250 / 55%);
+  --blossom: oklch(0.75 0.1 250);
+  --glow: oklch(0.62 0.14 255 / 40%);
+}
+html[data-theme="rain"]:not(.dark) body {
+  background-image:
+    radial-gradient(ellipse 90% 65% at 15% 0%, oklch(0.86 0.07 255 / 60%), transparent 60%),
+    radial-gradient(ellipse 70% 50% at 100% 15%, oklch(0.88 0.06 240 / 55%), transparent 60%),
+    radial-gradient(ellipse 100% 80% at 50% 100%, oklch(0.92 0.04 250 / 65%), transparent 60%),
+    radial-gradient(ellipse 140% 100% at 50% 50%, transparent 40%, oklch(0.4 0.06 250 / 15%) 100%);
+}
+html[data-theme="rain"].dark {
+  --background: oklch(0.16 0.04 250);
+  --foreground: oklch(0.92 0.03 250);
+  --card: oklch(0.21 0.05 250);
+  --card-foreground: oklch(0.92 0.03 250);
+  --popover: oklch(0.21 0.05 250);
+  --popover-foreground: oklch(0.92 0.03 250);
+  --primary: oklch(0.72 0.12 255);
+  --primary-foreground: oklch(0.16 0.05 250);
+  --secondary: oklch(0.26 0.06 250);
+  --muted: oklch(0.24 0.05 250);
+  --muted-foreground: oklch(0.72 0.05 250);
+  --accent: oklch(0.4 0.1 255);
+  --accent-foreground: oklch(0.96 0.02 250);
+  --border: oklch(0.72 0.13 255 / 18%);
+  --input: oklch(0.75 0.13 255 / 20%);
+  --ring: oklch(0.72 0.14 255);
+  --sidebar: oklch(0.18 0.05 250 / 78%);
+  --sidebar-accent: oklch(0.26 0.06 250);
+  --sidebar-border: oklch(0.72 0.12 255 / 16%);
+  --blossom: oklch(0.58 0.13 255);
+  --glow: oklch(0.68 0.16 255 / 50%);
+}
+html[data-theme="rain"].dark body {
+  background-image:
+    radial-gradient(ellipse 90% 65% at 15% 0%, oklch(0.26 0.1 255 / 70%), transparent 60%),
+    radial-gradient(ellipse 70% 55% at 100% 20%, oklch(0.22 0.09 240 / 70%), transparent 60%),
+    radial-gradient(ellipse 100% 80% at 50% 100%, oklch(0.18 0.07 250 / 80%), transparent 60%),
+    radial-gradient(ellipse 140% 100% at 50% 50%, transparent 30%, oklch(0.05 0.03 250 / 45%) 100%);
+}
+html[data-theme="rain"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(105deg, transparent 0 6px, oklch(0.9 0.06 250 / 8%) 6px 7px),
+    radial-gradient(ellipse 60% 40% at 50% 20%, oklch(0.85 0.09 250 / 18%), transparent 70%);
+  mix-blend-mode: screen;
+  opacity: 0.6;
+}
+
+/* ============ 🌌 Galaxy — magical, dreamy, sci-fi ============ */
+html[data-theme="galaxy"]:not(.dark) {
+  --background: oklch(0.96 0.03 285);
+  --foreground: oklch(0.24 0.09 275);
+  --card: oklch(0.99 0.015 285);
+  --card-foreground: oklch(0.24 0.09 275);
+  --popover: oklch(0.99 0.015 285);
+  --popover-foreground: oklch(0.24 0.09 275);
+  --primary: oklch(0.55 0.22 275);
+  --primary-foreground: oklch(0.99 0.005 280);
+  --secondary: oklch(0.93 0.04 280);
+  --secondary-foreground: oklch(0.28 0.11 275);
+  --muted: oklch(0.94 0.03 280);
+  --muted-foreground: oklch(0.5 0.08 275);
+  --accent: oklch(0.8 0.12 265);
+  --accent-foreground: oklch(0.24 0.1 275);
+  --border: oklch(0.82 0.08 275 / 55%);
+  --input: oklch(0.93 0.04 280);
+  --ring: oklch(0.6 0.2 275);
+  --sidebar: oklch(0.97 0.025 285 / 78%);
+  --sidebar-foreground: oklch(0.28 0.09 275);
+  --sidebar-primary: oklch(0.55 0.22 275);
+  --sidebar-accent: oklch(0.9 0.05 280);
+  --sidebar-border: oklch(0.82 0.08 275 / 55%);
+  --blossom: oklch(0.72 0.17 275);
+  --glow: oklch(0.6 0.24 275 / 50%);
+}
+html[data-theme="galaxy"]:not(.dark) body {
+  background-image:
+    radial-gradient(ellipse 90% 65% at 20% 0%, oklch(0.86 0.13 285 / 60%), transparent 60%),
+    radial-gradient(ellipse 70% 55% at 100% 25%, oklch(0.88 0.11 260 / 55%), transparent 60%),
+    radial-gradient(ellipse 100% 80% at 50% 100%, oklch(0.92 0.08 295 / 65%), transparent 60%);
+}
+html[data-theme="galaxy"].dark {
+  --background: oklch(0.1 0.08 285);
+  --foreground: oklch(0.94 0.04 275);
+  --card: oklch(0.16 0.09 285);
+  --card-foreground: oklch(0.94 0.04 275);
+  --popover: oklch(0.16 0.09 285);
+  --popover-foreground: oklch(0.94 0.04 275);
+  --primary: oklch(0.72 0.22 275);
+  --primary-foreground: oklch(0.1 0.08 285);
+  --secondary: oklch(0.22 0.1 280);
+  --secondary-foreground: oklch(0.94 0.04 275);
+  --muted: oklch(0.2 0.08 280);
+  --muted-foreground: oklch(0.74 0.07 275);
+  --accent: oklch(0.42 0.16 275);
+  --accent-foreground: oklch(0.96 0.03 275);
+  --border: oklch(0.75 0.18 275 / 20%);
+  --input: oklch(0.78 0.18 275 / 22%);
+  --ring: oklch(0.72 0.24 275);
+  --sidebar: oklch(0.13 0.09 285 / 78%);
+  --sidebar-foreground: oklch(0.94 0.04 275);
+  --sidebar-primary: oklch(0.72 0.22 275);
+  --sidebar-accent: oklch(0.22 0.11 285);
+  --sidebar-border: oklch(0.75 0.18 275 / 18%);
+  --blossom: oklch(0.62 0.2 275);
+  --glow: oklch(0.68 0.28 275 / 65%);
+}
+html[data-theme="galaxy"].dark body {
+  background-image:
+    radial-gradient(ellipse 90% 65% at 20% 0%, oklch(0.22 0.2 275 / 75%), transparent 60%),
+    radial-gradient(ellipse 70% 55% at 100% 15%, oklch(0.2 0.18 305 / 70%), transparent 60%),
+    radial-gradient(ellipse 100% 80% at 50% 100%, oklch(0.14 0.12 265 / 80%), transparent 60%);
+}
+html[data-theme="galaxy"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(1.5px 1.5px at 10% 20%, oklch(0.92 0.14 275 / 100%), transparent 60%),
+    radial-gradient(2px 2px at 26% 58%, oklch(0.88 0.16 300 / 95%), transparent 60%),
+    radial-gradient(1px 1px at 44% 22%, oklch(0.95 0.1 260 / 100%), transparent 60%),
+    radial-gradient(2px 2px at 60% 74%, oklch(0.88 0.18 275 / 95%), transparent 60%),
+    radial-gradient(1.5px 1.5px at 78% 36%, oklch(0.9 0.18 285 / 100%), transparent 60%),
+    radial-gradient(1px 1px at 90% 68%, oklch(0.9 0.14 265 / 95%), transparent 60%),
+    radial-gradient(1.5px 1.5px at 34% 88%, oklch(0.9 0.16 275 / 100%), transparent 60%);
+  animation: twinkle 4.5s ease-in-out infinite;
+  opacity: 0.9;
+}
+
+/* ============ 💙 Sapphire — royal, elegant, luxurious ============ */
+html[data-theme="sapphire"]:not(.dark) {
+  --background: oklch(0.96 0.03 250);
+  --foreground: oklch(0.24 0.09 255);
+  --card: oklch(0.99 0.015 250);
+  --card-foreground: oklch(0.24 0.09 255);
+  --popover: oklch(0.99 0.015 250);
+  --popover-foreground: oklch(0.24 0.09 255);
+  --primary: oklch(0.55 0.2 255);
+  --primary-foreground: oklch(0.99 0.005 250);
+  --secondary: oklch(0.93 0.04 245);
+  --secondary-foreground: oklch(0.28 0.11 255);
+  --muted: oklch(0.94 0.03 245);
+  --muted-foreground: oklch(0.5 0.07 255);
+  --accent: oklch(0.82 0.1 245);
+  --accent-foreground: oklch(0.24 0.1 255);
+  --border: oklch(0.82 0.08 250 / 55%);
+  --input: oklch(0.93 0.04 245);
+  --ring: oklch(0.6 0.19 255);
+  --sidebar: oklch(0.97 0.025 250 / 78%);
+  --sidebar-foreground: oklch(0.28 0.09 255);
+  --sidebar-primary: oklch(0.55 0.2 255);
+  --sidebar-accent: oklch(0.9 0.05 245);
+  --sidebar-border: oklch(0.82 0.08 250 / 55%);
+  --blossom: oklch(0.7 0.17 255);
+  --glow: oklch(0.55 0.24 255 / 50%);
+}
+html[data-theme="sapphire"]:not(.dark) body {
+  background-image:
+    radial-gradient(ellipse 90% 65% at 15% 0%, oklch(0.86 0.12 250 / 60%), transparent 60%),
+    radial-gradient(ellipse 70% 55% at 100% 20%, oklch(0.88 0.1 260 / 55%), transparent 60%),
+    radial-gradient(ellipse 100% 80% at 50% 100%, oklch(0.94 0.06 245 / 65%), transparent 60%);
+}
+html[data-theme="sapphire"].dark {
+  --background: oklch(0.13 0.08 255);
+  --foreground: oklch(0.95 0.04 245);
+  --card: oklch(0.19 0.1 255);
+  --card-foreground: oklch(0.95 0.04 245);
+  --popover: oklch(0.19 0.1 255);
+  --popover-foreground: oklch(0.95 0.04 245);
+  --primary: oklch(0.68 0.22 255);
+  --primary-foreground: oklch(0.12 0.08 255);
+  --secondary: oklch(0.24 0.1 255);
+  --secondary-foreground: oklch(0.95 0.04 245);
+  --muted: oklch(0.22 0.09 255);
+  --muted-foreground: oklch(0.76 0.07 245);
+  --accent: oklch(0.42 0.16 255);
+  --accent-foreground: oklch(0.96 0.03 245);
+  --border: oklch(0.72 0.2 255 / 22%);
+  --input: oklch(0.76 0.2 255 / 24%);
+  --ring: oklch(0.72 0.24 255);
+  --sidebar: oklch(0.16 0.09 255 / 78%);
+  --sidebar-foreground: oklch(0.95 0.04 245);
+  --sidebar-primary: oklch(0.68 0.22 255);
+  --sidebar-accent: oklch(0.24 0.11 255);
+  --sidebar-border: oklch(0.72 0.2 255 / 18%);
+  --blossom: oklch(0.6 0.2 255);
+  --glow: oklch(0.65 0.28 255 / 65%);
+}
+html[data-theme="sapphire"].dark body {
+  background-image:
+    radial-gradient(ellipse 90% 65% at 15% 0%, oklch(0.24 0.2 255 / 78%), transparent 60%),
+    radial-gradient(ellipse 70% 55% at 100% 20%, oklch(0.22 0.18 245 / 75%), transparent 60%),
+    radial-gradient(ellipse 100% 80% at 50% 100%, oklch(0.16 0.12 260 / 82%), transparent 60%);
+}
+html[data-theme="sapphire"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 50% 30% at 30% 20%, oklch(0.75 0.24 255 / 22%), transparent 70%),
+    radial-gradient(ellipse 40% 30% at 70% 65%, oklch(0.8 0.22 260 / 20%), transparent 70%),
+    linear-gradient(120deg, transparent 30%, oklch(0.85 0.18 250 / 8%) 50%, transparent 70%);
+  mix-blend-mode: screen;
+}
+
+/* ============ 🌌 Midnight — premium, deep, futuristic ============ */
+html[data-theme="midnight"]:not(.dark) {
+  --background: oklch(0.96 0.02 250);
+  --foreground: oklch(0.24 0.08 260);
+  --card: oklch(0.99 0.01 250);
+  --card-foreground: oklch(0.24 0.08 260);
+  --popover: oklch(0.99 0.01 250);
+  --popover-foreground: oklch(0.24 0.08 260);
+  --primary: oklch(0.5 0.19 260);
+  --primary-foreground: oklch(0.99 0.005 260);
+  --secondary: oklch(0.93 0.04 250);
+  --secondary-foreground: oklch(0.28 0.1 260);
+  --muted: oklch(0.94 0.02 250);
+  --muted-foreground: oklch(0.48 0.06 260);
+  --accent: oklch(0.78 0.11 250);
+  --accent-foreground: oklch(0.22 0.1 260);
+  --border: oklch(0.82 0.06 250 / 55%);
+  --input: oklch(0.93 0.04 250);
+  --ring: oklch(0.55 0.17 260);
+  --sidebar: oklch(0.97 0.02 250 / 78%);
+  --sidebar-foreground: oklch(0.26 0.08 260);
+  --sidebar-primary: oklch(0.5 0.19 260);
+  --sidebar-accent: oklch(0.9 0.05 250);
+  --sidebar-border: oklch(0.82 0.06 250 / 55%);
+  --blossom: oklch(0.7 0.15 250);
+  --lilac: oklch(0.78 0.1 250);
+  --lavender: oklch(0.74 0.11 250);
+  --glow: oklch(0.5 0.22 260 / 45%);
+}
+html[data-theme="midnight"]:not(.dark) body {
+  background-image:
+    radial-gradient(ellipse 90% 65% at 15% 0%, oklch(0.9 0.09 260 / 55%), transparent 60%),
+    radial-gradient(ellipse 70% 55% at 100% 20%, oklch(0.86 0.11 250 / 55%), transparent 60%),
+    radial-gradient(ellipse 100% 80% at 50% 100%, oklch(0.93 0.05 260 / 60%), transparent 60%);
+}
+html[data-theme="midnight"].dark {
+  --background: oklch(0.11 0.05 260);
+  --foreground: oklch(0.94 0.03 250);
+  --card: oklch(0.16 0.07 260);
+  --card-foreground: oklch(0.94 0.03 250);
+  --popover: oklch(0.16 0.07 260);
+  --popover-foreground: oklch(0.94 0.03 250);
+  --primary: oklch(0.72 0.19 255);
+  --primary-foreground: oklch(0.1 0.05 260);
+  --secondary: oklch(0.22 0.08 260);
+  --secondary-foreground: oklch(0.94 0.03 250);
+  --muted: oklch(0.2 0.06 260);
+  --muted-foreground: oklch(0.72 0.05 250);
+  --accent: oklch(0.4 0.14 255);
+  --accent-foreground: oklch(0.96 0.02 250);
+  --border: oklch(0.72 0.15 255 / 18%);
+  --input: oklch(0.75 0.15 255 / 20%);
+  --ring: oklch(0.7 0.2 255);
+  --sidebar: oklch(0.14 0.07 260 / 78%);
+  --sidebar-foreground: oklch(0.94 0.03 250);
+  --sidebar-primary: oklch(0.72 0.19 255);
+  --sidebar-accent: oklch(0.22 0.09 260);
+  --sidebar-border: oklch(0.72 0.15 255 / 16%);
+  --blossom: oklch(0.6 0.18 255);
+  --lilac: oklch(0.55 0.14 255);
+  --lavender: oklch(0.5 0.14 260);
+  --glow: oklch(0.68 0.24 255 / 65%);
+}
+html[data-theme="midnight"].dark body {
+  background-image:
+    radial-gradient(ellipse 90% 65% at 20% 0%, oklch(0.22 0.16 260 / 75%), transparent 60%),
+    radial-gradient(ellipse 70% 55% at 100% 15%, oklch(0.2 0.14 240 / 75%), transparent 60%),
+    radial-gradient(ellipse 100% 80% at 50% 100%, oklch(0.14 0.1 270 / 80%), transparent 60%);
+}
+html[data-theme="midnight"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(1.5px 1.5px at 8% 22%, oklch(0.78 0.2 255 / 100%), transparent 60%),
+    radial-gradient(2px 2px at 22% 55%, oklch(0.85 0.2 250 / 90%), transparent 60%),
+    radial-gradient(1px 1px at 45% 18%, oklch(0.9 0.15 255 / 100%), transparent 60%),
+    radial-gradient(2px 2px at 62% 72%, oklch(0.85 0.2 250 / 90%), transparent 60%),
+    radial-gradient(1.5px 1.5px at 78% 38%, oklch(0.85 0.2 260 / 100%), transparent 60%),
+    radial-gradient(1px 1px at 90% 68%, oklch(0.85 0.2 250 / 90%), transparent 60%),
+    radial-gradient(1.5px 1.5px at 34% 88%, oklch(0.85 0.2 255 / 100%), transparent 60%);
+  animation: twinkle 5s ease-in-out infinite;
+  opacity: 0.85;
+}
+
+/* ============ 🌊 Ocean — fresh, aquatic, luminous ============ */
+html[data-theme="ocean"]:not(.dark) {
+  --background: oklch(0.97 0.03 210);
+  --foreground: oklch(0.28 0.08 215);
+  --card: oklch(0.99 0.015 210);
+  --card-foreground: oklch(0.28 0.08 215);
+  --popover: oklch(0.99 0.015 210);
+  --popover-foreground: oklch(0.28 0.08 215);
+  --primary: oklch(0.68 0.14 210);
+  --primary-foreground: oklch(0.99 0.005 210);
+  --secondary: oklch(0.92 0.05 200);
+  --secondary-foreground: oklch(0.3 0.1 215);
+  --muted: oklch(0.94 0.03 200);
+  --muted-foreground: oklch(0.48 0.06 215);
+  --accent: oklch(0.85 0.09 200);
+  --accent-foreground: oklch(0.26 0.1 215);
+  --border: oklch(0.82 0.07 210 / 55%);
+  --input: oklch(0.92 0.05 210);
+  --ring: oklch(0.72 0.14 210);
+  --sidebar: oklch(0.97 0.03 210 / 78%);
+  --sidebar-foreground: oklch(0.3 0.08 215);
+  --sidebar-primary: oklch(0.68 0.14 210);
+  --sidebar-accent: oklch(0.9 0.06 200);
+  --sidebar-border: oklch(0.82 0.06 210 / 55%);
+  --blossom: oklch(0.82 0.11 200);
+  --lilac: oklch(0.85 0.08 195);
+  --lavender: oklch(0.82 0.09 205);
+  --glow: oklch(0.72 0.16 200 / 45%);
+}
+html[data-theme="ocean"]:not(.dark) body {
+  background-image:
+    radial-gradient(ellipse 90% 65% at 15% 0%, oklch(0.92 0.1 200 / 60%), transparent 60%),
+    radial-gradient(ellipse 70% 55% at 100% 20%, oklch(0.88 0.11 220 / 55%), transparent 60%),
+    radial-gradient(ellipse 100% 80% at 50% 100%, oklch(0.94 0.07 195 / 65%), transparent 60%);
+}
+html[data-theme="ocean"].dark {
+  --background: oklch(0.16 0.07 220);
+  --foreground: oklch(0.94 0.03 200);
+  --card: oklch(0.22 0.08 220);
+  --card-foreground: oklch(0.94 0.03 200);
+  --popover: oklch(0.22 0.08 220);
+  --popover-foreground: oklch(0.94 0.03 200);
+  --primary: oklch(0.78 0.14 200);
+  --primary-foreground: oklch(0.16 0.07 220);
+  --secondary: oklch(0.28 0.08 215);
+  --muted: oklch(0.26 0.07 215);
+  --muted-foreground: oklch(0.75 0.05 200);
+  --accent: oklch(0.42 0.11 210);
+  --accent-foreground: oklch(0.96 0.02 200);
+  --border: oklch(0.78 0.14 200 / 18%);
+  --input: oklch(0.8 0.14 200 / 20%);
+  --ring: oklch(0.78 0.16 200);
+  --sidebar: oklch(0.2 0.08 220 / 78%);
+  --sidebar-accent: oklch(0.28 0.09 215);
+  --sidebar-border: oklch(0.78 0.14 200 / 16%);
+  --blossom: oklch(0.65 0.14 200);
+  --lilac: oklch(0.6 0.11 210);
+  --lavender: oklch(0.55 0.11 215);
+  --glow: oklch(0.78 0.2 195 / 55%);
+}
+html[data-theme="ocean"].dark body {
+  background-image:
+    radial-gradient(ellipse 90% 65% at 15% 0%, oklch(0.3 0.12 210 / 70%), transparent 60%),
+    radial-gradient(ellipse 70% 55% at 100% 20%, oklch(0.26 0.13 195 / 70%), transparent 60%),
+    radial-gradient(ellipse 100% 80% at 50% 100%, oklch(0.2 0.1 220 / 75%), transparent 60%);
+}
+html[data-theme="ocean"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, transparent 0%, oklch(0.95 0.05 200 / 12%) 40%, transparent 100%),
+    radial-gradient(circle at 20% 20%, oklch(0.9 0.12 195 / 22%), transparent 35%),
+    radial-gradient(circle at 75% 60%, oklch(0.88 0.14 205 / 20%), transparent 40%);
+  mix-blend-mode: screen;
+}
+
+/* ============ ☕ Coffee — warm, vintage, library ============ */
+html[data-theme="coffee"]:not(.dark) {
+  --background: oklch(0.95 0.03 65);
+  --foreground: oklch(0.28 0.05 50);
+  --card: oklch(0.97 0.025 65);
+  --card-foreground: oklch(0.28 0.05 50);
+  --popover: oklch(0.97 0.025 65);
+  --popover-foreground: oklch(0.28 0.05 50);
+  --primary: oklch(0.45 0.09 45);
+  --primary-foreground: oklch(0.98 0.02 70);
+  --secondary: oklch(0.9 0.05 65);
+  --secondary-foreground: oklch(0.3 0.08 45);
+  --muted: oklch(0.92 0.035 65);
+  --muted-foreground: oklch(0.48 0.05 55);
+  --accent: oklch(0.78 0.08 60);
+  --accent-foreground: oklch(0.28 0.08 45);
+  --border: oklch(0.78 0.06 55 / 55%);
+  --input: oklch(0.9 0.045 60);
+  --ring: oklch(0.55 0.1 50);
+  --sidebar: oklch(0.94 0.04 60 / 80%);
+  --sidebar-foreground: oklch(0.3 0.06 50);
+  --sidebar-primary: oklch(0.45 0.09 45);
+  --sidebar-accent: oklch(0.88 0.055 60);
+  --sidebar-border: oklch(0.78 0.06 55 / 55%);
+  --blossom: oklch(0.7 0.1 55);
+  --lilac: oklch(0.8 0.06 60);
+  --lavender: oklch(0.75 0.08 55);
+  --cream: oklch(0.94 0.05 70);
+  --glow: oklch(0.55 0.14 45 / 45%);
+}
+html[data-theme="coffee"]:not(.dark) body {
+  background-image:
+    radial-gradient(ellipse 90% 65% at 15% 0%, oklch(0.86 0.08 55 / 70%), transparent 60%),
+    radial-gradient(ellipse 70% 55% at 100% 20%, oklch(0.82 0.09 40 / 60%), transparent 60%),
+    radial-gradient(ellipse 100% 90% at 50% 100%, oklch(0.75 0.08 45 / 55%), transparent 60%),
+    radial-gradient(ellipse 140% 100% at 50% 50%, transparent 40%, oklch(0.3 0.05 40 / 22%) 100%);
+}
+html[data-theme="coffee"].dark {
+  --background: oklch(0.16 0.03 45);
+  --foreground: oklch(0.92 0.04 70);
+  --card: oklch(0.22 0.04 45);
+  --card-foreground: oklch(0.92 0.04 70);
+  --popover: oklch(0.22 0.04 45);
+  --popover-foreground: oklch(0.92 0.04 70);
+  --primary: oklch(0.72 0.12 55);
+  --primary-foreground: oklch(0.18 0.03 45);
+  --secondary: oklch(0.28 0.05 50);
+  --muted: oklch(0.26 0.04 50);
+  --muted-foreground: oklch(0.74 0.05 65);
+  --accent: oklch(0.42 0.08 50);
+  --accent-foreground: oklch(0.94 0.04 70);
+  --border: oklch(0.7 0.1 55 / 18%);
+  --input: oklch(0.72 0.1 55 / 20%);
+  --ring: oklch(0.72 0.13 55);
+  --sidebar: oklch(0.2 0.04 45 / 80%);
+  --sidebar-accent: oklch(0.3 0.05 50);
+  --sidebar-border: oklch(0.7 0.1 55 / 18%);
+  --blossom: oklch(0.62 0.11 55);
+  --cream: oklch(0.28 0.04 50);
+  --glow: oklch(0.68 0.15 50 / 50%);
+}
+html[data-theme="coffee"].dark body {
+  background-image:
+    radial-gradient(ellipse 90% 65% at 15% 0%, oklch(0.32 0.09 55 / 75%), transparent 60%),
+    radial-gradient(ellipse 70% 55% at 100% 20%, oklch(0.28 0.1 40 / 70%), transparent 60%),
+    radial-gradient(ellipse 100% 90% at 50% 100%, oklch(0.2 0.06 45 / 80%), transparent 60%),
+    radial-gradient(ellipse 140% 100% at 50% 50%, transparent 40%, oklch(0.05 0.02 40 / 55%) 100%);
+}
+html[data-theme="coffee"] {
+  --font-display: "Fraunces", "Cormorant Garamond", "Georgia", serif, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Twemoji Mozilla", "EmojiOne Color", "Android Emoji";
+}
+html[data-theme="coffee"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.06;
+  background-image:
+    repeating-linear-gradient(45deg, oklch(0.3 0.05 40) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(-45deg, oklch(0.3 0.05 40) 0 1px, transparent 1px 4px);
+  mix-blend-mode: multiply;
+}
+
+/* ============ 🍑 Peach — sunrise, cheerful, vibrant ============ */
+html[data-theme="peach"]:not(.dark) {
+  --background: oklch(0.97 0.04 40);
+  --foreground: oklch(0.3 0.09 30);
+  --card: oklch(0.99 0.025 40);
+  --card-foreground: oklch(0.3 0.09 30);
+  --popover: oklch(0.99 0.025 40);
+  --popover-foreground: oklch(0.3 0.09 30);
+  --primary: oklch(0.7 0.17 35);
+  --primary-foreground: oklch(0.99 0.005 40);
+  --secondary: oklch(0.93 0.06 45);
+  --secondary-foreground: oklch(0.32 0.1 30);
+  --muted: oklch(0.95 0.04 45);
+  --muted-foreground: oklch(0.5 0.07 35);
+  --accent: oklch(0.86 0.11 35);
+  --accent-foreground: oklch(0.28 0.1 30);
+  --border: oklch(0.85 0.08 35 / 55%);
+  --input: oklch(0.94 0.05 40);
+  --ring: oklch(0.72 0.16 35);
+  --sidebar: oklch(0.97 0.04 40 / 78%);
+  --sidebar-foreground: oklch(0.32 0.09 30);
+  --sidebar-primary: oklch(0.7 0.17 35);
+  --sidebar-accent: oklch(0.91 0.07 40);
+  --sidebar-border: oklch(0.85 0.08 35 / 55%);
+  --blossom: oklch(0.82 0.14 30);
+  --lilac: oklch(0.88 0.1 50);
+  --lavender: oklch(0.85 0.11 40);
+  --glow: oklch(0.75 0.2 40 / 55%);
+}
+html[data-theme="peach"]:not(.dark) body {
+  background-image:
+    radial-gradient(ellipse 100% 70% at 50% 0%, oklch(0.92 0.14 30 / 70%), transparent 60%),
+    radial-gradient(ellipse 80% 55% at 10% 30%, oklch(0.9 0.13 50 / 55%), transparent 60%),
+    radial-gradient(ellipse 90% 60% at 100% 40%, oklch(0.9 0.13 20 / 55%), transparent 60%),
+    radial-gradient(ellipse 100% 80% at 50% 100%, oklch(0.95 0.08 60 / 65%), transparent 60%);
+}
+html[data-theme="peach"].dark {
+  --background: oklch(0.18 0.06 30);
+  --foreground: oklch(0.94 0.04 45);
+  --card: oklch(0.24 0.07 30);
+  --card-foreground: oklch(0.94 0.04 45);
+  --popover: oklch(0.24 0.07 30);
+  --popover-foreground: oklch(0.94 0.04 45);
+  --primary: oklch(0.78 0.17 35);
+  --primary-foreground: oklch(0.2 0.06 30);
+  --secondary: oklch(0.3 0.07 30);
+  --muted: oklch(0.28 0.06 35);
+  --muted-foreground: oklch(0.76 0.06 45);
+  --accent: oklch(0.44 0.13 30);
+  --accent-foreground: oklch(0.96 0.03 45);
+  --border: oklch(0.78 0.16 35 / 20%);
+  --input: oklch(0.8 0.16 35 / 22%);
+  --ring: oklch(0.78 0.18 35);
+  --sidebar: oklch(0.22 0.07 30 / 78%);
+  --sidebar-accent: oklch(0.3 0.08 30);
+  --sidebar-border: oklch(0.78 0.16 35 / 18%);
+  --blossom: oklch(0.7 0.16 35);
+  --glow: oklch(0.78 0.22 40 / 65%);
+}
+html[data-theme="peach"].dark body {
+  background-image:
+    radial-gradient(ellipse 100% 70% at 50% 0%, oklch(0.42 0.16 30 / 80%), transparent 60%),
+    radial-gradient(ellipse 80% 55% at 10% 30%, oklch(0.34 0.14 50 / 70%), transparent 60%),
+    radial-gradient(ellipse 90% 60% at 100% 40%, oklch(0.34 0.14 20 / 70%), transparent 60%),
+    radial-gradient(ellipse 100% 80% at 50% 100%, oklch(0.24 0.09 60 / 80%), transparent 60%);
+}
+html[data-theme="peach"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 40% at 50% 10%, oklch(0.95 0.14 40 / 30%), transparent 70%);
+  mix-blend-mode: screen;
+}
+
+/* ============ 💜 Lavender — soft, dreamy, romantic ============ */
+html[data-theme="lavender"]:not(.dark) {
+  --background: oklch(0.97 0.03 300);
+  --foreground: oklch(0.3 0.08 300);
+  --card: oklch(0.99 0.02 300);
+  --card-foreground: oklch(0.3 0.08 300);
+  --popover: oklch(0.99 0.02 300);
+  --popover-foreground: oklch(0.3 0.08 300);
+  --primary: oklch(0.68 0.15 300);
+  --primary-foreground: oklch(0.99 0.005 300);
+  --secondary: oklch(0.93 0.05 300);
+  --secondary-foreground: oklch(0.32 0.09 300);
+  --muted: oklch(0.95 0.03 300);
+  --muted-foreground: oklch(0.5 0.06 300);
+  --accent: oklch(0.86 0.1 300);
+  --accent-foreground: oklch(0.28 0.09 300);
+  --border: oklch(0.85 0.07 300 / 55%);
+  --input: oklch(0.94 0.04 300);
+  --ring: oklch(0.72 0.14 300);
+  --sidebar: oklch(0.97 0.03 300 / 78%);
+  --sidebar-foreground: oklch(0.32 0.08 300);
+  --sidebar-primary: oklch(0.68 0.15 300);
+  --sidebar-accent: oklch(0.91 0.06 300);
+  --sidebar-border: oklch(0.85 0.07 300 / 55%);
+  --blossom: oklch(0.82 0.12 310);
+  --lilac: oklch(0.88 0.09 295);
+  --lavender: oklch(0.84 0.1 300);
+  --glow: oklch(0.75 0.18 300 / 50%);
+}
+html[data-theme="lavender"]:not(.dark) body {
+  background-image:
+    radial-gradient(ellipse 100% 70% at 50% 0%, oklch(0.92 0.12 300 / 65%), transparent 60%),
+    radial-gradient(ellipse 80% 55% at 10% 30%, oklch(0.9 0.11 285 / 55%), transparent 60%),
+    radial-gradient(ellipse 90% 60% at 100% 40%, oklch(0.9 0.11 320 / 55%), transparent 60%),
+    radial-gradient(ellipse 100% 80% at 50% 100%, oklch(0.95 0.07 300 / 65%), transparent 60%);
+}
+html[data-theme="lavender"].dark {
+  --background: oklch(0.19 0.06 300);
+  --foreground: oklch(0.94 0.04 300);
+  --card: oklch(0.25 0.07 300);
+  --card-foreground: oklch(0.94 0.04 300);
+  --popover: oklch(0.25 0.07 300);
+  --popover-foreground: oklch(0.94 0.04 300);
+  --primary: oklch(0.78 0.15 300);
+  --primary-foreground: oklch(0.2 0.06 300);
+  --secondary: oklch(0.3 0.07 300);
+  --muted: oklch(0.28 0.06 300);
+  --muted-foreground: oklch(0.76 0.06 300);
+  --accent: oklch(0.44 0.12 300);
+  --accent-foreground: oklch(0.96 0.03 300);
+  --border: oklch(0.78 0.15 300 / 20%);
+  --input: oklch(0.8 0.15 300 / 22%);
+  --ring: oklch(0.78 0.17 300);
+  --sidebar: oklch(0.22 0.07 300 / 78%);
+  --sidebar-accent: oklch(0.3 0.08 300);
+  --sidebar-border: oklch(0.78 0.15 300 / 18%);
+  --blossom: oklch(0.7 0.15 310);
+  --glow: oklch(0.78 0.2 300 / 60%);
+}
+html[data-theme="lavender"].dark body {
+  background-image:
+    radial-gradient(ellipse 100% 70% at 50% 0%, oklch(0.4 0.16 300 / 75%), transparent 60%),
+    radial-gradient(ellipse 80% 55% at 10% 30%, oklch(0.32 0.14 285 / 65%), transparent 60%),
+    radial-gradient(ellipse 90% 60% at 100% 40%, oklch(0.32 0.14 320 / 65%), transparent 60%),
+    radial-gradient(ellipse 100% 80% at 50% 100%, oklch(0.22 0.09 300 / 80%), transparent 60%);
+}
+html[data-theme="lavender"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 25% 20%, oklch(0.9 0.12 300 / 22%), transparent 45%),
+    radial-gradient(circle at 78% 68%, oklch(0.88 0.1 320 / 20%), transparent 50%);
+  mix-blend-mode: screen;
+}
+
+/* ============ Selection + scrollbar (theme-aware) ============ */
+::selection {
+  background: color-mix(in oklab, var(--primary) 30%, transparent);
+  color: var(--foreground);
+}
+* {
+  scrollbar-color: color-mix(in oklab, var(--primary) 50%, transparent) transparent;
+  scrollbar-width: thin;
+}
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--primary) 45%, transparent);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklab, var(--primary) 65%, transparent);
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-track { background: transparent; }
+
+
+/* Density + font scale */
+html[data-density="cozy"] { --radius: 1rem; }
+html[data-density="roomy"] { --radius: 1.25rem; }
+html[data-font-scale="s"] { font-size: 15px; }
+html[data-font-scale="m"] { font-size: 16px; }
+html[data-font-scale="l"] { font-size: 17.5px; }
+
+/* ============ Time-of-day dynamic wallpaper ============ */
+/* Only apply when the sakura (default) theme is active in light mode, so
+   custom themes keep their own palette-driven gradients. */
+html[data-theme="sakura"]:not(.dark)[data-timeofday="morning"] body {
+  background-image:
+    radial-gradient(ellipse 90% 65% at 15% 0%, oklch(0.96 0.06 60 / 60%), transparent 60%),
+    radial-gradient(ellipse 70% 50% at 100% 15%, oklch(0.95 0.07 30 / 50%), transparent 60%),
+    radial-gradient(ellipse 90% 70% at 50% 100%, oklch(0.98 0.04 80 / 55%), transparent 60%);
+}
+html[data-theme="sakura"]:not(.dark)[data-timeofday="afternoon"] body {
+  background-image:
+    radial-gradient(ellipse 80% 60% at 15% 0%, oklch(0.94 0.08 340 / 45%), transparent 60%),
+    radial-gradient(ellipse 70% 50% at 100% 20%, oklch(0.93 0.06 300 / 50%), transparent 60%),
+    radial-gradient(ellipse 90% 70% at 50% 100%, oklch(0.97 0.05 60 / 55%), transparent 60%);
+}
+html[data-theme="sakura"]:not(.dark)[data-timeofday="evening"] body {
+  background-image:
+    radial-gradient(ellipse 90% 60% at 20% 0%, oklch(0.9 0.1 30 / 55%), transparent 60%),
+    radial-gradient(ellipse 70% 55% at 100% 20%, oklch(0.86 0.09 340 / 55%), transparent 60%),
+    radial-gradient(ellipse 100% 80% at 50% 100%, oklch(0.88 0.08 300 / 55%), transparent 60%);
+}
+html[data-theme="sakura"]:not(.dark)[data-timeofday="night"] body {
+  background-image:
+    radial-gradient(ellipse 90% 60% at 20% 0%, oklch(0.5 0.1 280 / 45%), transparent 60%),
+    radial-gradient(ellipse 70% 55% at 100% 20%, oklch(0.42 0.09 300 / 55%), transparent 60%),
+    radial-gradient(ellipse 100% 80% at 50% 100%, oklch(0.38 0.08 260 / 55%), transparent 60%);
+  color-scheme: light;
+}
+
+/* ============ Rich editor prose ============ */
+.lumina-prose {
+  color: var(--foreground);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+.lumina-prose p { margin: 0.5em 0; }
+.lumina-prose h1 { font-family: var(--font-display); font-size: 2rem; margin: 1em 0 0.4em; letter-spacing: -0.01em; }
+.lumina-prose h2 { font-family: var(--font-display); font-size: 1.5rem; margin: 1em 0 0.4em; }
+.lumina-prose h3 { font-family: var(--font-display); font-size: 1.2rem; margin: 0.8em 0 0.3em; }
+.lumina-prose ul { list-style: disc; padding-left: 1.4em; }
+.lumina-prose ol { list-style: decimal; padding-left: 1.4em; }
+.lumina-prose blockquote {
+  border-left: 3px solid color-mix(in oklab, var(--primary) 60%, transparent);
+  padding: 0.2em 0 0.2em 1em;
+  margin: 0.8em 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  color: color-mix(in oklab, var(--foreground) 80%, transparent);
+}
+.lumina-prose code {
+  background: color-mix(in oklab, var(--primary) 12%, transparent);
+  padding: 0.1em 0.35em;
+  border-radius: 0.4em;
+  font-size: 0.9em;
+}
+.lumina-prose pre {
+  background: color-mix(in oklab, var(--card) 80%, transparent);
+  padding: 1em;
+  border-radius: 1em;
+  overflow-x: auto;
+  font-size: 0.9em;
+  margin: 0.8em 0;
+}
+.lumina-prose pre code { background: transparent; padding: 0; }
+.lumina-prose hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, color-mix(in oklab, var(--primary) 40%, transparent), transparent);
+  margin: 2em auto;
+  width: 60%;
+}
+.lumina-prose a { color: var(--primary); text-decoration: underline; text-underline-offset: 3px; }
+.lumina-prose ul[data-type="taskList"] { list-style: none; padding-left: 0.2em; }
+.lumina-prose ul[data-type="taskList"] li { display: flex; align-items: flex-start; gap: 0.5em; margin: 0.2em 0; }
+.lumina-prose ul[data-type="taskList"] li > label > input[type="checkbox"] {
+  margin-top: 0.5em;
+  accent-color: var(--primary);
+}
+.lumina-prose p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: color-mix(in oklab, var(--muted-foreground) 70%, transparent);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.focus-mode-writing .lumina-prose { font-size: 1.15rem; line-height: 1.9; }
+
+/* Subtle sparkle */
+@keyframes sparkle {
+  0%, 100% { opacity: 0; transform: scale(0.6) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1) rotate(180deg); }
+}
+
+/* ============ Callouts ============ */
+.lumina-prose .lumina-callout {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.75em;
+  align-items: start;
+  padding: 1em 1.15em;
+  margin: 1.25em 0;
+  border-radius: 1.1rem;
+  background: color-mix(in oklab, var(--primary) 8%, transparent);
+  border: 1px solid color-mix(in oklab, var(--primary) 18%, transparent);
+  box-shadow: 0 4px 20px -12px color-mix(in oklab, var(--primary) 30%, transparent);
+}
+.lumina-prose .lumina-callout-emoji {
+  font-size: 1.35em;
+  line-height: 1;
+  margin-top: 0.15em;
+  user-select: none;
+}
+.lumina-prose .lumina-callout-body > :first-child { margin-top: 0; }
+.lumina-prose .lumina-callout-body > :last-child { margin-bottom: 0; }
+
+/* ============ Typewriter mode ============ */
+.lumina-typewriter .lumina-prose {
+  padding-bottom: 55vh;
+}
+
+/* ============ Focus paragraph ============ */
+.lumina-focus-para .lumina-prose > * {
+  transition: opacity 250ms ease, filter 250ms ease;
+  opacity: 0.28;
+  filter: blur(0.35px);
+}
+.lumina-focus-para .lumina-prose > .is-active-node,
+.lumina-focus-para .lumina-prose > .is-active-node * {
+  opacity: 1;
+  filter: none;
+}
+
+/* ============ Reading mode article ============ */
+.lumina-reader-article .prose { color: inherit; }
+.lumina-reader-article .prose :where(h1, h2, h3, h4, strong) { color: inherit; }
+.lumina-reader-article .prose :where(blockquote) {
+  border-inline-start-color: color-mix(in oklab, currentColor 30%, transparent);
+  color: inherit;
+}
+
+/* ============ Print layout ============ */
+@media print {
+  @page { margin: 1in; }
+  html.lumina-print-mode body > *:not([data-lumina-reader]) { display: none !important; }
+  [data-lumina-reader] {
+    position: static !important;
+    background: white !important;
+    color: black !important;
+  }
+  [data-lumina-reader] .lumina-reader-article {
+    max-width: none !important;
+    padding: 0 !important;
+    font-size: 12pt !important;
+    line-height: 1.6 !important;
+    color: black !important;
+  }
+  [data-lumina-reader] h1 { font-size: 22pt !important; }
+  [data-lumina-reader] .lumina-callout {
+    background: #fafafa !important;
+    border: 1px solid #ddd !important;
+    box-shadow: none !important;
+  }
+  .print\:hidden { display: none !important; }
+}
+
+/* ============ RC polish ============ */
+
+/* Global visible focus ring for keyboard users */
+:where(button, a, input, textarea, select, [role="button"], [tabindex]):focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--primary) 70%, transparent);
+  outline-offset: 2px;
+  border-radius: calc(var(--radius) - 2px);
+}
+
+/* Reduced motion — respect the user's preference across framer-motion,
+   Tailwind animations, and our own transitions. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Prevent horizontal overflow from decorative elements on narrow phones */
+html, body { overflow-x: hidden; }
+html, body, #root { max-width: 100%; min-height: 100%; }
+#root { min-height: 100dvh; }
+
+/* Native scroll behavior: wheel/trackpad/touch should work from anywhere
+   inside a scrollable container, with iOS momentum and no horizontal drift. */
+:where(.lumina-scroll, [class*="overflow-y-auto"], [class*="overflow-auto"], [data-radix-scroll-area-viewport]) {
+  overscroll-behavior-y: contain;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable;
+}
+
+:where([class*="overflow-y-auto"], [class*="overflow-auto"]) {
+  overflow-x: hidden;
+}
+
+:where(textarea, [contenteditable="true"], .ProseMirror) {
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Global Lumina scrollbar — applied to the page and any scroll container by default */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--primary) 35%, transparent) transparent;
+}
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--primary) 32%, transparent);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  transition: background 220ms ease;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklab, var(--primary) 55%, transparent);
+  background-clip: padding-box;
+}
+*::-webkit-scrollbar-corner { background: transparent; }
+.dark *::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--primary) 45%, transparent);
+  background-clip: padding-box;
+}
+
+@media (max-width: 768px) {
+  html { scrollbar-width: none; }
+  *::-webkit-scrollbar { width: 0; height: 0; display: none; }
+}
+
+
+/* Lumina custom scrollbar — themed, thin, glassy. Fades in on hover/scroll. */
+@utility lumina-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 300ms ease;
+  /* Wheel scrolling must work anywhere in the container, not only over the
+     scrollbar. Explicit touch-action + overscroll-behavior guarantees the
+     container captures wheel/touch and doesn't leak momentum to the page. */
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable;
+}
+
+.lumina-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.lumina-scroll::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 6px 0;
+}
+.lumina-scroll::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 999px;
+  transition: background 300ms ease;
+}
+.lumina-scroll:hover,
+.lumina-scroll:focus-within {
+  scrollbar-color: color-mix(in oklab, var(--primary) 45%, transparent) transparent;
+}
+.lumina-scroll:hover::-webkit-scrollbar-thumb,
+.lumina-scroll:focus-within::-webkit-scrollbar-thumb,
+.lumina-scroll:active::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--primary) 40%, transparent);
+  backdrop-filter: blur(6px);
+}
+.lumina-scroll::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklab, var(--primary) 60%, transparent);
+}
+.dark .lumina-scroll:hover::-webkit-scrollbar-thumb,
+.dark .lumina-scroll:focus-within::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--primary) 55%, transparent);
+}
+
+/* Mobile: hide scrollbar entirely, keep scroll functional */
+@media (max-width: 768px) {
+  .lumina-scroll { scrollbar-width: none; }
+  .lumina-scroll::-webkit-scrollbar { width: 0; height: 0; display: none; }
+}
+
+/* Calendar today — soft breathing pulse */
+@keyframes lumina-breathe {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--primary) 55%, transparent), 0 0 18px 2px color-mix(in oklab, var(--primary) 35%, transparent); }
+  50%      { box-shadow: 0 0 0 6px color-mix(in oklab, var(--primary) 0%,  transparent), 0 0 26px 6px color-mix(in oklab, var(--primary) 50%, transparent); }
+}
+.lumina-today { animation: lumina-breathe 3.6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .lumina-today { animation: none; } }
+
+/* Mobile: better touch UX and dvh-based sizing */
+html { -webkit-tap-highlight-color: transparent; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body { min-height: 100dvh; overscroll-behavior-y: auto; }
+button, [role="button"], a { touch-action: manipulation; }
+
+/* Prevent accidental horizontal scroll from decorative overflow (petals, glows,
+ * off-canvas gradients). Individual scroll containers still scroll horizontally
+ * where they need to (mood picker, filter chips, editor toolbar). */
+html, body { overflow-x: clip; }
+
+/* Ensure inputs don't trigger iOS zoom and provide comfortable coarse-pointer
+ * tap targets. iOS Safari zooms when a focused input's font-size < 16px. */
+@media (max-width: 768px) {
+  input, textarea, select { font-size: 16px; }
+}
+@media (pointer: coarse) {
+  /* WCAG 2.5.5 minimum target size — bump toolbar & icon buttons. */
+  .lumina-toolbar-btn,
+  .lumina-toolbar-pill { min-height: 40px; min-width: 40px; }
+  .lumina-toolbar { gap: 6px; padding: 10px 12px; }
+  .lumina-toolbar-sep { margin: 0 6px; }
+}
+
+/* Utility: hide scrollbar while preserving scroll */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar { width: 0; height: 0; display: none; }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Mood picker — hide scrollbar on mobile carousel + selected breathing glow  */
+/* -------------------------------------------------------------------------- */
+.mood-picker-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+}
+.mood-picker-scroll::-webkit-scrollbar { width: 0; height: 0; display: none; }
+
+@keyframes mood-breathe {
+  0%, 100% { transform: scale(1.02); }
+  50%      { transform: scale(1.035); }
+}
+.mood-selected { animation: mood-breathe 4.5s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .mood-selected { animation: none; }
+}
+
+/* Slow light-sweep across the selected card every ~9s. */
+@keyframes mood-sweep {
+  0%   { transform: translateX(-120%); opacity: 0; }
+  8%   { opacity: 0.8; }
+  25%  { transform: translateX(120%); opacity: 0; }
+  100% { transform: translateX(120%); opacity: 0; }
+}
+.mood-sweep::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 70%
+  );
+  transform: translateX(-120%);
+  animation: mood-sweep 9s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .mood-sweep::before { animation: none; opacity: 0; }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Letters — envelope, paper, wax seal, ambient dust                          */
+/* -------------------------------------------------------------------------- */
+
+/* Warm ivory paper body with soft cotton texture (layered gradients). */
+.envelope-paper {
+  background:
+    radial-gradient(120% 90% at 30% 20%, oklch(0.97 0.02 80) 0%, oklch(0.94 0.03 70) 55%, oklch(0.90 0.04 60) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -18px 40px rgba(120, 80, 40, 0.08),
+    0 12px 28px -14px rgba(120, 80, 40, 0.35);
+}
+.envelope-grain {
+  background-image:
+    radial-gradient(rgba(120, 80, 40, 0.08) 1px, transparent 1.4px),
+    radial-gradient(rgba(120, 80, 40, 0.05) 1px, transparent 1.2px);
+  background-size: 5px 5px, 9px 9px;
+  background-position: 0 0, 2px 3px;
+}
+.envelope-flap {
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  background: linear-gradient(180deg,
+    oklch(0.93 0.03 65) 0%,
+    oklch(0.88 0.05 55) 55%,
+    oklch(0.82 0.06 45) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -2px 4px rgba(120, 80, 40, 0.15);
+  filter: drop-shadow(0 4px 6px rgba(120, 80, 40, 0.15));
+  backface-visibility: hidden;
+}
+
+/* Wax seal */
+.wax-seal {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 35% 30%, oklch(0.78 0.16 25) 0%, oklch(0.55 0.19 25) 50%, oklch(0.42 0.15 25) 100%);
+  box-shadow:
+    inset -2px -2px 4px rgba(0, 0, 0, 0.35),
+    inset 2px 2px 3px rgba(255, 255, 255, 0.25),
+    0 3px 6px rgba(90, 20, 20, 0.4);
+}
+@keyframes wax-stamp {
+  0%   { transform: translate(-50%, -30%) scale(0); opacity: 0; }
+  40%  { transform: translate(-50%, 0)    scale(1.25); opacity: 1; }
+  70%  { transform: translate(-50%, 0)    scale(0.95); }
+  100% { transform: translate(-50%, 0)    scale(1); }
+}
+.wax-stamp { animation: wax-stamp 700ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* Envelope tile — hover lift, tilt, and slow light sweep */
+.envelope-tile {
+  transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 400ms ease;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.envelope-tile:hover,
+.envelope-tile:focus-visible {
+  transform: translateY(-6px) rotateZ(-1deg) rotateX(2deg);
+  box-shadow: 0 24px 40px -20px rgba(120, 80, 40, 0.45);
+}
+.envelope-sweep::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.35) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 900ms ease;
+  pointer-events: none;
+}
+.envelope-tile:hover .envelope-sweep::before { transform: translateX(120%); }
+
+/* Quick preview panel */
+.quick-preview {
+  transition: opacity 240ms ease, transform 240ms ease;
+  transform: translateY(-4px);
+}
+.envelope-tile:hover ~ .quick-preview,
+.envelope-tile:focus-visible ~ .quick-preview,
+.envelope-tile:active ~ .quick-preview {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* Touch: long-press triggers :active which the rule above catches. */
+
+/* Paper sheet (inside the theatre) */
+.paper-sheet {
+  background:
+    linear-gradient(180deg, oklch(0.98 0.015 90) 0%, oklch(0.955 0.02 80) 100%);
+  background-image:
+    linear-gradient(180deg, oklch(0.98 0.015 90) 0%, oklch(0.955 0.02 80) 100%),
+    repeating-linear-gradient(0deg, transparent 0 30px, rgba(120, 80, 40, 0.05) 30px 31px);
+  background-blend-mode: normal, multiply;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.7),
+    inset 0 -1px 0 rgba(120,80,40,0.08);
+}
+.paper-sheet::before {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background: radial-gradient(120% 80% at 50% 0%, rgba(255,240,210,0.4), transparent 70%);
+}
+
+/* Ambient dust motes — pure CSS drifting particles */
+.ambient-dust .dust {
+  position: absolute;
+  width: 6px; height: 6px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(255,240,210,0.7) 0%, rgba(255,240,210,0) 70%);
+  opacity: 0.55;
+  animation: dust-drift 22s linear infinite;
+  will-change: transform;
+}
+.ambient-dust .dust-1 { left: 8%;  top: 90%; animation-duration: 26s; }
+.ambient-dust .dust-2 { left: 22%; top: 95%; animation-duration: 30s; animation-delay: -6s; }
+.ambient-dust .dust-3 { left: 38%; top: 88%; animation-duration: 24s; animation-delay: -12s; }
+.ambient-dust .dust-4 { left: 54%; top: 96%; animation-duration: 28s; animation-delay: -3s; }
+.ambient-dust .dust-5 { left: 68%; top: 92%; animation-duration: 32s; animation-delay: -9s; }
+.ambient-dust .dust-6 { left: 82%; top: 94%; animation-duration: 25s; animation-delay: -15s; }
+.ambient-dust .dust-7 { left: 92%; top: 89%; animation-duration: 34s; animation-delay: -18s; }
+@keyframes dust-drift {
+  0%   { transform: translate3d(0, 0, 0)      scale(1);   opacity: 0; }
+  10%  { opacity: 0.5; }
+  50%  { transform: translate3d(30px, -60vh, 0) scale(1.2); opacity: 0.6; }
+  90%  { opacity: 0.3; }
+  100% { transform: translate3d(-20px, -120vh, 0) scale(0.9); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ambient-dust .dust { animation: none; opacity: 0; }
+  .envelope-sweep::before { display: none; }
+  .envelope-tile:hover { transform: none; }
+}
+
+
+
+/* Global reduced-motion — respects the OS-level preference across every
+   animated surface in Lumina. Framer-motion honours this at runtime via
+   `useReducedMotion`; this rule catches everything else (CSS transitions,
+   keyframe animations, hover translates). */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+/* ============================================================
+ * LUMINA — DESIGN SYSTEM POLISH LAYER
+ * Codified tokens (spacing, radius, typography, elevation) plus
+ * opt-in utility classes. Colors, brand, nav, and layouts remain
+ * untouched — this layer is additive.
+ * ============================================================ */
+
+:root {
+  /* Spacing scale — 8 / 12 / 16 / 24 / 32 / 48 */
+  --space-1: 0.5rem;   /* 8  */
+  --space-2: 0.75rem;  /* 12 */
+  --space-3: 1rem;     /* 16 */
+  --space-4: 1.5rem;   /* 24 */
+  --space-5: 2rem;     /* 32 */
+  --space-6: 3rem;     /* 48 */
+
+  /* Page rhythm */
+  --page-px: var(--space-4);          /* 24 horizontal padding */
+  --section-gap: var(--space-5);      /* 32 between sections   */
+  --card-p: var(--space-4);           /* 24 card padding       */
+  --nav-safe: 7.5rem;                 /* 120 bottom safe area  */
+
+  /* Radius scale */
+  --r-card: 28px;
+  --r-input: 22px;
+  --r-btn: 20px;
+  --r-fab: 9999px;
+  --r-bottomnav: 34px;
+
+  /* Type scale (px) */
+  --t-hero: 3.25rem;         /* 52 */
+  --t-page-title: 2.75rem;   /* 44 */
+  --t-card-title: 1.75rem;   /* 28 */
+  --t-section-title: 1.25rem;/* 20 */
+  --t-body: 1rem;            /* 16 */
+  --t-secondary: 0.875rem;   /* 14 */
+  --t-caption: 0.75rem;      /* 12 */
+}
+
+/* -------- Typography utilities -------- */
+@utility ds-hero {
+  font-family: var(--font-display);
+  font-size: var(--t-hero);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  font-weight: 500;
+}
+@utility ds-page-title {
+  font-family: var(--font-display);
+  font-size: var(--t-page-title);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  font-weight: 500;
+}
+@utility ds-card-title {
+  font-family: var(--font-display);
+  font-size: var(--t-card-title);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  font-weight: 500;
+}
+@utility ds-section-title {
+  font-size: var(--t-section-title);
+  line-height: 1.35;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+@utility ds-body {
+  font-size: var(--t-body);
+  line-height: 1.65;
+}
+@utility ds-secondary {
+  font-size: var(--t-secondary);
+  line-height: 1.55;
+  color: var(--color-muted-foreground);
+}
+@utility ds-caption {
+  font-size: var(--t-caption);
+  line-height: 1.45;
+  letter-spacing: 0.02em;
+  color: var(--color-muted-foreground);
+}
+
+/* Responsive display sizes down for small screens */
+@media (max-width: 640px) {
+  :root {
+    --t-hero: 2.5rem;         /* 40 */
+    --t-page-title: 2rem;     /* 32 */
+    --t-card-title: 1.5rem;   /* 24 */
+  }
+}
+
+/* -------- Layout scaffolding utilities -------- */
+@utility ds-page {
+  padding-left: var(--page-px);
+  padding-right: var(--page-px);
+  padding-bottom: var(--nav-safe);
+  padding-top: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+  max-width: 100%;
+  overflow-x: clip; /* kill accidental horizontal scroll */
+}
+@utility ds-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* -------- Card -------- */
+@utility ds-card {
+  border-radius: var(--r-card);
+  padding: var(--card-p);
+  background: var(--color-card);
+  color: var(--color-card-foreground);
+  border: 1px solid color-mix(in oklab, var(--color-border) 100%, transparent);
+  box-shadow: var(--shadow-e2);
+  transition: box-shadow 240ms ease, transform 240ms ease;
+}
+@utility ds-card-interactive {
+  cursor: pointer;
+}
+.ds-card-interactive:hover { box-shadow: var(--shadow-e3); transform: translateY(-2px); }
+.ds-card-interactive:active { transform: translateY(0); box-shadow: var(--shadow-e2); }
+
+/* -------- Button baseline -------- */
+@utility ds-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  height: 48px;
+  padding: 0 var(--space-4);
+  border-radius: var(--r-btn);
+  font-size: var(--t-body);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.005em;
+  background: var(--color-secondary);
+  color: var(--color-secondary-foreground);
+  border: 1px solid transparent;
+  box-shadow: var(--shadow-e1);
+  transition: transform 150ms ease, box-shadow 200ms ease, background 200ms ease, opacity 200ms ease;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+.ds-btn:hover { box-shadow: var(--shadow-e2); }
+.ds-btn:active { transform: scale(0.97); box-shadow: var(--shadow-e1); }
+.ds-btn:disabled,
+.ds-btn[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+.ds-btn[data-loading="true"] { cursor: progress; pointer-events: none; }
+.ds-btn[data-loading="true"]::after {
+  content: "";
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  animation: ds-spin 700ms linear infinite;
+  margin-left: var(--space-1);
+}
+@keyframes ds-spin { to { transform: rotate(360deg); } }
+
+@utility ds-btn-primary {
+  background: linear-gradient(135deg, var(--color-primary), color-mix(in oklab, var(--color-primary) 80%, var(--lavender)));
+  color: var(--color-primary-foreground);
+  box-shadow: var(--shadow-glow);
+}
+.ds-btn-primary:hover { filter: brightness(1.03); box-shadow: var(--shadow-glow); }
+
+@utility ds-btn-ghost {
+  background: transparent;
+  color: var(--color-foreground);
+  box-shadow: none;
+}
+.ds-btn-ghost:hover { background: color-mix(in oklab, var(--color-foreground) 6%, transparent); }
+
+@utility ds-fab {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--r-fab);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--color-primary), color-mix(in oklab, var(--color-primary) 75%, var(--lavender)));
+  color: var(--color-primary-foreground);
+  box-shadow: var(--shadow-glow);
+  border: none;
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 240ms ease;
+}
+.ds-fab:hover { transform: translateY(-2px); }
+.ds-fab:active { transform: scale(0.96); }
+
+/* -------- Input baseline -------- */
+@utility ds-input {
+  width: 100%;
+  height: 56px;
+  padding: 0 var(--space-3);
+  border-radius: var(--r-input);
+  background: color-mix(in oklab, var(--color-card) 92%, transparent);
+  border: 1px solid var(--color-border);
+  color: var(--color-foreground);
+  font-size: var(--t-body);
+  line-height: 1.4;
+  transition: border-color 200ms ease, box-shadow 240ms ease, background 200ms ease;
+  outline: none;
+}
+.ds-input::placeholder {
+  color: color-mix(in oklab, var(--color-foreground) 45%, transparent);
+}
+.ds-input:hover { border-color: color-mix(in oklab, var(--color-primary) 40%, var(--color-border)); }
+.ds-input:focus,
+.ds-input:focus-visible {
+  border-color: color-mix(in oklab, var(--color-primary) 60%, transparent);
+  box-shadow:
+    0 0 0 4px color-mix(in oklab, var(--color-primary) 18%, transparent),
+    0 8px 24px -12px color-mix(in oklab, var(--color-primary) 40%, transparent);
+}
+.ds-input:disabled { opacity: 0.55; cursor: not-allowed; }
+
+@utility ds-textarea {
+  min-height: 96px;
+  padding: var(--space-3);
+  line-height: 1.6;
+  resize: vertical;
+  /* progressive enhancement: modern browsers auto-grow to content */
+  field-sizing: content;
+}
+
+/* -------- Bottom navigation shell -------- */
+@utility ds-bottomnav {
+  border-radius: var(--r-bottomnav);
+  padding: var(--space-2) var(--space-3);
+  box-shadow: var(--shadow-e3);
+}
+
+/* -------- Empty state -------- */
+@utility ds-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-6) var(--space-4);
+  text-align: center;
+  border-radius: var(--r-card);
+}
+.ds-empty .ds-empty__art {
+  width: 72px; height: 72px;
+  border-radius: var(--r-fab);
+  display: grid; place-items: center;
+  background: color-mix(in oklab, var(--color-primary) 12%, transparent);
+  color: var(--color-primary);
+  box-shadow: var(--shadow-e1);
+}
+
+/* -------- Global safety nets (do not restyle existing components) -------- */
+html, body { overflow-x: clip; }
+img, video, svg { max-width: 100%; height: auto; }
+
+/* Text never touches container edges by accident — inputs/buttons already
+   padded. Only break truly unbreakable strings (URLs, long tokens). */
+p, li { overflow-wrap: break-word; line-height: 1.65; }
+
+/* Global consistency polish — additive, no redesign.
+   Standardizes secondary text weight and interactive rhythm across the app. */
+.text-muted-foreground { font-weight: 450; }
+.dark .text-muted-foreground { font-weight: 400; }
+
+/* Unify inputs / textareas the app-wide default so hand-rolled controls
+   still land inside the design system without page-by-page rewrites. */
+:where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+       textarea, select):not(.ds-input):not([data-no-ds]) {
+  transition: border-color 200ms ease, box-shadow 240ms ease, background 200ms ease;
+}
+:where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+       textarea, select):not(.ds-input):not([data-no-ds])::placeholder {
+  color: color-mix(in oklab, var(--color-foreground) 45%, transparent);
+}
+
+/* Chip / icon baseline consistency: SVG icons inside buttons/links
+   inherit stroke weight and align to text baseline. */
+:where(button, a, [role="button"]) > svg { flex-shrink: 0; }
+
+
+
+/* ============================================================
+   Premium micro-interactions — subtle, spring-eased, <=300ms.
+   Additive utilities: opt-in via class names. No global overrides.
+   All respect prefers-reduced-motion.
+   ============================================================ */
+
+/* Springy interactive baseline — apply to any tappable element. */
+@utility lumina-tap {
+  transition:
+    transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 220ms ease,
+    filter 220ms ease,
+    background-color 220ms ease;
+  will-change: transform;
+}
+.lumina-tap:hover { transform: translateY(-1px); }
+.lumina-tap:active { transform: scale(0.98); }
+
+/* Card hover — lift + shadow + soft primary glow. */
+@utility lumina-lift {
+  transition:
+    transform 220ms cubic-bezier(0.34, 1.4, 0.64, 1),
+    box-shadow 260ms ease,
+    border-color 220ms ease;
+  will-change: transform;
+}
+.lumina-lift:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 14px 40px -18px color-mix(in oklab, var(--color-primary) 35%, transparent),
+    0 4px 14px -6px color-mix(in oklab, var(--color-foreground) 12%, transparent);
+}
+
+/* Ripple — attach to a button; requires overflow:hidden and position:relative. */
+@utility lumina-ripple {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.lumina-ripple::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: color-mix(in oklab, currentColor 30%, transparent);
+  opacity: 0;
+  transform: scale(1);
+  pointer-events: none;
+}
+.lumina-ripple:active::after {
+  animation: lumina-ripple-burst 480ms ease-out;
+}
+@keyframes lumina-ripple-burst {
+  0%   { opacity: 0.55; transform: scale(1); }
+  100% { opacity: 0;    transform: scale(60); }
+}
+
+/* Soft glow pulse — for encrypted / active badges. */
+@utility lumina-glow-pulse {
+  animation: lumina-glow-pulse 2.8s ease-in-out infinite;
+}
+@keyframes lumina-glow-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--color-primary) 30%, transparent); }
+  50%      { box-shadow: 0 0 0 8px color-mix(in oklab, var(--color-primary) 0%,  transparent); }
+}
+
+/* Emoji / mood bounce on selection. */
+@utility lumina-bounce {
+  animation: lumina-bounce 520ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes lumina-bounce {
+  0%   { transform: scale(0.6); }
+  55%  { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+
+/* Checkbox pop — for task completion. */
+@utility lumina-check-pop {
+  animation: lumina-check-pop 380ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes lumina-check-pop {
+  0%   { transform: scale(0.4); opacity: 0; }
+  60%  { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+/* Countdown pulse — capsules waiting to open. */
+@utility lumina-countdown-pulse {
+  animation: lumina-countdown-pulse 2.4s ease-in-out infinite;
+}
+@keyframes lumina-countdown-pulse {
+  0%, 100% { opacity: 1;   transform: scale(1); }
+  50%      { opacity: 0.7; transform: scale(1.03); }
+}
+
+/* Wax-seal press — one-shot on seal action. */
+@utility lumina-wax-press {
+  animation: lumina-wax-press 620ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes lumina-wax-press {
+  0%   { transform: scale(1.6) rotate(-8deg); opacity: 0; filter: blur(4px); }
+  60%  { transform: scale(0.94) rotate(2deg);  opacity: 1; filter: blur(0); }
+  100% { transform: scale(1)    rotate(0);     opacity: 1; }
+}
+
+/* Global scrolling polish — momentum + no jank. */
+html, body { -webkit-overflow-scrolling: touch; }
+main, .lumina-scroll { scroll-behavior: smooth; overscroll-behavior: contain; }
+
+@media (prefers-reduced-motion: reduce) {
+  .lumina-tap, .lumina-lift, .lumina-ripple,
+  .lumina-glow-pulse, .lumina-bounce, .lumina-check-pop,
+  .lumina-countdown-pulse, .lumina-wax-press {
+    animation: none !important;
+    transition: none !important;
+  }
+  .lumina-lift:hover, .lumina-tap:hover, .lumina-tap:active { transform: none !important; }
+  main, .lumina-scroll { scroll-behavior: auto; }
+}
+
+/* ============================================================
+   Production polish — global safety nets (additive, no redesign).
+   ============================================================ */
+
+/* Modern viewport for full-screen surfaces on mobile browsers. */
+@supports (height: 100dvh) {
+  .lumina-vh { height: 100dvh; }
+  .lumina-min-vh { min-height: 100dvh; }
+}
+
+/* Keyboard-aware safe area — pages using inputs won't have the
+   virtual keyboard hide their bottom controls. Opt-in class. */
+.lumina-keyboard-safe {
+  padding-bottom: max(env(safe-area-inset-bottom, 0px), 16px);
+}
+
+/* Bottom-nav clearance — inline pages don't need this because
+   the app layout already reserves 120px on mobile, but standalone
+   fullscreen pages can opt-in. */
+.lumina-nav-clear {
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 96px);
+}
+@media (min-width: 768px) {
+  .lumina-nav-clear { padding-bottom: 32px; }
+}
+
+/* Focus-visible baseline — every interactive element gets a
+   consistent ring in both themes, without stomping component styles. */
+:where(button, a, [role="button"], input, textarea, select, summary):focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--color-primary) 70%, transparent);
+  outline-offset: 2px;
+  border-radius: inherit;
+}
+
+/* Minimum tap target for pure-icon buttons (44×44 WCAG). Additive:
+   apply .lumina-tap-target to icon-only buttons that don't already
+   set min-h/min-w. */
+@utility lumina-tap-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* GPU containment — long lists benefit from `content-visibility` so
+   offscreen items skip layout/paint. Opt-in via .lumina-virtual-list
+   on the scroll container's child list. Keeps 60fps on long feeds. */
+.lumina-virtual-list > * {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 240px;
+}
+
+/* Timeline row entrance — replaces per-item framer-motion. Keeps the
+   original translate-in appearance without the JS animation cost. */
+@keyframes lumina-tl-row-in {
+  0% { opacity: 0; transform: translate3d(-8px, 0, 0); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+.tl-row-enter {
+  animation: lumina-tl-row-in 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tl-row-enter { animation: none; }
+}
+
+/* Shadow performance — offer a "flat" fallback for low-end devices
+   (Save-Data or reduced motion typically correlate). */
+@media (prefers-reduced-transparency: reduce) {
+  .glass, .glass-strong { backdrop-filter: none !important; }
+}
+
+/* Prevent iOS zoom on input focus (font-size >= 16px). */
+input, textarea, select { font-size: max(16px, 1em); }
+
+/* Text scaling: respect user font size but cap runaway line-height
+   in headings so display type doesn't break card layouts. */
+h1, h2, h3 { text-wrap: balance; }
+p          { text-wrap: pretty; }
+
+/* Global reduced-motion — extend to CSS animations we don't control. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
+   PHASE 3 — Unified motion language.
+   One vocabulary of durations + easings the whole app opts into.
+   Additive only: no existing rule is overridden.
+   ============================================================ */
+:root {
+  /* Durations — the only allowed timings for new motion. */
+  --lumina-dur-1: 100ms;   /* micro: focus ring, hover fill    */
+  --lumina-dur-2: 150ms;   /* small: press, checkbox pop       */
+  --lumina-dur-3: 220ms;   /* default: cards, buttons, tabs    */
+  --lumina-dur-4: 300ms;   /* medium: dialogs, sheets, drawers */
+  --lumina-dur-5: 450ms;   /* large: hero, celebratory reveal  */
+
+  /* Easings — calm, native, no bounce unless intentional. */
+  --lumina-ease-standard: cubic-bezier(0.22, 1, 0.36, 1);  /* ease-out-expo    */
+  --lumina-ease-emphasized: cubic-bezier(0.32, 0.72, 0, 1); /* Arc-like glide  */
+  --lumina-ease-enter: cubic-bezier(0, 0, 0.2, 1);          /* material enter   */
+  --lumina-ease-exit:  cubic-bezier(0.4, 0, 1, 1);          /* material exit    */
+  --lumina-ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);   /* subtle overshoot */
+}
+
+/* Native-feel press feedback across every interactive surface.
+   Kept subtle (98%) so it reads as haptic, not gimmicky. */
+@media (hover: none) and (pointer: coarse) {
+  :where(button, a, [role="button"], [role="tab"], [role="menuitem"], [role="option"], summary):active:not(:disabled):not([aria-disabled="true"]) {
+    transform: scale(0.98);
+    transition: transform var(--lumina-dur-1) var(--lumina-ease-standard);
+  }
+}
+
+/* Prevent iOS tap highlight — replaced by our own press feedback. */
+:where(button, a, [role="button"], [role="tab"], [role="menuitem"], [role="option"], summary, label) {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Consistent focus-visible ring transition. */
+:where(button, a, [role="button"], input, textarea, select, summary) {
+  transition: outline-color var(--lumina-dur-1) var(--lumina-ease-standard),
+              outline-offset var(--lumina-dur-1) var(--lumina-ease-standard);
+}
+
+/* Card focus-visible — match press affordance for keyboard users. */
+:where([role="button"], .lumina-lift):focus-visible {
+  outline-offset: 3px;
+}
+
+/* Smooth safe-area transitions (iOS keyboard, orientation). */
+main, .lumina-nav-clear, .lumina-keyboard-safe {
+  transition: padding-bottom var(--lumina-dur-3) var(--lumina-ease-standard);
+}
+
+/* Scroll polish — enable smooth native momentum on every scroller
+   while keeping overscroll contained (prevents pull-to-refresh flashes
+   on mid-page containers). */
+html { scroll-behavior: smooth; }
+.lumina-scroll-x {
+  scroll-snap-type: x proximity;
+  scroll-behavior: smooth;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+.lumina-scroll-x::-webkit-scrollbar { display: none; }
+.lumina-scroll-x > * { scroll-snap-align: start; }
+
+/* Skeleton shimmer — replaces spinner-only loading where used.
+   Opt-in class; respects reduced-motion. */
+@utility lumina-skeleton {
+  position: relative;
+  overflow: hidden;
+  background: color-mix(in oklab, var(--color-muted) 60%, transparent);
+  border-radius: var(--radius-md);
+}
+.lumina-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in oklab, var(--color-foreground) 6%, transparent),
+    transparent
+  );
+  transform: translateX(-100%);
+  animation: lumina-shimmer 1.6s var(--lumina-ease-standard) infinite;
+}
+@keyframes lumina-shimmer {
+  100% { transform: translateX(100%); }
+}
+
+/* Soft entrance for empty states / first-render sections.
+   Composable with content — apply to the outer wrapper. */
+@utility lumina-enter {
+  animation: lumina-enter var(--lumina-dur-4) var(--lumina-ease-standard) both;
+}
+@keyframes lumina-enter {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+/* Staggered children — apply to a parent, children animate in order. */
+.lumina-stagger > * {
+  animation: lumina-enter var(--lumina-dur-4) var(--lumina-ease-standard) both;
+}
+.lumina-stagger > *:nth-child(1) { animation-delay: 20ms;  }
+.lumina-stagger > *:nth-child(2) { animation-delay: 60ms;  }
+.lumina-stagger > *:nth-child(3) { animation-delay: 100ms; }
+.lumina-stagger > *:nth-child(4) { animation-delay: 140ms; }
+.lumina-stagger > *:nth-child(5) { animation-delay: 180ms; }
+.lumina-stagger > *:nth-child(6) { animation-delay: 220ms; }
+.lumina-stagger > *:nth-child(n+7) { animation-delay: 260ms; }
+
+/* Bottom-nav lift on mount — keeps it feeling attached to the surface. */
+.lumina-nav-attached {
+  animation: lumina-nav-in var(--lumina-dur-4) var(--lumina-ease-standard) both;
+}
+@keyframes lumina-nav-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+/* Instant, GPU-only transitions for the most common animated properties.
+   Applied via .lumina-motion — safe additive class. */
+@utility lumina-motion {
+  transition:
+    transform    var(--lumina-dur-3) var(--lumina-ease-standard),
+    opacity      var(--lumina-dur-3) var(--lumina-ease-standard),
+    background-color var(--lumina-dur-3) var(--lumina-ease-standard),
+    border-color var(--lumina-dur-3) var(--lumina-ease-standard),
+    box-shadow   var(--lumina-dur-3) var(--lumina-ease-standard),
+    color        var(--lumina-dur-3) var(--lumina-ease-standard);
+}
+
+/* Prevent forced reflow during transforms on animated surfaces. */
+.lumina-lift, .lumina-tap, .lumina-motion,
+[data-state="open"], [data-state="closed"] {
+  backface-visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lumina-enter, .lumina-stagger > *, .lumina-nav-attached,
+  .lumina-skeleton::after {
+    animation: none !important;
+  }
+  :where(button, a, [role="button"], summary):active { transform: none !important; }
+}
+
+/* ============ Android/mobile perf: scroll-pause ambient motion ============
+   A tiny scroll listener toggles data-scrolling on <html> during active
+   scrolls (see useScrollPause). Pausing decorative animations while the
+   user scrolls dramatically reduces GPU overdraw on Android Chrome, where
+   composited animated layers otherwise stall the main scroll thread. */
+html[data-scrolling="true"] .ambient-particle,
+html[data-scrolling="true"] [data-scroll-pause],
+html[data-scrolling="true"] .theme-ambient * {
+  animation-play-state: paused !important;
+}
+
+/* Cap scrollbar-thumb blur on touch devices — cheap paint, big win. */
+@media (hover: none) and (pointer: coarse) {
+  .lumina-scroll::-webkit-scrollbar-thumb { backdrop-filter: none !important; }
+}
+
+/* Shared focus-visible ring — consistent, accessible, low-cost. */
+.lumina-focus-ring:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--background),
+    0 0 0 4px color-mix(in oklab, var(--primary, oklch(0.62 0.18 290)) 70%, transparent);
+}
+
+
+
+/* Paper-ink placeholders — warm muted ink so writing prompts stay
+   readable on cream paper (Farewell letter, Letters editor). Uses an
+   explicit warm brown (#8A725D) with !important so the app-wide
+   foreground-based placeholder rule can't bleed a white/light color
+   onto the paper on dark ritual backgrounds. */
+.paper-ink-input::placeholder,
+.paper-ink-input::-webkit-input-placeholder {
+  color: rgb(138 114 93 / 0.8) !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: rgb(138 114 93 / 0.8);
+}
+.paper-ink-input:focus::placeholder {
+  color: rgb(138 114 93 / 0.55) !important;
+  -webkit-text-fill-color: rgb(138 114 93 / 0.55);
+}
+.paper-ink-input--italic::placeholder {
+  font-style: italic;
+}

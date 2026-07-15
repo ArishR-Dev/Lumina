@@ -1,0 +1,1397 @@
+/* =============================================================
+   Lumina — Signature Writing Experience
+   Paper canvas + prose overrides. Scoped to `.lumina-paper`.
+   ============================================================= */
+
+.lumina-paper {
+  position: relative;
+  border-radius: 28px;
+  padding: clamp(24px, 4vw, 56px) clamp(20px, 5vw, 72px);
+  background:
+    radial-gradient(120% 60% at 50% -20%, color-mix(in oklab, white 70%, var(--primary)) 0%, transparent 55%),
+    linear-gradient(180deg, oklch(0.995 0.008 70), oklch(0.985 0.014 70));
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 -1px 0 rgba(120, 60, 90, 0.04) inset,
+    0 40px 80px -40px oklch(0.55 0.15 340 / 0.22),
+    0 2px 4px -2px oklch(0.55 0.15 340 / 0.1);
+  overflow: visible;
+  isolation: isolate;
+}
+.dark .lumina-paper {
+  background:
+    radial-gradient(120% 60% at 50% -20%, color-mix(in oklab, white 6%, transparent) 0%, transparent 55%),
+    linear-gradient(180deg, oklch(0.22 0.02 320), oklch(0.18 0.02 320));
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 40px 80px -40px oklch(0.1 0.05 320 / 0.6);
+}
+
+/* Grain — a single fixed SVG turbulence, GPU-composited, no per-key work. */
+.lumina-paper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.35  0 0 0 0 0.28  0 0 0 0 0.38  0 0 0 0.5 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/></svg>");
+  background-size: 240px 240px;
+  opacity: 0.06;
+  mix-blend-mode: multiply;
+  z-index: 0;
+}
+.dark .lumina-paper::before { opacity: 0.12; mix-blend-mode: screen; }
+@media (prefers-reduced-motion: reduce) {
+  .lumina-paper::before { opacity: 0.02; }
+}
+
+/* Seamless variant — the paper becomes the page. No bottom rounded edge,
+   stretches to fill the viewport so users never see it "end" while writing. */
+.lumina-paper--seamless {
+  border-radius: 28px 28px 0 0;
+  min-height: calc(100dvh - 60px);
+  padding-top: 0;
+  padding-bottom: clamp(160px, 30vh, 320px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 -40px 80px -40px oklch(0.55 0.15 340 / 0.12);
+}
+.dark .lumina-paper--seamless {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 -40px 80px -40px oklch(0.1 0.05 320 / 0.5);
+}
+
+/* Letterhead inside the paper — sits between sticky toolbar and cursor. */
+.lumina-paper-header {
+  max-width: 68ch;
+  margin: 0 auto;
+  padding: 8px 0 18px;
+}
+.lumina-paper-header + .lumina-prose,
+.lumina-paper-header + .empty-state + .lumina-prose {
+  min-height: auto;
+}
+
+.lumina-paper > * { position: relative; z-index: 1; }
+
+
+/* --------- Prose typography (scoped) --------- */
+.lumina-paper .lumina-prose {
+  color: oklch(0.28 0.04 320);
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.75;
+  letter-spacing: -0.005em;
+  text-wrap: pretty;
+  hanging-punctuation: first;
+  max-width: 68ch;
+  margin: 0 auto;
+  min-height: 50vh;
+}
+.dark .lumina-paper .lumina-prose { color: oklch(0.9 0.02 320); }
+
+.lumina-paper .lumina-prose:focus { outline: none; }
+
+.lumina-paper .lumina-prose p {
+  margin: 0.85em 0;
+}
+.lumina-paper .lumina-prose h1 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2rem, 3.6vw, 2.75rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: 1.2em 0 0.4em;
+  color: oklch(0.22 0.05 320);
+}
+.dark .lumina-paper .lumina-prose h1 { color: oklch(0.94 0.02 320); }
+.lumina-paper .lumina-prose h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.55rem;
+  line-height: 1.25;
+  margin: 1.6em 0 0.3em;
+  color: oklch(0.28 0.05 320);
+}
+.dark .lumina-paper .lumina-prose h2 { color: oklch(0.9 0.02 320); }
+.lumina-paper .lumina-prose h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.25rem;
+  margin: 1.4em 0 0.25em;
+}
+
+.lumina-paper .lumina-prose blockquote {
+  margin: 1.4em 0;
+  padding: 0.2em 0 0.2em 1.2em;
+  border-left: 2px solid oklch(0.72 0.13 340 / 0.55);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.15em;
+  color: oklch(0.4 0.06 320);
+}
+.dark .lumina-paper .lumina-prose blockquote { color: oklch(0.8 0.03 320); }
+
+.lumina-paper .lumina-prose hr {
+  border: none;
+  height: 1px;
+  margin: 2em auto;
+  width: 40%;
+  background: linear-gradient(to right, transparent, oklch(0.72 0.13 340 / 0.4), transparent);
+}
+
+.lumina-paper .lumina-prose a {
+  color: oklch(0.55 0.14 340);
+  text-decoration: none;
+  background-image: linear-gradient(oklch(0.72 0.13 340 / 0.35), oklch(0.72 0.13 340 / 0.35));
+  background-repeat: no-repeat;
+  background-position: 0 92%;
+  background-size: 100% 1px;
+  transition: background-size 220ms;
+}
+.lumina-paper .lumina-prose a:hover { background-size: 100% 40%; }
+
+.lumina-paper .lumina-prose mark,
+.lumina-paper .lumina-prose [data-highlight] {
+  background: linear-gradient(180deg, transparent 55%, oklch(0.9 0.12 90 / 0.65) 55%);
+  padding: 0 0.15em;
+  color: inherit;
+  border-radius: 2px;
+}
+
+.lumina-paper .lumina-prose ul,
+.lumina-paper .lumina-prose ol {
+  padding-left: 1.5em;
+  margin: 0.9em 0;
+}
+.lumina-paper .lumina-prose li { margin: 0.35em 0; }
+.lumina-paper .lumina-prose ul > li::marker { color: oklch(0.72 0.13 340); }
+.lumina-paper .lumina-prose ol > li::marker { color: oklch(0.55 0.14 340); font-variant-numeric: oldstyle-nums; }
+
+/* --------- Ink checklists --------- */
+.lumina-paper .lumina-prose ul[data-type="taskList"] {
+  list-style: none;
+  padding-left: 0.25em;
+}
+.lumina-paper .lumina-prose ul[data-type="taskList"] li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65em;
+  margin: 0.5em 0;
+}
+.lumina-paper .lumina-prose ul[data-type="taskList"] li > label {
+  flex-shrink: 0;
+  margin-top: 0.35em;
+  user-select: none;
+}
+.lumina-paper .lumina-prose ul[data-type="taskList"] li > label input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  border: 1.5px solid oklch(0.72 0.13 340 / 0.55);
+  background: color-mix(in oklab, white 80%, transparent);
+  cursor: pointer;
+  position: relative;
+  transition: background 200ms, border-color 200ms;
+}
+.dark .lumina-paper .lumina-prose ul[data-type="taskList"] li > label input {
+  background: color-mix(in oklab, white 8%, transparent);
+}
+.lumina-paper .lumina-prose ul[data-type="taskList"] li > label input:checked {
+  background: linear-gradient(135deg, oklch(0.72 0.13 340), oklch(0.68 0.14 290));
+  border-color: transparent;
+}
+.lumina-paper .lumina-prose ul[data-type="taskList"] li > label input:checked::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 6px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  animation: ink-draw 260ms cubic-bezier(0.22, 0.9, 0.32, 1);
+}
+.lumina-paper .lumina-prose ul[data-type="taskList"] li[data-checked="true"] > div {
+  color: oklch(0.55 0.03 320);
+  position: relative;
+}
+.lumina-paper .lumina-prose ul[data-type="taskList"] li[data-checked="true"] > div::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1.5px;
+  background: currentColor;
+  opacity: 0.6;
+  transform-origin: left center;
+  animation: ink-strike 320ms cubic-bezier(0.22, 0.9, 0.32, 1) forwards;
+}
+
+@keyframes ink-draw {
+  from { opacity: 0; transform: rotate(45deg) scale(0.4); }
+  to { opacity: 1; transform: rotate(45deg) scale(1); }
+}
+@keyframes ink-strike {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* --------- Placeholder --------- */
+.lumina-paper .lumina-prose p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: oklch(0.65 0.03 320);
+  pointer-events: none;
+  height: 0;
+  font-style: italic;
+}
+
+/* --------- Images (printed photograph) --------- */
+.lumina-paper .lumina-prose img {
+  display: block;
+  max-width: 100%;
+  margin: 1.8em auto;
+  border-radius: 18px;
+  padding: 8px;
+  background: white;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 24px 48px -24px oklch(0.28 0.04 320 / 0.45),
+    0 2px 6px -2px oklch(0.28 0.04 320 / 0.15);
+  filter: saturate(1.04) contrast(1.02);
+}
+.dark .lumina-paper .lumina-prose img {
+  background: oklch(0.28 0.02 320);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 24px 48px -24px black;
+}
+
+/* --------- Immersive mode --------- */
+.lumina-paper[data-writing="true"] .lumina-bubble,
+.lumina-paper[data-writing="true"] .lumina-slash,
+.lumina-paper[data-writing="true"] .lumina-linkpop {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 320ms cubic-bezier(0.22, 0.9, 0.32, 1);
+}
+
+/* --------- Floating chrome --------- */
+.lumina-bubble,
+.lumina-slash,
+.lumina-linkpop {
+  --bg: color-mix(in oklab, white 88%, transparent);
+  --border: color-mix(in oklab, oklch(0.72 0.13 340) 22%, transparent);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(24px) saturate(1.5);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  border-radius: 14px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 20px 40px -20px oklch(0.28 0.04 320 / 0.35),
+    0 4px 12px -6px oklch(0.28 0.04 320 / 0.2);
+  animation: lumina-lift 220ms cubic-bezier(0.22, 0.9, 0.32, 1);
+  z-index: 60;
+}
+.dark .lumina-bubble,
+.dark .lumina-slash,
+.dark .lumina-linkpop {
+  --bg: color-mix(in oklab, oklch(0.22 0.02 320) 92%, transparent);
+  --border: color-mix(in oklab, white 8%, transparent);
+  box-shadow:
+    0 20px 40px -20px black,
+    0 4px 12px -6px oklch(0.05 0.02 320 / 0.6);
+}
+@keyframes lumina-lift {
+  from { opacity: 0; transform: translateY(6px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.lumina-bubble {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 999px;
+}
+.lumina-bubble button {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  color: oklch(0.45 0.04 320);
+  transition: background 180ms, color 180ms, transform 180ms;
+}
+.lumina-bubble button:hover {
+  background: color-mix(in oklab, oklch(0.72 0.13 340) 12%, transparent);
+  color: oklch(0.28 0.05 320);
+}
+.dark .lumina-bubble button:hover { color: white; }
+.lumina-bubble button[data-active="true"] {
+  background: linear-gradient(135deg, oklch(0.72 0.13 340 / 0.25), oklch(0.68 0.14 290 / 0.2));
+  color: oklch(0.28 0.05 320);
+}
+.dark .lumina-bubble button[data-active="true"] { color: white; }
+.lumina-bubble .lumina-bubble-sep {
+  width: 1px;
+  height: 18px;
+  background: color-mix(in oklab, oklch(0.72 0.13 340) 25%, transparent);
+  margin: 0 4px;
+}
+@media (max-width: 768px) {
+  .lumina-bubble button { width: 40px; height: 40px; }
+}
+
+/* Slash menu */
+.lumina-slash {
+  width: 300px;
+  max-height: 340px;
+  overflow-y: auto;
+  padding: 6px;
+  border-radius: 16px;
+}
+.lumina-slash .lumina-slash-group {
+  padding: 6px 10px 2px;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: oklch(0.55 0.03 320);
+}
+.lumina-slash button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  text-align: left;
+  color: oklch(0.32 0.04 320);
+  transition: background 140ms;
+}
+.dark .lumina-slash button { color: oklch(0.9 0.02 320); }
+.lumina-slash button[data-active="true"],
+.lumina-slash button:hover {
+  background: linear-gradient(90deg,
+    color-mix(in oklab, oklch(0.72 0.13 340) 16%, transparent),
+    color-mix(in oklab, oklch(0.72 0.13 340) 6%, transparent));
+}
+.lumina-slash .lumina-slash-icon {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: color-mix(in oklab, oklch(0.72 0.13 340) 12%, transparent);
+  color: oklch(0.55 0.14 340);
+  flex-shrink: 0;
+}
+.lumina-slash .lumina-slash-label { font-size: 14px; font-weight: 500; line-height: 1.2; }
+.lumina-slash .lumina-slash-hint { font-size: 11px; color: oklch(0.55 0.03 320); }
+
+/* Link popover */
+.lumina-linkpop {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 12px;
+}
+.lumina-linkpop input {
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 6px 10px;
+  font-size: 13px;
+  width: 240px;
+  color: inherit;
+}
+.lumina-linkpop button {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  background: linear-gradient(135deg, oklch(0.72 0.13 340), oklch(0.68 0.14 290));
+  color: white;
+  font-weight: 500;
+}
+.lumina-linkpop button.secondary {
+  background: transparent;
+  color: oklch(0.55 0.03 320);
+}
+
+/* --------- Voice card node --------- */
+.lumina-voice {
+  margin: 1.6em 0;
+  padding: 16px 18px;
+  border-radius: 20px;
+  background: linear-gradient(135deg,
+    oklch(0.98 0.02 340) 0%,
+    oklch(0.96 0.03 300) 100%);
+  border: 1px solid oklch(0.72 0.13 340 / 0.18);
+  box-shadow: 0 10px 30px -20px oklch(0.55 0.15 340 / 0.35);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  user-select: none;
+}
+.dark .lumina-voice {
+  background: linear-gradient(135deg, oklch(0.26 0.03 340), oklch(0.22 0.03 300));
+  border-color: oklch(0.72 0.13 340 / 0.3);
+}
+.lumina-voice-play {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, oklch(0.72 0.13 340), oklch(0.68 0.14 290));
+  color: white;
+  flex-shrink: 0;
+  transition: transform 180ms;
+}
+.lumina-voice-play:hover { transform: scale(1.05); }
+.lumina-voice-body { flex: 1; min-width: 0; }
+.lumina-voice-title {
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  background: transparent;
+  outline: none;
+  width: 100%;
+  color: inherit;
+}
+.lumina-voice-title::placeholder { color: oklch(0.55 0.03 320); }
+.lumina-voice-wave {
+  height: 28px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  overflow: hidden;
+}
+.lumina-voice-wave span {
+  display: block;
+  width: 2px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, oklch(0.72 0.13 340), oklch(0.68 0.14 290));
+  opacity: 0.75;
+}
+.lumina-voice-meta {
+  font-size: 11px;
+  color: oklch(0.55 0.03 320);
+  font-variant-numeric: tabular-nums;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
+/* --------- Lumina link chip (entity mention) --------- */
+.lumina-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 10px 2px 4px;
+  margin: 0 2px;
+  border-radius: 999px;
+  background: linear-gradient(135deg,
+    oklch(0.94 0.04 340),
+    oklch(0.92 0.05 300));
+  border: 1px solid oklch(0.72 0.13 340 / 0.3);
+  font-size: 0.92em;
+  color: oklch(0.35 0.08 320);
+  text-decoration: none !important;
+  background-image: none !important;
+  font-weight: 500;
+  vertical-align: baseline;
+  cursor: pointer;
+  transition: transform 180ms, box-shadow 180ms;
+}
+.dark .lumina-chip {
+  background: linear-gradient(135deg, oklch(0.28 0.04 340), oklch(0.26 0.05 300));
+  color: oklch(0.9 0.03 320);
+}
+.lumina-chip:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px -8px oklch(0.55 0.15 340 / 0.4);
+}
+.lumina-chip .lumina-chip-icon {
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: white;
+  font-size: 12px;
+}
+.dark .lumina-chip .lumina-chip-icon { background: oklch(0.22 0.03 320); }
+
+/* --------- Recording dialog --------- */
+.lumina-rec-backdrop {
+  position: fixed;
+  inset: 0;
+  background: oklch(0.15 0.03 320 / 0.4);
+  backdrop-filter: blur(8px);
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  animation: lumina-lift 240ms;
+}
+.lumina-rec {
+  width: min(92vw, 380px);
+  padding: 28px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, oklch(0.995 0.008 70), oklch(0.98 0.014 70));
+  box-shadow: 0 40px 80px -20px oklch(0.15 0.03 320 / 0.5);
+  text-align: center;
+}
+.dark .lumina-rec { background: linear-gradient(180deg, oklch(0.22 0.02 320), oklch(0.18 0.02 320)); }
+.lumina-rec-orb {
+  width: 96px;
+  height: 96px;
+  border-radius: 999px;
+  margin: 0 auto 16px;
+  background: linear-gradient(135deg, oklch(0.72 0.13 340), oklch(0.68 0.14 290));
+  display: grid;
+  place-items: center;
+  color: white;
+  box-shadow: 0 0 0 0 oklch(0.72 0.13 340 / 0.6);
+}
+.lumina-rec-orb[data-recording="true"] {
+  animation: lumina-pulse 1.4s ease-in-out infinite;
+}
+@keyframes lumina-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 oklch(0.72 0.13 340 / 0.5); }
+  50% { box-shadow: 0 0 0 22px oklch(0.72 0.13 340 / 0); }
+}
+
+/* --------- Mobile refinements --------- */
+@media (max-width: 768px) {
+  .lumina-paper {
+    padding: 20px 18px;
+    border-radius: 20px;
+  }
+  .lumina-paper .lumina-prose { font-size: 16px; line-height: 1.7; }
+}
+
+/* =============================================================
+   Living Paper — additions (reactive light, empty state, big cards)
+   ============================================================= */
+
+/* Reactive light + shadow tilt driven from JS mousemove */
+.lumina-paper {
+  --paper-tilt-x: 0deg;
+  --paper-tilt-y: 0deg;
+  --paper-light-x: 50%;
+  --paper-light-y: -20%;
+  transform-style: preserve-3d;
+  transition: box-shadow 400ms cubic-bezier(0.22, 0.9, 0.32, 1);
+}
+.lumina-paper::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(
+    420px circle at var(--paper-light-x) var(--paper-light-y),
+    color-mix(in oklab, white 55%, transparent) 0%,
+    transparent 60%
+  );
+  opacity: 0.55;
+  mix-blend-mode: soft-light;
+  transition: background 280ms cubic-bezier(0.22, 0.9, 0.32, 1);
+  z-index: 0;
+}
+.dark .lumina-paper::after {
+  background: radial-gradient(
+    420px circle at var(--paper-light-x) var(--paper-light-y),
+    color-mix(in oklab, white 8%, transparent) 0%,
+    transparent 60%
+  );
+  opacity: 0.9;
+}
+@media (prefers-reduced-motion: reduce) {
+  .lumina-paper::after { display: none; }
+}
+
+/* --------- Empty state (the Lumina hello) --------- */
+.lumina-empty {
+  pointer-events: none;
+  max-width: 68ch;
+  margin: 0 auto 1.6em;
+  padding-top: clamp(1.4em, 3vw, 2.6em);
+  text-align: center;
+  color: oklch(0.45 0.05 320);
+  transition: opacity 480ms cubic-bezier(0.22, 0.9, 0.32, 1);
+  font-family: var(--font-sans);
+  animation: lumina-empty-in 560ms cubic-bezier(0.22, 0.9, 0.32, 1) both;
+}
+@keyframes lumina-empty-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lumina-empty { animation: none; }
+}
+
+.dark .lumina-empty { color: oklch(0.75 0.03 320); }
+.lumina-empty-rule {
+  height: 1px;
+  margin: 14px auto;
+  width: 220px;
+  background: linear-gradient(to right,
+    transparent,
+    color-mix(in oklab, oklch(0.72 0.13 340) 34%, transparent),
+    transparent);
+}
+.lumina-empty-greeting {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+  letter-spacing: -0.01em;
+  color: oklch(0.3 0.05 320);
+}
+.dark .lumina-empty-greeting { color: oklch(0.94 0.02 320); }
+.lumina-empty-date {
+  margin-top: 4px;
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: oklch(0.55 0.03 320);
+}
+.lumina-empty-tag {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 0.98rem;
+  color: oklch(0.5 0.05 320);
+}
+.dark .lumina-empty-tag { color: oklch(0.82 0.03 320); }
+
+/* --------- Larger slash cards (Lumina Inserts) --------- */
+.lumina-slash { width: 340px; }
+.lumina-slash button {
+  padding: 10px 12px;
+  gap: 14px;
+}
+.lumina-slash .lumina-slash-icon {
+  width: 38px;
+  height: 38px;
+  font-size: 18px;
+  border-radius: 11px;
+  background: linear-gradient(135deg,
+    color-mix(in oklab, oklch(0.72 0.13 340) 18%, transparent),
+    color-mix(in oklab, oklch(0.68 0.14 290) 12%, transparent));
+}
+.lumina-slash .lumina-slash-label { font-size: 15px; font-weight: 500; }
+.lumina-slash .lumina-slash-hint {
+  font-size: 12px;
+  color: oklch(0.55 0.03 320);
+  margin-top: 2px;
+  font-style: italic;
+}
+
+/* --------- Writer's Palette style pill --------- */
+.lumina-bubble .writers-palette-pill {
+  padding: 0 10px;
+  height: 32px;
+  border-radius: 999px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: oklch(0.45 0.04 320);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* --------- Voice memory — handwritten label --------- */
+.lumina-voice-recorded {
+  font-family: "Caveat", var(--font-display), cursive;
+  font-size: 15px;
+  color: oklch(0.55 0.08 340);
+  margin-top: 2px;
+  letter-spacing: 0.01em;
+}
+.dark .lumina-voice-recorded { color: oklch(0.82 0.06 340); }
+
+/* --------- Mention menu (reuses slash styling) --------- */
+.lumina-mentions { width: 320px; }
+.lumina-mentions .lumina-slash-icon {
+  background: linear-gradient(135deg,
+    color-mix(in oklab, oklch(0.68 0.14 290) 20%, transparent),
+    color-mix(in oklab, oklch(0.72 0.13 340) 12%, transparent));
+}
+
+/* Phase 3 — inline preview chips of real entities inside each @-mention row. */
+.lumina-mention-row + .lumina-mention-row { margin-top: 2px; }
+.lumina-mention-previews {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 2px 8px 8px 52px;
+}
+.lumina-mention-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 160px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  line-height: 1.2;
+  color: oklch(0.42 0.05 320);
+  background: color-mix(in oklab, oklch(0.72 0.13 340) 10%, transparent);
+  border: 1px solid color-mix(in oklab, oklch(0.72 0.13 340) 18%, transparent);
+  transition: background 140ms, transform 140ms;
+}
+.lumina-mention-chip:hover {
+  background: color-mix(in oklab, oklch(0.72 0.13 340) 20%, transparent);
+  transform: translateY(-1px);
+}
+.dark .lumina-mention-chip { color: oklch(0.9 0.03 320); }
+
+/* Phase 3 — link popover host preview. */
+.lumina-link-host {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 180px;
+  padding: 4px 8px 4px 6px;
+  margin-right: 2px;
+  border-radius: 999px;
+  font-size: 11px;
+  color: oklch(0.45 0.04 320);
+  background: color-mix(in oklab, oklch(0.72 0.13 340) 10%, transparent);
+}
+.lumina-link-host img { border-radius: 3px; }
+.dark .lumina-link-host { color: oklch(0.88 0.03 320); }
+
+/* =============================================================
+   Phase 1 — alias hook + reduced-fx escape hatch
+   ============================================================= */
+
+/* .living-paper is an alias for .lumina-paper. All existing rules already
+   target .lumina-paper; the alias exists so future refactors can migrate
+   selectors incrementally without breaking legacy content. */
+.living-paper:not(.lumina-paper) { /* reserved */ }
+
+/* Any ancestor with data-reduced-fx="true" fully disables reactive layers,
+   for battery-sensitive or low-end device modes. */
+[data-reduced-fx="true"] .lumina-paper::after,
+[data-reduced-fx="true"] .lumina-paper::before {
+  display: none;
+}
+
+/* =============================================================
+   Phase 2 — Writer's Palette (Style pill, highlight swatches, mobile dock)
+   ============================================================= */
+
+.writers-palette-group {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.writers-palette-pill {
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: oklch(0.4 0.05 320);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: color-mix(in oklab, oklch(0.72 0.13 340) 10%, transparent);
+  transition: background 180ms;
+}
+.writers-palette-pill:hover { background: color-mix(in oklab, oklch(0.72 0.13 340) 18%, transparent); }
+.writers-palette-pill[data-open="true"] { background: color-mix(in oklab, oklch(0.72 0.13 340) 22%, transparent); }
+.dark .writers-palette-pill { color: oklch(0.85 0.03 320); }
+
+.writers-palette-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 160px;
+  padding: 6px;
+  border-radius: 12px;
+  background: color-mix(in oklab, white 92%, transparent);
+  border: 1px solid color-mix(in oklab, oklch(0.72 0.13 340) 22%, transparent);
+  backdrop-filter: blur(24px) saturate(1.5);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  box-shadow: 0 20px 40px -20px oklch(0.28 0.04 320 / 0.35);
+  z-index: 70;
+  animation: lumina-lift 200ms cubic-bezier(0.22, 0.9, 0.32, 1);
+}
+.dark .writers-palette-menu {
+  background: color-mix(in oklab, oklch(0.22 0.02 320) 94%, transparent);
+  border-color: color-mix(in oklab, white 10%, transparent);
+}
+.writers-palette-menu button {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  text-align: left;
+  font-size: 13px;
+  color: oklch(0.32 0.04 320);
+  transition: background 140ms;
+}
+.dark .writers-palette-menu button { color: oklch(0.9 0.02 320); }
+.writers-palette-menu button:hover {
+  background: color-mix(in oklab, oklch(0.72 0.13 340) 14%, transparent);
+}
+
+.writers-palette-swatches {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px;
+  border-radius: 999px;
+  background: color-mix(in oklab, white 92%, transparent);
+  border: 1px solid color-mix(in oklab, oklch(0.72 0.13 340) 22%, transparent);
+  backdrop-filter: blur(24px) saturate(1.5);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  box-shadow: 0 12px 32px -16px oklch(0.28 0.04 320 / 0.35);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 70;
+  animation: lumina-lift 200ms cubic-bezier(0.22, 0.9, 0.32, 1);
+}
+.dark .writers-palette-swatches {
+  background: color-mix(in oklab, oklch(0.22 0.02 320) 94%, transparent);
+  border-color: color-mix(in oklab, white 10%, transparent);
+}
+.writers-palette-swatch {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  border: 1.5px solid color-mix(in oklab, black 8%, transparent);
+  transition: transform 140ms;
+}
+.writers-palette-swatch:hover { transform: scale(1.12); }
+.writers-palette-swatch-clear {
+  background: transparent !important;
+  color: oklch(0.55 0.03 320);
+  font-size: 14px;
+  display: grid;
+  place-items: center;
+}
+
+/* Highlight applied color renders as underlay swipe using inline style.
+   Multicolor highlight uses <mark data-color="..."> */
+.lumina-paper .lumina-prose mark[data-color] {
+  background: linear-gradient(180deg, transparent 55%, attr(data-color color, oklch(0.9 0.12 90 / 0.65)) 55%);
+}
+/* Fallback: use the style attribute Tiptap injects. */
+.lumina-paper .lumina-prose mark[style*="background-color"] {
+  background-color: transparent !important;
+  background-image: linear-gradient(180deg, transparent 55%, currentColor 55%);
+}
+/* Simpler working approach: rely on Tiptap injecting background-color inline; keep the base rule. */
+
+/* --------- Mobile palette dock --------- */
+.writers-palette-mobile {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: 0;
+  display: none;
+  justify-content: center;
+  z-index: 80;
+  padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+  pointer-events: none;
+}
+.writers-palette-mobile > * { pointer-events: auto; }
+@media (max-width: 768px), (pointer: coarse) {
+  .writers-palette-mobile { display: flex; }
+  /* Hide the floating desktop bubble on mobile — the dock owns the palette. */
+  .lumina-bubble.writers-palette:not(.writers-palette-mobile .lumina-bubble) {
+    /* fallback for browsers that don't support :not with descendant selector */
+  }
+}
+@media (max-width: 768px) {
+  /* On mobile hide the Tippy bubble menu that Tiptap portals to <body>. */
+  [data-tippy-root]:has(.lumina-bubble) { display: none !important; }
+  .writers-palette-mobile .lumina-bubble {
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .writers-palette-mobile .lumina-bubble::-webkit-scrollbar { display: none; }
+}
+
+/* =============================================================
+   Phase 4 — Rich nodes: Printed Memory, Voice playhead, Ink Checklist
+   ============================================================= */
+
+/* --------- Printed Memory --------- */
+.lumina-prose .lumina-printed {
+  margin: 1.8em auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  max-width: 100%;
+}
+.lumina-printed-frame {
+  position: relative;
+  padding: 10px 10px 12px;
+  background: white;
+  border-radius: 6px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 12px 28px -14px oklch(0.28 0.05 320 / 0.35),
+    0 2px 6px -3px oklch(0.28 0.05 320 / 0.2);
+  max-width: 100%;
+  transform: rotate(-0.3deg);
+  transition: transform 240ms cubic-bezier(0.22, 0.9, 0.32, 1);
+  content-visibility: auto;
+  contain-intrinsic-size: auto 320px;
+}
+.lumina-printed-frame:hover { transform: rotate(0deg) translateY(-1px); }
+.dark .lumina-printed-frame {
+  background: oklch(0.28 0.02 320);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 20px 40px -20px black;
+}
+.lumina-printed-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 2px;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.lumina-printed-delete {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  color: white;
+  background: oklch(0.28 0.04 320 / 0.55);
+  opacity: 0;
+  transition: opacity 160ms;
+}
+.lumina-printed-frame:hover .lumina-printed-delete { opacity: 1; }
+.lumina-printed-resize {
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  width: 14px;
+  height: 14px;
+  cursor: nwse-resize;
+  background:
+    linear-gradient(135deg, transparent 40%, color-mix(in oklab, oklch(0.55 0.15 340) 40%, transparent) 40%, color-mix(in oklab, oklch(0.55 0.15 340) 40%, transparent) 60%, transparent 60%);
+  border-bottom-right-radius: 4px;
+  opacity: 0;
+  transition: opacity 160ms;
+}
+.lumina-printed-frame:hover .lumina-printed-resize { opacity: 1; }
+.lumina-printed-caption {
+  font-family: var(--font-display), serif;
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.35;
+  color: oklch(0.4 0.04 320);
+  border: none;
+  background: transparent;
+  outline: none;
+  width: 100%;
+  padding: 2px 4px;
+}
+.dark .lumina-printed-caption { color: oklch(0.88 0.03 320); }
+.lumina-printed-caption::placeholder { color: oklch(0.6 0.03 320); }
+.lumina-printed-caption.static { font-size: 15px; }
+.lumina-printed-meta {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: oklch(0.55 0.03 320);
+}
+
+/* --------- Voice memory — scrubbable wave + primary glow while playing --------- */
+.lumina-voice[data-playing="true"] {
+  box-shadow:
+    0 10px 30px -20px oklch(0.55 0.15 340 / 0.35),
+    0 0 0 1px oklch(0.72 0.13 340 / 0.35),
+    0 0 24px -4px oklch(0.72 0.13 340 / 0.35);
+}
+.lumina-voice-wave {
+  position: relative;
+  cursor: pointer;
+}
+.lumina-voice-wave span[data-played="true"] { opacity: 1; }
+.lumina-voice-wave span[data-played="false"] { opacity: 0.4; }
+.lumina-voice-playhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, oklch(0.55 0.15 340), oklch(0.5 0.15 290));
+  border-radius: 2px;
+  pointer-events: none;
+  transform: translateX(-1px);
+  box-shadow: 0 0 6px oklch(0.72 0.13 340 / 0.6);
+}
+.lumina-voice[data-playing="false"] .lumina-voice-playhead { opacity: 0; }
+
+/* --------- Ink Checklist — animated stroke on check --------- */
+.lumina-prose ul[data-type="taskList"] li > label input[type="checkbox"] {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  border: 1.5px solid oklch(0.72 0.13 340 / 0.55);
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  transition: background 200ms, border-color 200ms;
+  flex-shrink: 0;
+}
+.lumina-prose ul[data-type="taskList"] li > label input[type="checkbox"]::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border-radius: 3px;
+  background: linear-gradient(135deg, oklch(0.72 0.13 340), oklch(0.68 0.14 290));
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 220ms, transform 220ms cubic-bezier(0.22, 0.9, 0.32, 1);
+}
+.lumina-prose ul[data-type="taskList"] li[data-checked="true"] > label input[type="checkbox"] {
+  border-color: oklch(0.72 0.13 340);
+}
+.lumina-prose ul[data-type="taskList"] li[data-checked="true"] > label input[type="checkbox"]::after {
+  opacity: 1;
+  transform: scale(1);
+}
+.lumina-prose ul[data-type="taskList"] li > div {
+  position: relative;
+  transition: color 260ms;
+}
+.lumina-prose ul[data-type="taskList"] li > div::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 100%;
+  top: 50%;
+  height: 1.5px;
+  background: currentColor;
+  border-radius: 2px;
+  opacity: 0.55;
+  transition: right 380ms cubic-bezier(0.22, 0.9, 0.32, 1);
+}
+.lumina-prose ul[data-type="taskList"] li[data-checked="true"] > div {
+  color: oklch(0.55 0.03 320);
+}
+.lumina-prose ul[data-type="taskList"] li[data-checked="true"] > div::after {
+  right: -2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .lumina-prose ul[data-type="taskList"] li > label input[type="checkbox"]::after,
+  .lumina-prose ul[data-type="taskList"] li > div::after {
+    transition: none;
+  }
+}
+
+/* --------- Legacy inline images — perf: content-visibility --------- */
+.lumina-prose img:not(.lumina-printed img) {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 320px;
+}
+
+/* =============================================================
+   Phase 5 — Reactive drift, safe-area, focus rings, dvh
+   ============================================================= */
+
+/* Reactive shadow-angle drift — bound to CSS custom props set by the
+   cursor tracker. Vars default to 0 so the resting shadow is unchanged. */
+.lumina-paper {
+  --paper-shadow-x: 0;
+  --paper-shadow-y: 0;
+  transition: box-shadow 320ms cubic-bezier(0.22, 0.9, 0.32, 1);
+}
+.lumina-paper:hover {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 -1px 0 rgba(120, 60, 90, 0.04) inset,
+    calc(var(--paper-shadow-x) * 20px) calc(40px + var(--paper-shadow-y) * 20px)
+      80px -40px oklch(0.55 0.15 340 / 0.22),
+    0 2px 4px -2px oklch(0.55 0.15 340 / 0.1);
+}
+.dark .lumina-paper:hover {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    calc(var(--paper-shadow-x) * 20px) calc(40px + var(--paper-shadow-y) * 20px)
+      80px -40px oklch(0.1 0.05 320 / 0.6);
+}
+@media (prefers-reduced-motion: reduce) {
+  .lumina-paper, .lumina-paper:hover { transition: none; }
+}
+
+/* Safe-area padding for the mobile palette dock (iOS home indicator, etc). */
+.writers-palette-mobile {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Full dynamic viewport height where the editor is stretched to fill. */
+.lumina-paper.min-h-dvh { min-height: 100dvh; }
+
+/* Visible focus rings on interactive controls inside the paper — the
+   default ring is too dim on the warm background. */
+.lumina-bubble button:focus-visible,
+.lumina-slash button:focus-visible,
+.lumina-linkpop button:focus-visible,
+.lumina-linkpop input:focus-visible,
+.lumina-mention-chip:focus-visible,
+.writers-palette-swatch:focus-visible {
+  outline: 2px solid oklch(0.55 0.15 340);
+  outline-offset: 2px;
+}
+
+/* =============================================================
+   Persistent Formatting Toolbar (Apple Notes-style, Lumina glass)
+   ============================================================= */
+.lumina-toolbar-dock {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  justify-content: center;
+  padding: 8px 0 10px;
+  margin: 0 calc(-1 * clamp(20px, 5vw, 72px)) 4px;
+  background: linear-gradient(180deg,
+    color-mix(in oklab, oklch(0.99 0.008 70) 92%, transparent) 0%,
+    color-mix(in oklab, oklch(0.99 0.008 70) 70%, transparent) 80%,
+    transparent 100%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.dark .lumina-toolbar-dock {
+  background: linear-gradient(180deg,
+    color-mix(in oklab, oklch(0.22 0.02 320) 92%, transparent) 0%,
+    color-mix(in oklab, oklch(0.22 0.02 320) 70%, transparent) 80%,
+    transparent 100%);
+}
+@media (max-width: 768px) {
+  .lumina-toolbar-dock { display: none; }
+}
+
+
+.lumina-toolbar {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 10px;
+  border-radius: 18px;
+  background: color-mix(in oklab, white 62%, transparent);
+  border: 1px solid color-mix(in oklab, oklch(0.72 0.13 340) 12%, transparent);
+  box-shadow:
+    0 10px 32px -18px color-mix(in oklab, oklch(0.3 0.06 320) 40%, transparent),
+    0 1px 0 color-mix(in oklab, white 70%, transparent) inset;
+  backdrop-filter: blur(18px) saturate(1.15);
+  -webkit-backdrop-filter: blur(18px) saturate(1.15);
+  max-width: 100%;
+  flex-wrap: nowrap;
+}
+.dark .lumina-toolbar {
+  background: color-mix(in oklab, oklch(0.24 0.03 320) 65%, transparent);
+  border-color: color-mix(in oklab, white 8%, transparent);
+  box-shadow: 0 14px 32px -18px rgb(0 0 0 / 0.6);
+}
+
+.lumina-toolbar-btn,
+.lumina-toolbar-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 36px;
+  min-width: 36px;
+  padding: 0 10px;
+  border-radius: 10px;
+  background: transparent;
+  color: oklch(0.42 0.04 320);
+  font-size: 13px;
+  transition: background 160ms ease, color 160ms ease, transform 160ms ease;
+}
+.dark .lumina-toolbar-btn,
+.dark .lumina-toolbar-pill { color: oklch(0.85 0.03 320); }
+
+.lumina-toolbar-btn:hover:not(:disabled),
+.lumina-toolbar-pill:hover {
+  background: color-mix(in oklab, oklch(0.72 0.13 340) 14%, transparent);
+  color: oklch(0.28 0.05 320);
+}
+.dark .lumina-toolbar-btn:hover:not(:disabled),
+.dark .lumina-toolbar-pill:hover { color: white; }
+
+.lumina-toolbar-btn[data-active="true"],
+.lumina-toolbar-pill[data-open="true"] {
+  background: color-mix(in oklab, oklch(0.72 0.13 340) 22%, transparent);
+  color: oklch(0.28 0.05 320);
+}
+.dark .lumina-toolbar-btn[data-active="true"],
+.dark .lumina-toolbar-pill[data-open="true"] { color: white; }
+
+.lumina-toolbar-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.lumina-toolbar-pill {
+  padding: 0 12px;
+  font-family: var(--font-display, inherit);
+}
+
+.lumina-toolbar-sep {
+  display: inline-block;
+  width: 1px;
+  height: 20px;
+  margin: 0 8px;
+  background: color-mix(in oklab, oklch(0.5 0.05 320) 16%, transparent);
+}
+
+
+.lumina-toolbar-group { position: relative; display: inline-flex; }
+
+.lumina-toolbar-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 160px;
+  padding: 6px;
+  border-radius: 12px;
+  background: color-mix(in oklab, white 92%, transparent);
+  border: 1px solid color-mix(in oklab, oklch(0.72 0.13 340) 16%, transparent);
+  box-shadow: 0 14px 34px -14px color-mix(in oklab, oklch(0.3 0.06 320) 50%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.dark .lumina-toolbar-menu {
+  background: color-mix(in oklab, oklch(0.22 0.03 320) 92%, transparent);
+  border-color: color-mix(in oklab, oklch(0.72 0.13 340) 24%, transparent);
+}
+.lumina-toolbar-menu-right { left: auto; right: 0; }
+
+.lumina-toolbar-menu button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: oklch(0.32 0.04 320);
+  text-align: left;
+  background: transparent;
+  transition: background 140ms ease;
+}
+.dark .lumina-toolbar-menu button { color: oklch(0.9 0.02 320); }
+.lumina-toolbar-menu button:hover,
+.lumina-toolbar-menu button[data-active="true"] {
+  background: color-mix(in oklab, oklch(0.72 0.13 340) 16%, transparent);
+}
+
+.lumina-toolbar-swatches {
+  flex-direction: row;
+  gap: 6px;
+  padding: 8px;
+  min-width: auto;
+}
+.lumina-toolbar-swatch {
+  width: 22px; height: 22px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, oklch(0.3 0.05 320) 22%, transparent);
+  transition: transform 140ms ease;
+}
+.lumina-toolbar-swatch:hover { transform: scale(1.12); }
+.lumina-toolbar-swatch-clear {
+  background: transparent;
+  color: oklch(0.5 0.03 320);
+  font-size: 14px;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+
+/* Hide desktop-only chrome on mobile; show mobile dock */
+.lumina-toolbar-mobile-dock {
+  position: fixed;
+  left: 8px; right: 8px;
+  bottom: 0;
+  display: none;
+  justify-content: center;
+  z-index: 80;
+  padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+  pointer-events: none;
+}
+.lumina-toolbar-mobile-dock > * { pointer-events: auto; }
+@media (max-width: 768px), (pointer: coarse) {
+  .lumina-toolbar-mobile-dock { display: flex; }
+}
+@media (max-width: 768px) {
+  .lumina-toolbar-mobile-dock .lumina-toolbar {
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    border-radius: 16px;
+    scroll-padding-inline: 16px;
+    -webkit-overflow-scrolling: touch;
+    /* Subtle fade at the horizontal edges to signal scrollability */
+    -webkit-mask-image: linear-gradient(to right, transparent, black 14px, black calc(100% - 14px), transparent);
+            mask-image: linear-gradient(to right, transparent, black 14px, black calc(100% - 14px), transparent);
+  }
+  .lumina-toolbar-mobile-dock .lumina-toolbar::-webkit-scrollbar { display: none; }
+  /* Menus flip upward on mobile since the toolbar sits at the bottom */
+  .lumina-toolbar-mobile .lumina-toolbar-menu {
+    top: auto;
+    bottom: calc(100% + 6px);
+  }
+}
+
+
+.lumina-toolbar-btn:focus-visible,
+.lumina-toolbar-pill:focus-visible,
+.lumina-toolbar-swatch:focus-visible {
+  outline: 2px solid oklch(0.55 0.15 340);
+  outline-offset: 2px;
+}
+
+/* When the note is in immersive "writing" state, dim (but don't hide) the toolbar. */
+.lumina-paper[data-writing="true"] .lumina-toolbar-dock { opacity: 0.55; }
+.lumina-paper[data-writing="true"] .lumina-toolbar-dock:hover { opacity: 1; }
+
+/* ============================================================
+   Mobile perf: strip every backdrop-filter inside the editor
+   paper surface on coarse-pointer devices. Continuous blur while
+   typing is the biggest paint cost on phone GPUs; the paper still
+   reads as translucent because each element already carries a
+   fallback background/color-mix. Desktop is unaffected. */
+@media (max-width: 768px), (pointer: coarse) {
+  .lumina-paper,
+  .lumina-paper *,
+  .lumina-toolbar-dock,
+  .lumina-toolbar-dock * {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
