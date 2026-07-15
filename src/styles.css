@@ -273,6 +273,26 @@
     0 0 40px -8px color-mix(in oklab, var(--glow, transparent) 45%, transparent);
 }
 
+/* Mobile perf: continuously reblurring full-screen glass surfaces over
+   animated ambient layers is the single biggest scroll-jank source on
+   phone GPUs. Drop backdrop-filter entirely on small screens and use a
+   more opaque fill instead — visually near-identical, dramatically
+   cheaper to composite. Desktop keeps the full glass look. */
+@media (max-width: 768px) {
+  .glass,
+  [class*="backdrop-blur"] {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  .glass {
+    background: color-mix(in oklab, var(--color-card) 92%, transparent);
+  }
+  .dark .glass {
+    background: color-mix(in oklab, var(--color-card) 88%, transparent);
+  }
+}
+
+
 /* ============ Elevation utilities — canonical shadow scale ============ */
 @utility lumina-elev-1 { box-shadow: var(--shadow-e1); }
 @utility lumina-elev-2 { box-shadow: var(--shadow-e2); }
@@ -292,6 +312,16 @@
   background: color-mix(in oklab, var(--color-card) 72%, transparent);
   border-color: color-mix(in oklab, var(--glow, white) 25%, transparent);
   box-shadow: var(--shadow-e3);
+}
+@media (max-width: 768px) {
+  .glass-strong {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: color-mix(in oklab, var(--color-card) 94%, transparent);
+  }
+  .dark .glass-strong {
+    background: color-mix(in oklab, var(--color-card) 90%, transparent);
+  }
 }
 
 
@@ -434,16 +464,10 @@
   100% { background-position: 0% 0%, 100% 0%, 50% 100%; }
 }
 
-/* Slow-shifting body gradient — paused while scrolling / reduced-motion. */
+/* Slow-shifting body gradient (all themes inherit). */
 body {
-  background-size: 120% 120%, 120% 120%, 140% 140%;
-  animation: bg-drift 48s ease-in-out infinite;
-}
-@media (prefers-reduced-motion: reduce) {
-  body { animation: none !important; }
-}
-html[data-scrolling="true"] body {
-  animation-play-state: paused !important;
+  background-size: 140% 140%, 140% 140%, 160% 160%;
+  animation: bg-drift 28s ease-in-out infinite;
 }
 
 /* Ambient particle overlay (used inside theme collection card). */
@@ -452,6 +476,7 @@ html[data-scrolling="true"] body {
   border-radius: 9999px;
   pointer-events: none;
   opacity: 0;
+  will-change: transform, opacity;
   animation: ambient-drift var(--pdur, 20s) ease-in-out var(--pdelay, 0s) infinite;
 }
 .ambient-dot {
@@ -462,6 +487,7 @@ html[data-scrolling="true"] body {
   background: radial-gradient(circle at 40% 40%,
     color-mix(in oklab, var(--pcolor, white) 90%, transparent),
     transparent 70%);
+  filter: blur(0.5px);
 }
 .ambient-sparkle {
   background: var(--pcolor, currentColor);
@@ -2490,27 +2516,17 @@ html { scroll-behavior: smooth; }
    composited animated layers otherwise stall the main scroll thread. */
 html[data-scrolling="true"] .ambient-particle,
 html[data-scrolling="true"] [data-scroll-pause],
-html[data-scrolling="true"] [data-petals] *,
-html[data-scrolling="true"] .theme-ambient * {
+html[data-scrolling="true"] .theme-ambient *,
+html[data-scrolling="true"] .petal-layer span {
   animation-play-state: paused !important;
 }
 
-/* Cheap page enter — replaces Framer route transitions */
-@keyframes lumina-page-enter {
-  from { opacity: 0.86; }
-  to { opacity: 1; }
-}
-.lumina-page-enter {
-  animation: lumina-page-enter 160ms ease-out;
-}
-@media (prefers-reduced-motion: reduce) {
-  .lumina-page-enter { animation: none; }
-}
-
-@keyframes confetti-fall {
-  0% { transform: translateY(-10px) rotate(0deg); opacity: 0; }
-  12% { opacity: 1; }
-  100% { transform: translateY(110vh) rotate(280deg); opacity: 0; }
+/* Pause ambient/petals when the tab is hidden (saves GPU/battery). */
+html[data-ambient-paused] .ambient-particle,
+html[data-ambient-paused] [data-scroll-pause],
+html[data-ambient-paused] .theme-ambient *,
+html[data-ambient-paused] .petal-layer span {
+  animation-play-state: paused !important;
 }
 
 /* Cap scrollbar-thumb blur on touch devices — cheap paint, big win. */

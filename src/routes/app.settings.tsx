@@ -180,9 +180,7 @@ function SettingsPage() {
   );
 }
 
-/* Session action — mirrors the desktop UserChip "Rest for Now" affordance.
-   Kept intentionally separate from Account: it's a calming session close,
-   not an account destructive action. */
+/* Session action — mirrors the desktop UserChip "Rest for Now" affordance. */
 function RestForNowCard() {
   async function handleRest() {
     const ok = await luminaDialog.confirm({
@@ -220,4 +218,3 @@ function RestForNowCard() {
     </GlassCard>
   );
 }
-

@@ -130,7 +130,7 @@ export async function mountGoogleButton(
     itp_support: true,
   });
 
-  const width = Math.max(200, Math.floor(parent.clientWidth) || 320);
+  const width = Math.max(280, Math.floor(parent.getBoundingClientRect().width) || 320);
   id.renderButton(parent, {
     type: "standard",
     theme: "outline",

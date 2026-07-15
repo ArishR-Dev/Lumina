@@ -46,12 +46,15 @@ export function ThemeAmbient({ count = 32 }: { count?: number }) {
   const theme = useLumina((s) => s.theme);
   const style = THEME_STYLES[theme] ?? THEME_STYLES.midnight;
 
-  // Android perf: halve particle density on touch devices. Composited
-  // ambient layers are the single biggest scroll-jank source on phone GPUs.
+  // Touch / low-core devices: fewer particles, same look.
   const effectiveCount = useMemo(() => {
     if (typeof window === "undefined") return count;
     const coarse = window.matchMedia?.("(hover: none) and (pointer: coarse)").matches;
-    return coarse ? Math.max(8, Math.round(count * 0.45)) : count;
+    const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    const cores = navigator.hardwareConcurrency || 8;
+    if (reduced) return Math.max(6, Math.round(count * 0.25));
+    if (coarse || cores <= 4) return Math.max(8, Math.round(count * 0.4));
+    return count;
   }, [count]);
 
 
