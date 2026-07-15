@@ -5,9 +5,9 @@ import { toast } from "sonner";
 import { Flower2, Mail, Lock, Loader2, ArrowLeft } from "lucide-react";
 import { Petals } from "@/components/lumina/Petals";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
 import { useAuth } from "@/lib/lumina-auth";
 import { getAuthRedirectBase, getAuthRedirectUrl } from "@/lib/lumina-auth-redirect";
+import { signInWithApple, signInWithGoogle } from "@/lib/google-auth";
 import { luminaDialog } from "@/lib/lumina-dialog";
 import { z } from "zod";
 
@@ -48,15 +48,17 @@ function AuthPage() {
       description: "Opening a secure sign-in window.",
     });
     try {
-      const result = await lovable.auth.signInWithOAuth(provider, {
-        redirect_uri: getAuthRedirectBase(),
-      });
-      if (result.error) {
-        toast.error(result.error.message || `Could not sign in with ${provider}`);
+      const { data, error } =
+        provider === "google" ? await signInWithGoogle() : await signInWithApple();
+      if (error) {
+        toast.error(error.message || `Could not sign in with ${provider}`);
         return;
       }
-      if (result.redirected) return; // provider will take over
-      // Session set already — head home.
+      // Browser navigates to the provider; when it returns, `/auth/callback` sets the session.
+      if (data?.url) {
+        window.location.assign(data.url);
+        return;
+      }
       navigate({ to: "/app/home", replace: true });
     } catch (e) {
       toast.error(e instanceof Error ? e.message : String(e));

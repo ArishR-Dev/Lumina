@@ -14,9 +14,9 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Lumina is a beautiful private space to write notes, journal, log moods, and keep memories — kept softly, just for you." },
       { property: "og:title", content: "Lumina — a soft sanctuary for writing, reflection & memory" },
       { property: "og:description", content: "A beautiful private space to write, reflect, and remember." },
-      { property: "og:url", content: "https://heart-warming-magic.lovable.app/" },
+      { property: "og:url", content: "https://lumina-evermore.vercel.app/" },
     ],
-    links: [{ rel: "canonical", href: "https://heart-warming-magic.lovable.app/" }],
+    links: [{ rel: "canonical", href: "https://lumina-evermore.vercel.app/" }],
   }),
 });
 

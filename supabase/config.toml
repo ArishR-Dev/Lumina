@@ -1,1 +1,10 @@
 project_id = "gkqhohicvpgdxngmmzkn"
+
+# Google OAuth (local Supabase). For hosted projects, set the same
+# GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET in the Dashboard under
+# Authentication → Providers → Google.
+[auth.external.google]
+enabled = true
+client_id = "env(GOOGLE_CLIENT_ID)"
+secret = "env(GOOGLE_CLIENT_SECRET)"
+skip_nonce_check = false

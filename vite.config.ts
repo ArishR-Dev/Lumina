@@ -14,6 +14,14 @@ export default defineConfig({
     server: { entry: "server" },
   },
   vite: {
+    server: {
+      port: 3000,
+      strictPort: true,
+    },
+    preview: {
+      port: 3000,
+      strictPort: true,
+    },
     plugins: [
       VitePWA({
         strategies: "generateSW",
@@ -39,7 +47,6 @@ export default defineConfig({
           navigateFallback: "/offline.html",
           navigateFallbackDenylist: [
             /^\/api\//,
-            /^\/~oauth/,
             /^\/auth\/callback/,
           ],
           globPatterns: ["**/*.{js,css,html,ico,png,svg,webp,woff,woff2,ttf,otf}"],

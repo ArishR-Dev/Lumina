@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as AppTimelineRouteImport } from './routes/app.timeline'
 import { Route as AppThoughtsRouteImport } from './routes/app.thoughts'
 import { Route as AppTasksRouteImport } from './routes/app.tasks'
@@ -81,6 +82,11 @@ const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppRoute,
+} as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/callback',
+  path: '/callback',
+  getParentRoute: () => AuthRoute,
 } as any)
 const AppTimelineRoute = AppTimelineRouteImport.update({
   id: '/timeline',
@@ -267,7 +273,7 @@ const AppFarewellPreviewEntityIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/app/achievements': typeof AppAchievementsRoute
@@ -290,6 +296,7 @@ export interface FileRoutesByFullPath {
   '/app/tasks': typeof AppTasksRouteWithChildren
   '/app/thoughts': typeof AppThoughtsRouteWithChildren
   '/app/timeline': typeof AppTimelineRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/app/': typeof AppIndexRoute
   '/app/capsules/$id': typeof AppCapsulesIdRoute
   '/app/farewell/custom': typeof AppFarewellCustomRoute
@@ -310,7 +317,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/app/achievements': typeof AppAchievementsRoute
@@ -332,6 +339,7 @@ export interface FileRoutesByTo {
   '/app/tasks': typeof AppTasksRouteWithChildren
   '/app/thoughts': typeof AppThoughtsRouteWithChildren
   '/app/timeline': typeof AppTimelineRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/app': typeof AppIndexRoute
   '/app/capsules/$id': typeof AppCapsulesIdRoute
   '/app/farewell/custom': typeof AppFarewellCustomRoute
@@ -354,7 +362,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/app/achievements': typeof AppAchievementsRoute
@@ -377,6 +385,7 @@ export interface FileRoutesById {
   '/app/tasks': typeof AppTasksRouteWithChildren
   '/app/thoughts': typeof AppThoughtsRouteWithChildren
   '/app/timeline': typeof AppTimelineRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/app/': typeof AppIndexRoute
   '/app/capsules/$id': typeof AppCapsulesIdRoute
   '/app/farewell/custom': typeof AppFarewellCustomRoute
@@ -423,6 +432,7 @@ export interface FileRouteTypes {
     | '/app/tasks'
     | '/app/thoughts'
     | '/app/timeline'
+    | '/auth/callback'
     | '/app/'
     | '/app/capsules/$id'
     | '/app/farewell/custom'
@@ -465,6 +475,7 @@ export interface FileRouteTypes {
     | '/app/tasks'
     | '/app/thoughts'
     | '/app/timeline'
+    | '/auth/callback'
     | '/app'
     | '/app/capsules/$id'
     | '/app/farewell/custom'
@@ -509,6 +520,7 @@ export interface FileRouteTypes {
     | '/app/tasks'
     | '/app/thoughts'
     | '/app/timeline'
+    | '/auth/callback'
     | '/app/'
     | '/app/capsules/$id'
     | '/app/farewell/custom'
@@ -531,7 +543,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
-  AuthRoute: typeof AuthRoute
+  AuthRoute: typeof AuthRouteWithChildren
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
@@ -579,6 +591,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/'
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof AuthRoute
     }
     '/app/timeline': {
       id: '/app/timeline'
@@ -987,10 +1006,20 @@ const AppRouteChildren: AppRouteChildren = {
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
+interface AuthRouteChildren {
+  AuthCallbackRoute: typeof AuthCallbackRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthCallbackRoute: AuthCallbackRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
-  AuthRoute: AuthRoute,
+  AuthRoute: AuthRouteWithChildren,
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
