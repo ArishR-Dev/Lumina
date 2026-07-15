@@ -67,7 +67,7 @@ await resize(16, "favicon-16x16.png");
 await maskable(512, "icon-maskable-512.png");
 await maskable(512, "maskable-512x512.png");
 await maskable(192, "icon-maskable-192.png");
-await ogImage("og-image.png");
+await ogImage("og-shivani.jpg");
 
 const icoBuf = await pngToIco([
   path.join(publicDir, "favicon-16x16.png"),
