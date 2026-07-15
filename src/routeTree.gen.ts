@@ -36,8 +36,14 @@ import { Route as AppDashboardRouteImport } from './routes/app.dashboard'
 import { Route as AppCapsulesRouteImport } from './routes/app.capsules'
 import { Route as AppCalendarRouteImport } from './routes/app.calendar'
 import { Route as AppAchievementsRouteImport } from './routes/app.achievements'
+import { Route as AppThoughtsIndexRouteImport } from './routes/app.thoughts.index'
+import { Route as AppTasksIndexRouteImport } from './routes/app.tasks.index'
 import { Route as AppNotesIndexRouteImport } from './routes/app.notes.index'
+import { Route as AppMemoriesIndexRouteImport } from './routes/app.memories.index'
+import { Route as AppLettersIndexRouteImport } from './routes/app.letters.index'
+import { Route as AppJournalIndexRouteImport } from './routes/app.journal.index'
 import { Route as AppFarewellIndexRouteImport } from './routes/app.farewell.index'
+import { Route as AppCapsulesIndexRouteImport } from './routes/app.capsules.index'
 import { Route as AppThoughtsIdRouteImport } from './routes/app.thoughts.$id'
 import { Route as AppTasksIdRouteImport } from './routes/app.tasks.$id'
 import { Route as AppTagsTagRouteImport } from './routes/app.tags.$tag'
@@ -188,15 +194,45 @@ const AppAchievementsRoute = AppAchievementsRouteImport.update({
   path: '/achievements',
   getParentRoute: () => AppRoute,
 } as any)
+const AppThoughtsIndexRoute = AppThoughtsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppThoughtsRoute,
+} as any)
+const AppTasksIndexRoute = AppTasksIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppTasksRoute,
+} as any)
 const AppNotesIndexRoute = AppNotesIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppNotesRoute,
 } as any)
+const AppMemoriesIndexRoute = AppMemoriesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppMemoriesRoute,
+} as any)
+const AppLettersIndexRoute = AppLettersIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppLettersRoute,
+} as any)
+const AppJournalIndexRoute = AppJournalIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppJournalRoute,
+} as any)
 const AppFarewellIndexRoute = AppFarewellIndexRouteImport.update({
   id: '/farewell/',
   path: '/farewell/',
   getParentRoute: () => AppRoute,
+} as any)
+const AppCapsulesIndexRoute = AppCapsulesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppCapsulesRoute,
 } as any)
 const AppThoughtsIdRoute = AppThoughtsIdRouteImport.update({
   id: '/$id',
@@ -309,8 +345,14 @@ export interface FileRoutesByFullPath {
   '/app/tags/$tag': typeof AppTagsTagRoute
   '/app/tasks/$id': typeof AppTasksIdRoute
   '/app/thoughts/$id': typeof AppThoughtsIdRoute
+  '/app/capsules/': typeof AppCapsulesIndexRoute
   '/app/farewell/': typeof AppFarewellIndexRoute
+  '/app/journal/': typeof AppJournalIndexRoute
+  '/app/letters/': typeof AppLettersIndexRoute
+  '/app/memories/': typeof AppMemoriesIndexRoute
   '/app/notes/': typeof AppNotesIndexRoute
+  '/app/tasks/': typeof AppTasksIndexRoute
+  '/app/thoughts/': typeof AppThoughtsIndexRoute
   '/app/farewell/$entity/$id': typeof AppFarewellEntityIdRoute
   '/app/farewell/pick/$category': typeof AppFarewellPickCategoryRoute
   '/app/farewell/preview/$entity/$id': typeof AppFarewellPreviewEntityIdRoute
@@ -322,22 +364,16 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/app/achievements': typeof AppAchievementsRoute
   '/app/calendar': typeof AppCalendarRoute
-  '/app/capsules': typeof AppCapsulesRouteWithChildren
   '/app/dashboard': typeof AppDashboardRoute
   '/app/export': typeof AppExportRoute
   '/app/favorites': typeof AppFavoritesRoute
   '/app/habits': typeof AppHabitsRoute
   '/app/home': typeof AppHomeRoute
   '/app/insights': typeof AppInsightsRoute
-  '/app/journal': typeof AppJournalRouteWithChildren
-  '/app/letters': typeof AppLettersRouteWithChildren
-  '/app/memories': typeof AppMemoriesRouteWithChildren
   '/app/mood': typeof AppMoodRoute
   '/app/private': typeof AppPrivateRoute
   '/app/scratch': typeof AppScratchRoute
   '/app/settings': typeof AppSettingsRoute
-  '/app/tasks': typeof AppTasksRouteWithChildren
-  '/app/thoughts': typeof AppThoughtsRouteWithChildren
   '/app/timeline': typeof AppTimelineRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/app': typeof AppIndexRoute
@@ -352,8 +388,14 @@ export interface FileRoutesByTo {
   '/app/tags/$tag': typeof AppTagsTagRoute
   '/app/tasks/$id': typeof AppTasksIdRoute
   '/app/thoughts/$id': typeof AppThoughtsIdRoute
+  '/app/capsules': typeof AppCapsulesIndexRoute
   '/app/farewell': typeof AppFarewellIndexRoute
+  '/app/journal': typeof AppJournalIndexRoute
+  '/app/letters': typeof AppLettersIndexRoute
+  '/app/memories': typeof AppMemoriesIndexRoute
   '/app/notes': typeof AppNotesIndexRoute
+  '/app/tasks': typeof AppTasksIndexRoute
+  '/app/thoughts': typeof AppThoughtsIndexRoute
   '/app/farewell/$entity/$id': typeof AppFarewellEntityIdRoute
   '/app/farewell/pick/$category': typeof AppFarewellPickCategoryRoute
   '/app/farewell/preview/$entity/$id': typeof AppFarewellPreviewEntityIdRoute
@@ -398,8 +440,14 @@ export interface FileRoutesById {
   '/app/tags/$tag': typeof AppTagsTagRoute
   '/app/tasks/$id': typeof AppTasksIdRoute
   '/app/thoughts/$id': typeof AppThoughtsIdRoute
+  '/app/capsules/': typeof AppCapsulesIndexRoute
   '/app/farewell/': typeof AppFarewellIndexRoute
+  '/app/journal/': typeof AppJournalIndexRoute
+  '/app/letters/': typeof AppLettersIndexRoute
+  '/app/memories/': typeof AppMemoriesIndexRoute
   '/app/notes/': typeof AppNotesIndexRoute
+  '/app/tasks/': typeof AppTasksIndexRoute
+  '/app/thoughts/': typeof AppThoughtsIndexRoute
   '/app/farewell/$entity/$id': typeof AppFarewellEntityIdRoute
   '/app/farewell/pick/$category': typeof AppFarewellPickCategoryRoute
   '/app/farewell/preview/$entity/$id': typeof AppFarewellPreviewEntityIdRoute
@@ -445,8 +493,14 @@ export interface FileRouteTypes {
     | '/app/tags/$tag'
     | '/app/tasks/$id'
     | '/app/thoughts/$id'
+    | '/app/capsules/'
     | '/app/farewell/'
+    | '/app/journal/'
+    | '/app/letters/'
+    | '/app/memories/'
     | '/app/notes/'
+    | '/app/tasks/'
+    | '/app/thoughts/'
     | '/app/farewell/$entity/$id'
     | '/app/farewell/pick/$category'
     | '/app/farewell/preview/$entity/$id'
@@ -458,22 +512,16 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/app/achievements'
     | '/app/calendar'
-    | '/app/capsules'
     | '/app/dashboard'
     | '/app/export'
     | '/app/favorites'
     | '/app/habits'
     | '/app/home'
     | '/app/insights'
-    | '/app/journal'
-    | '/app/letters'
-    | '/app/memories'
     | '/app/mood'
     | '/app/private'
     | '/app/scratch'
     | '/app/settings'
-    | '/app/tasks'
-    | '/app/thoughts'
     | '/app/timeline'
     | '/auth/callback'
     | '/app'
@@ -488,8 +536,14 @@ export interface FileRouteTypes {
     | '/app/tags/$tag'
     | '/app/tasks/$id'
     | '/app/thoughts/$id'
+    | '/app/capsules'
     | '/app/farewell'
+    | '/app/journal'
+    | '/app/letters'
+    | '/app/memories'
     | '/app/notes'
+    | '/app/tasks'
+    | '/app/thoughts'
     | '/app/farewell/$entity/$id'
     | '/app/farewell/pick/$category'
     | '/app/farewell/preview/$entity/$id'
@@ -533,8 +587,14 @@ export interface FileRouteTypes {
     | '/app/tags/$tag'
     | '/app/tasks/$id'
     | '/app/thoughts/$id'
+    | '/app/capsules/'
     | '/app/farewell/'
+    | '/app/journal/'
+    | '/app/letters/'
+    | '/app/memories/'
     | '/app/notes/'
+    | '/app/tasks/'
+    | '/app/thoughts/'
     | '/app/farewell/$entity/$id'
     | '/app/farewell/pick/$category'
     | '/app/farewell/preview/$entity/$id'
@@ -739,6 +799,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAchievementsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/thoughts/': {
+      id: '/app/thoughts/'
+      path: '/'
+      fullPath: '/app/thoughts/'
+      preLoaderRoute: typeof AppThoughtsIndexRouteImport
+      parentRoute: typeof AppThoughtsRoute
+    }
+    '/app/tasks/': {
+      id: '/app/tasks/'
+      path: '/'
+      fullPath: '/app/tasks/'
+      preLoaderRoute: typeof AppTasksIndexRouteImport
+      parentRoute: typeof AppTasksRoute
+    }
     '/app/notes/': {
       id: '/app/notes/'
       path: '/'
@@ -746,12 +820,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppNotesIndexRouteImport
       parentRoute: typeof AppNotesRoute
     }
+    '/app/memories/': {
+      id: '/app/memories/'
+      path: '/'
+      fullPath: '/app/memories/'
+      preLoaderRoute: typeof AppMemoriesIndexRouteImport
+      parentRoute: typeof AppMemoriesRoute
+    }
+    '/app/letters/': {
+      id: '/app/letters/'
+      path: '/'
+      fullPath: '/app/letters/'
+      preLoaderRoute: typeof AppLettersIndexRouteImport
+      parentRoute: typeof AppLettersRoute
+    }
+    '/app/journal/': {
+      id: '/app/journal/'
+      path: '/'
+      fullPath: '/app/journal/'
+      preLoaderRoute: typeof AppJournalIndexRouteImport
+      parentRoute: typeof AppJournalRoute
+    }
     '/app/farewell/': {
       id: '/app/farewell/'
       path: '/farewell'
       fullPath: '/app/farewell/'
       preLoaderRoute: typeof AppFarewellIndexRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/app/capsules/': {
+      id: '/app/capsules/'
+      path: '/'
+      fullPath: '/app/capsules/'
+      preLoaderRoute: typeof AppCapsulesIndexRouteImport
+      parentRoute: typeof AppCapsulesRoute
     }
     '/app/thoughts/$id': {
       id: '/app/thoughts/$id'
@@ -856,10 +958,12 @@ declare module '@tanstack/react-router' {
 
 interface AppCapsulesRouteChildren {
   AppCapsulesIdRoute: typeof AppCapsulesIdRoute
+  AppCapsulesIndexRoute: typeof AppCapsulesIndexRoute
 }
 
 const AppCapsulesRouteChildren: AppCapsulesRouteChildren = {
   AppCapsulesIdRoute: AppCapsulesIdRoute,
+  AppCapsulesIndexRoute: AppCapsulesIndexRoute,
 }
 
 const AppCapsulesRouteWithChildren = AppCapsulesRoute._addFileChildren(
@@ -868,10 +972,12 @@ const AppCapsulesRouteWithChildren = AppCapsulesRoute._addFileChildren(
 
 interface AppJournalRouteChildren {
   AppJournalIdRoute: typeof AppJournalIdRoute
+  AppJournalIndexRoute: typeof AppJournalIndexRoute
 }
 
 const AppJournalRouteChildren: AppJournalRouteChildren = {
   AppJournalIdRoute: AppJournalIdRoute,
+  AppJournalIndexRoute: AppJournalIndexRoute,
 }
 
 const AppJournalRouteWithChildren = AppJournalRoute._addFileChildren(
@@ -880,10 +986,12 @@ const AppJournalRouteWithChildren = AppJournalRoute._addFileChildren(
 
 interface AppLettersRouteChildren {
   AppLettersIdRoute: typeof AppLettersIdRoute
+  AppLettersIndexRoute: typeof AppLettersIndexRoute
 }
 
 const AppLettersRouteChildren: AppLettersRouteChildren = {
   AppLettersIdRoute: AppLettersIdRoute,
+  AppLettersIndexRoute: AppLettersIndexRoute,
 }
 
 const AppLettersRouteWithChildren = AppLettersRoute._addFileChildren(
@@ -892,10 +1000,12 @@ const AppLettersRouteWithChildren = AppLettersRoute._addFileChildren(
 
 interface AppMemoriesRouteChildren {
   AppMemoriesIdRoute: typeof AppMemoriesIdRoute
+  AppMemoriesIndexRoute: typeof AppMemoriesIndexRoute
 }
 
 const AppMemoriesRouteChildren: AppMemoriesRouteChildren = {
   AppMemoriesIdRoute: AppMemoriesIdRoute,
+  AppMemoriesIndexRoute: AppMemoriesIndexRoute,
 }
 
 const AppMemoriesRouteWithChildren = AppMemoriesRoute._addFileChildren(
@@ -920,10 +1030,12 @@ const AppNotesRouteWithChildren = AppNotesRoute._addFileChildren(
 
 interface AppTasksRouteChildren {
   AppTasksIdRoute: typeof AppTasksIdRoute
+  AppTasksIndexRoute: typeof AppTasksIndexRoute
 }
 
 const AppTasksRouteChildren: AppTasksRouteChildren = {
   AppTasksIdRoute: AppTasksIdRoute,
+  AppTasksIndexRoute: AppTasksIndexRoute,
 }
 
 const AppTasksRouteWithChildren = AppTasksRoute._addFileChildren(
@@ -932,10 +1044,12 @@ const AppTasksRouteWithChildren = AppTasksRoute._addFileChildren(
 
 interface AppThoughtsRouteChildren {
   AppThoughtsIdRoute: typeof AppThoughtsIdRoute
+  AppThoughtsIndexRoute: typeof AppThoughtsIndexRoute
 }
 
 const AppThoughtsRouteChildren: AppThoughtsRouteChildren = {
   AppThoughtsIdRoute: AppThoughtsIdRoute,
+  AppThoughtsIndexRoute: AppThoughtsIndexRoute,
 }
 
 const AppThoughtsRouteWithChildren = AppThoughtsRoute._addFileChildren(

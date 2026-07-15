@@ -1,7 +1,6 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
-import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { syncAuthUserProfile } from "@/lib/lumina-auth";
 import type { Session } from "@supabase/supabase-js";
@@ -27,34 +26,32 @@ async function resolveOAuthSession(): Promise<Session> {
     throw new Error(errorDescription);
   }
 
-  // Supabase may already have consumed the code via detectSessionInUrl.
-  const existing = await supabase.auth.getSession();
-  if (existing.data.session) return existing.data.session;
-
+  // Prefer exchanging a fresh OAuth/email code over any stale session.
   if (code) {
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error && data.session) return data.session;
 
-    // Race: client auto-detected the URL while we were exchanging.
     const retry = await supabase.auth.getSession();
     if (retry.data.session) return retry.data.session;
 
-    throw error ?? new Error("Could not complete Google sign-in.");
+    throw error ?? new Error("Could not complete sign-in.");
   }
 
-  // Hash/implicit return — give the client a moment to parse the URL.
-  await new Promise((r) => setTimeout(r, 300));
+  const existing = await supabase.auth.getSession();
+  if (existing.data.session) return existing.data.session;
+
+  await new Promise((r) => setTimeout(r, 400));
   const late = await supabase.auth.getSession();
   if (late.data.session) return late.data.session;
 
   throw new Error(
-    "No session after Google sign-in. In Supabase → Authentication → URL Configuration, allow https://lumina-evermore.vercel.app/** and http://localhost:3000/**.",
+    "No session after sign-in. Add http://localhost:3000/** and https://lumina-evermore.vercel.app/** to Supabase → Authentication → URL Configuration → Redirect URLs.",
   );
 }
 
 function AuthCallbackPage() {
-  const navigate = useNavigate();
   const [message, setMessage] = useState("Finishing sign-in…");
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -65,21 +62,17 @@ function AuthCallbackPage() {
         try {
           await syncAuthUserProfile(session.user);
         } catch {
-          // Profile sync must never block login.
+          /* profile sync must never block login */
         }
 
         window.history.replaceState({}, document.title, "/auth/callback");
-        if (!cancelled) {
-          // Hard navigation so the auth store reloads with a warm session.
-          window.location.replace("/app/home");
-        }
+        if (!cancelled) window.location.replace("/app/home");
       } catch (err) {
         const text = err instanceof Error ? err.message : String(err);
         console.error("[auth/callback]", text);
         if (!cancelled) {
-          setMessage("Sign-in failed");
-          toast.error(text);
-          navigate({ to: "/auth", replace: true });
+          setFailed(true);
+          setMessage(text);
         }
       }
     }
@@ -88,12 +81,22 @@ function AuthCallbackPage() {
     return () => {
       cancelled = true;
     };
-  }, [navigate]);
+  }, []);
 
   return (
-    <div className="relative flex min-h-[100dvh] flex-col items-center justify-center gap-3 px-4">
-      <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-      <p className="text-sm text-muted-foreground">{message}</p>
+    <div className="relative flex min-h-[100dvh] flex-col items-center justify-center gap-4 px-4 text-center">
+      {!failed && <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />}
+      <p className={`max-w-md text-sm ${failed ? "text-destructive" : "text-muted-foreground"}`}>
+        {message}
+      </p>
+      {failed && (
+        <Link
+          to="/auth"
+          className="rounded-full border border-white/60 bg-white/70 px-4 py-2 text-sm backdrop-blur dark:border-white/10 dark:bg-white/5"
+        >
+          Back to sign in
+        </Link>
+      )}
     </div>
   );
 }

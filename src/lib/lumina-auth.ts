@@ -78,12 +78,19 @@ export function getOAuthProfileFields(user: User) {
  */
 export async function syncAuthUserProfile(user: User) {
   const fields = getOAuthProfileFields(user);
-  const patch: { display_name?: string; avatar_url?: string } = {};
-  if (fields.displayName) patch.display_name = fields.displayName;
-  if (fields.avatarUrl) patch.avatar_url = fields.avatarUrl;
+  const row = {
+    id: user.id,
+    display_name: fields.displayName,
+    avatar_url: fields.avatarUrl,
+  };
 
-  if (Object.keys(patch).length > 0) {
-    await supabase.from("profiles").update(patch).eq("id", user.id);
+  const { error } = await supabase.from("profiles").upsert(row, { onConflict: "id" });
+  if (error) {
+    // Fallback for restrictive RLS / missing upsert — best-effort update.
+    await supabase
+      .from("profiles")
+      .update({ display_name: fields.displayName, avatar_url: fields.avatarUrl })
+      .eq("id", user.id);
   }
 
   useAuth.getState().setProfile({
@@ -122,6 +129,20 @@ export async function signOutClean() {
   // device does not inherit the previous user's data.
   try {
     localStorage.removeItem("lumina-storage");
+    const keysToRemove: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (
+        key &&
+        (key.startsWith("lumina.privateAlbum") ||
+          key.startsWith("lumina-private") ||
+          key.startsWith("private-album"))
+      ) {
+        keysToRemove.push(key);
+      }
+    }
+    for (const key of keysToRemove) localStorage.removeItem(key);
+    sessionStorage.removeItem("lumina.privateAlbum.unlocked");
   } catch {
     /* noop */
   }

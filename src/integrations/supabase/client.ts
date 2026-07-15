@@ -51,7 +51,8 @@ function createSupabaseClient() {
       storage: typeof window !== 'undefined' ? localStorage : undefined,
       persistSession: true,
       autoRefreshToken: true,
-      detectSessionInUrl: true,
+      // Manual exchange in /auth/callback — avoid racing a second auto-exchange.
+      detectSessionInUrl: false,
       flowType: 'pkce',
     }
   });

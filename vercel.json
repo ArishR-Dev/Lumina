@@ -1,10 +1,6 @@
 {
   "rewrites": [
     {
-      "source": "/api/public/:path*",
-      "destination": "https://heart-warming-magic.lovable.app/api/public/:path*"
-    },
-    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

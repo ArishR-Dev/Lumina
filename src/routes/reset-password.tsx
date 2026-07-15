@@ -22,16 +22,49 @@ function ResetPasswordPage() {
   const [confirm, setConfirm] = useState("");
   const [busy, setBusy] = useState(false);
   const [ready, setReady] = useState(false);
+  const [linkError, setLinkError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Supabase parses the recovery token from the URL hash automatically and emits PASSWORD_RECOVERY.
+    let cancelled = false;
+
     const { data: sub } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN") setReady(true);
+      if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN") {
+        if (!cancelled) setReady(true);
+      }
     });
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) setReady(true);
-    });
-    return () => sub.subscription.unsubscribe();
+
+    void (async () => {
+      try {
+        const url = new URL(window.location.href);
+        const oauthError =
+          url.searchParams.get("error_description") ?? url.searchParams.get("error");
+        if (oauthError) {
+          if (!cancelled) setLinkError(oauthError);
+          return;
+        }
+
+        const code = url.searchParams.get("code");
+        if (code) {
+          const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+          if (error) throw error;
+          window.history.replaceState({}, document.title, "/reset-password");
+          if (!cancelled && data.session) setReady(true);
+          return;
+        }
+
+        const { data } = await supabase.auth.getSession();
+        if (!cancelled && data.session) setReady(true);
+      } catch (err) {
+        if (!cancelled) {
+          setLinkError(err instanceof Error ? err.message : String(err));
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+      sub.subscription.unsubscribe();
+    };
   }, []);
 
   const submit = async (e: React.FormEvent) => {
@@ -77,8 +110,13 @@ function ResetPasswordPage() {
           </div>
           <h1 className="mt-4 font-display text-3xl">Set a new password</h1>
           <p className="mt-1.5 text-sm text-muted-foreground">
-            {ready ? "Choose a soft phrase you'll remember." : "Confirming your reset link…"}
+            {linkError
+              ? "This reset link is invalid or expired."
+              : ready
+                ? "Choose a soft phrase you'll remember."
+                : "Confirming your reset link…"}
           </p>
+          {linkError && <p className="mt-2 text-xs text-destructive">{linkError}</p>}
         </div>
         <form onSubmit={submit} className="space-y-3">
           <div>
@@ -92,7 +130,8 @@ function ResetPasswordPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 minLength={8}
                 required
-                className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+                disabled={!ready}
+                className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground disabled:opacity-50"
                 placeholder="at least 8 characters"
               />
             </div>
@@ -107,7 +146,8 @@ function ResetPasswordPage() {
                 onChange={(e) => setConfirm(e.target.value)}
                 minLength={8}
                 required
-                className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+                disabled={!ready}
+                className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground disabled:opacity-50"
                 placeholder="type it once more"
               />
             </div>

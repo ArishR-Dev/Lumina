@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -6,7 +6,7 @@ import { Flower2, Mail, Lock, Loader2, ArrowLeft } from "lucide-react";
 import { Petals } from "@/components/lumina/Petals";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/lumina-auth";
-import { getAuthRedirectBase, getAuthRedirectUrl } from "@/lib/lumina-auth-redirect";
+import { getAuthRedirectUrl } from "@/lib/lumina-auth-redirect";
 import { signInWithApple, signInWithGoogle } from "@/lib/google-auth";
 import { luminaDialog } from "@/lib/lumina-dialog";
 import { z } from "zod";
@@ -28,6 +28,15 @@ const emailSchema = z.string().trim().email("Enter a valid email").max(255);
 const passwordSchema = z.string().min(8, "At least 8 characters").max(128);
 
 function AuthPage() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  // `/auth/callback` is a child route — must render Outlet or the callback never mounts.
+  if (pathname === "/auth/callback" || pathname.startsWith("/auth/callback/")) {
+    return <Outlet />;
+  }
+  return <AuthForm />;
+}
+
+function AuthForm() {
   const navigate = useNavigate();
   const user = useAuth((s) => s.user);
   const loading = useAuth((s) => s.loading);
@@ -41,10 +50,11 @@ function AuthPage() {
     if (!loading && user) navigate({ to: "/app/home", replace: true });
   }, [user, loading, navigate]);
 
-  // If Supabase redirects back to /auth?code=... (misconfigured redirect path),
-  // finish the PKCE exchange here instead of stranding the user.
+  // Fallback when Supabase returns to /auth?code=... instead of /auth/callback.
   useEffect(() => {
     const url = new URL(window.location.href);
+    if (url.pathname !== "/auth") return;
+
     const code = url.searchParams.get("code");
     const oauthError =
       url.searchParams.get("error_description") ?? url.searchParams.get("error");
@@ -152,7 +162,7 @@ function AuthPage() {
           email: em.data,
           password: pw.data,
           options: {
-            emailRedirectTo: getAuthRedirectBase(),
+            emailRedirectTo: getAuthRedirectUrl("/auth/callback"),
             data: { display_name: name.trim() || em.data.split("@")[0] },
           },
         });

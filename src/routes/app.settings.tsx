@@ -7,6 +7,7 @@ import { useLumina, type Density, type FontScale } from "@/lib/lumina-store";
 import { Moon, Sun, Download, User, KeyRound, LogOut, Trash2, MoreHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth, signOutClean } from "@/lib/lumina-auth";
+import { getAuthRedirectUrl } from "@/lib/lumina-auth-redirect";
 import { supabase } from "@/integrations/supabase/client";
 import { luminaDialog, showSuccess, showError } from "@/lib/lumina-dialog";
 import {
@@ -265,7 +266,7 @@ function AccountSection() {
     });
     if (!ok) return;
     const { error } = await supabase.auth.resetPasswordForEmail(user.email, {
-      redirectTo: `${window.location.origin}/reset-password`,
+      redirectTo: getAuthRedirectUrl("/reset-password"),
     });
     if (error) showError(error.message);
     else showSuccess("Reset email sent. Check your inbox.");
@@ -291,7 +292,7 @@ function AccountSection() {
     });
     if (!ok) return;
     try {
-      const { error } = await supabase.rpc("delete_current_user" as never);
+      const { error } = await supabase.rpc("delete_current_user");
       if (error) throw error;
       showSuccess("Account deleted.");
       await signOutClean();

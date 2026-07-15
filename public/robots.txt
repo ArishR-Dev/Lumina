@@ -4,4 +4,4 @@ Disallow: /app/
 Disallow: /auth
 Disallow: /reset-password
 
-Sitemap: https://heart-warming-magic.lovable.app/sitemap.xml
+Sitemap: https://lumina-evermore.vercel.app/sitemap.xml
