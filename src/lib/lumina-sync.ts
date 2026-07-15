@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { create } from "zustand";
 import { supabase } from "@/integrations/supabase/client";
-import { useLumina } from "@/lib/lumina-store";
+import { useLumina, bindLuminaStoreToUser, setLuminaStorageOwner } from "@/lib/lumina-store";
 import { useAuth } from "@/lib/lumina-auth";
 import type { RealtimeChannel } from "@supabase/supabase-js";
 
@@ -374,6 +374,9 @@ function applyRemoteRow(row: {
  * ------------------------------------------------------------------ */
 
 async function initialSync(userId: string) {
+  // Never merge another account's leftover local cache into this user's cloud.
+  bindLuminaStoreToUser(userId);
+
   useSyncStatus.getState().set({ status: "syncing" });
 
   const { data, error } = await supabase
@@ -417,7 +420,8 @@ async function initialSync(userId: string) {
           shadow.set(k, JSON.stringify(v.data));
         }
       }
-      // Keep local-only records (schedule push).
+      // Keep local-only records (schedule push) — only for this account's edits
+      // after bind (owner already matches; local starts empty on account switch).
       for (const rec of local) {
         const id = c.idOf(rec);
         if (seenIds.has(id)) continue;
@@ -440,11 +444,12 @@ async function initialSync(userId: string) {
       shadow.set(pk, JSON.stringify(remotePrefs.data));
     } else {
       // seed cloud with local prefs
-      const p = pickPrefs(state);
+      const p = pickPrefs({ ...state, ...patch } as LuminaState);
       pending.set(pk, { entity: PREFS_ENTITY, record_id: PREFS_ID, data: p, deleted: false });
     }
 
     useLumina.setState(patch as LuminaState);
+    setLuminaStorageOwner(userId);
   } finally {
     queueMicrotask(() => {
       applyingRemote = false;

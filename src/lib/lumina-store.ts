@@ -17,8 +17,12 @@ import type { CustomMood, MoodColorName } from "./lumina-moods";
  * ------------------------------------------------------------------ */
 
 const STORAGE_KEY = "lumina-storage";
+const OWNER_KEY = "lumina-storage-owner";
 const STORAGE_VERSION = 0;
 const WRITE_THROTTLE_MS = 400;
+
+/** When false, disk writes are skipped so logout can't resurrect wiped state. */
+let persistEnabled = true;
 
 const PERSIST_KEYS = [
   "name",
@@ -65,7 +69,7 @@ let pendingSnapshot: Record<string, unknown> | null = null;
 
 function flushWrite() {
   writeTimer = null;
-  if (!pendingSnapshot || typeof window === "undefined") return;
+  if (!persistEnabled || !pendingSnapshot || typeof window === "undefined") return;
   const src = pendingSnapshot;
   pendingSnapshot = null;
   const picked: Record<string, unknown> = {};
@@ -81,6 +85,7 @@ function flushWrite() {
 }
 
 function scheduleWrite(state: Record<string, unknown>) {
+  if (!persistEnabled) return;
   pendingSnapshot = state;
   if (writeTimer) return;
   writeTimer = setTimeout(flushWrite, WRITE_THROTTLE_MS);
@@ -271,6 +276,87 @@ type State = {
 
 const uid = () => Math.random().toString(36).slice(2, 10);
 const today = () => new Date().toISOString().slice(0, 10);
+
+const EMPTY_LOCAL_STATE = {
+  name: "Pookie",
+  theme: "sakura" as const,
+  dark: false,
+  density: "roomy" as const,
+  fontScale: "m" as const,
+  recentSearches: [] as string[],
+  notes: [] as Note[],
+  journal: [] as JournalEntry[],
+  thoughts: [] as Thought[],
+  letters: [] as Letter[],
+  memories: [] as Memory[],
+  tasks: [] as TaskExt[],
+  habits: [] as Habit[],
+  moods: [] as MoodLog[],
+  customMoods: [] as CustomMood[],
+  scratch: "",
+  visited: false,
+  capsules: [] as Capsule[],
+  sidebarCollapsed: false,
+};
+
+/** Stop disk writes, wipe memory + localStorage. Safe during account switch. */
+export function clearLuminaLocalData() {
+  persistEnabled = false;
+  pendingSnapshot = null;
+  if (writeTimer) {
+    clearTimeout(writeTimer);
+    writeTimer = null;
+  }
+  if (typeof window !== "undefined") {
+    try {
+      window.localStorage.removeItem(STORAGE_KEY);
+      window.localStorage.removeItem(OWNER_KEY);
+    } catch {
+      /* ignore */
+    }
+  }
+  useLumina.setState({ ...EMPTY_LOCAL_STATE });
+}
+
+export function resumeLuminaPersist() {
+  persistEnabled = true;
+  scheduleWrite(useLumina.getState() as unknown as Record<string, unknown>);
+}
+
+export function getLuminaStorageOwner(): string | null {
+  if (typeof window === "undefined") return null;
+  try {
+    return window.localStorage.getItem(OWNER_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export function setLuminaStorageOwner(userId: string) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(OWNER_KEY, userId);
+  } catch {
+    /* ignore */
+  }
+}
+
+/**
+ * Ensure the in-memory + disk store belongs to `userId`.
+ * Returns true when local data was wiped (wrong/missing owner).
+ */
+export function bindLuminaStoreToUser(userId: string): boolean {
+  const owner = getLuminaStorageOwner();
+  if (owner === userId) {
+    resumeLuminaPersist();
+    return false;
+  }
+  // No owner, or a different account — never carry notes across identities.
+  clearLuminaLocalData();
+  resumeLuminaPersist();
+  setLuminaStorageOwner(userId);
+  return true;
+}
 
 export const useLumina = create<State>()(
   (set, get) => ({

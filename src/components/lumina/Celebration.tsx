@@ -1,30 +1,30 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLumina } from "@/lib/lumina-store";
+import { useAuth } from "@/lib/lumina-auth";
+import { useSyncStatus } from "@/lib/lumina-sync";
 import { detectMilestones, type Milestone } from "@/lib/lumina-greetings";
 
 /* ------------------------------------------------------------------ *
  *  Achievement popup. Behaves like console achievements:
- *    - Fires ONCE per achievement id, ever.
- *    - Only on a real locked → unlocked transition.
- *    - Never on refresh, hydration, sync, navigation, or StrictMode
- *      double-effects.
- *
- *  Unlocked ids are persisted in localStorage under a dedicated key
- *  (independent of the Zustand store, so Supabase sync overwriting the
- *  store cannot "forget" them). A module-scoped Set mirrors the same
- *  data so StrictMode's second effect invocation sees the write from
- *  the first one synchronously — no race window.
+ *    - Fires ONCE per achievement id, per account.
+ *    - Only on a real locked → unlocked transition after sync settles.
+ *    - Never on login, refresh, hydration, or cloud sync catch-up.
  *
  *  Dev reset:  window.__resetAchievements()
  * ------------------------------------------------------------------ */
 
-const KEY = "lumina-celebrated-v1";
+const KEY_PREFIX = "lumina-celebrated-v2:";
+const LEGACY_KEY = "lumina-celebrated-v1";
 
-function readUnlockedFromStorage(): Set<string> {
+function storageKey(userId: string) {
+  return `${KEY_PREFIX}${userId}`;
+}
+
+function readUnlocked(userId: string): Set<string> {
   if (typeof window === "undefined") return new Set();
   try {
-    const raw = window.localStorage.getItem(KEY);
+    const raw = window.localStorage.getItem(storageKey(userId));
     if (!raw) return new Set();
     const arr = JSON.parse(raw);
     return new Set(Array.isArray(arr) ? arr : []);
@@ -33,19 +33,37 @@ function readUnlockedFromStorage(): Set<string> {
   }
 }
 
-// Module-scoped mirror. Survives StrictMode remount and component
-// remount on route change; the only way to clear it is the dev reset.
-const unlockedIds: Set<string> = readUnlockedFromStorage();
-// Tracks whether we've done the "seed on first mount" pass — used to
-// suppress the popup for milestones already true at hydration time
-// (they aren't real transitions, just state we're catching up to).
-let hasSeeded = false;
-
-function persist() {
+function writeUnlocked(userId: string, ids: Set<string>) {
   if (typeof window === "undefined") return;
   try {
-    window.localStorage.setItem(KEY, JSON.stringify([...unlockedIds]));
-  } catch {}
+    window.localStorage.setItem(storageKey(userId), JSON.stringify([...ids]));
+  } catch {
+    /* ignore */
+  }
+}
+
+/** Active account bucket — swapped when the signed-in user changes. */
+let activeUserId: string | null = null;
+let unlockedIds: Set<string> = new Set();
+/** True after a silent seed against post-sync data for the active user. */
+let hasSeeded = false;
+
+function bindUser(userId: string) {
+  if (activeUserId === userId) return;
+  activeUserId = userId;
+  unlockedIds = readUnlocked(userId);
+  hasSeeded = false;
+  // Drop legacy global key so old toast state can't leak across accounts.
+  try {
+    window.localStorage.removeItem(LEGACY_KEY);
+  } catch {
+    /* ignore */
+  }
+}
+
+function persistActive() {
+  if (!activeUserId) return;
+  writeUnlocked(activeUserId, unlockedIds);
 }
 
 if (typeof window !== "undefined") {
@@ -53,8 +71,11 @@ if (typeof window !== "undefined") {
     unlockedIds.clear();
     hasSeeded = false;
     try {
-      window.localStorage.removeItem(KEY);
-    } catch {}
+      if (activeUserId) window.localStorage.removeItem(storageKey(activeUserId));
+      window.localStorage.removeItem(LEGACY_KEY);
+    } catch {
+      /* ignore */
+    }
     // eslint-disable-next-line no-console
     console.info("[achievements] reset");
   };
@@ -72,6 +93,8 @@ function computeStreak(dates: string[]) {
 }
 
 export function Celebration() {
+  const userId = useAuth((s) => s.user?.id ?? null);
+  const syncStatus = useSyncStatus((s) => s.status);
   const notes = useLumina((s) => s.notes);
   const journal = useLumina((s) => s.journal);
   const letters = useLumina((s) => s.letters);
@@ -81,13 +104,21 @@ export function Celebration() {
   const [active, setActive] = useState<Milestone | null>(null);
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Sync must settle before we judge milestones — otherwise empty local state
+  // seeds, then cloud data arrives and every earned badge looks "new".
+  const syncReady =
+    syncStatus === "synced" ||
+    syncStatus === "offline" ||
+    syncStatus === "error";
+
   useEffect(() => {
+    if (!userId || !syncReady) return;
+    bindUser(userId);
+
     const streak = computeStreak(journal.map((j) => j.date));
     const found = detectMilestones({ notes, journal, letters, memories, streak, habits, capsules });
 
-    // Seed pass: on first ever run in this session, silently mark any
-    // currently-true milestones as unlocked without firing the popup.
-    // This handles hydration / sync / refresh — no transition occurred.
+    // Silent catch-up: mark everything already true after sync as known.
     if (!hasSeeded) {
       hasSeeded = true;
       let dirty = false;
@@ -97,25 +128,29 @@ export function Celebration() {
           dirty = true;
         }
       }
-      if (dirty) persist();
+      if (dirty) persistActive();
       return;
     }
 
-    // Post-seed: only fire for a genuine locked → unlocked transition.
     const fresh = found.find((m) => !unlockedIds.has(m.id));
     if (!fresh) return;
     unlockedIds.add(fresh.id);
-    persist();
+    persistActive();
     setActive(fresh);
     if (hideTimer.current) clearTimeout(hideTimer.current);
     hideTimer.current = setTimeout(() => setActive(null), 4600);
-  }, [notes, journal, letters, memories, habits, capsules]);
+  }, [userId, syncReady, notes, journal, letters, memories, habits, capsules]);
 
   useEffect(() => {
     return () => {
       if (hideTimer.current) clearTimeout(hideTimer.current);
     };
   }, []);
+
+  // Clear popup when account changes / signs out.
+  useEffect(() => {
+    if (!userId) setActive(null);
+  }, [userId]);
 
   return (
     <AnimatePresence>

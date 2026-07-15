@@ -264,26 +264,28 @@ export function detectMilestones(data: {
 }): Milestone[] {
   const out: Milestone[] = [];
   const notes = data.notes.length;
-  if (notes === 1) out.push({ id: "note-1", label: "First note written", emoji: "📝" });
-  if (notes === 10) out.push({ id: "note-10", label: "10 notes and counting", emoji: "✨" });
-  if (notes === 100) out.push({ id: "note-100", label: "100 notes — that's a whole book!", emoji: "📚" });
-  if (data.journal.length === 1) out.push({ id: "journal-1", label: "First journal entry", emoji: "🌸" });
-  if (data.letters.length === 1) out.push({ id: "letter-1", label: "First letter written", emoji: "💌" });
-  if (data.memories.length === 1) out.push({ id: "memory-1", label: "First memory saved", emoji: "📷" });
-  if (data.streak === 7) out.push({ id: "streak-7", label: "7-day writing streak", emoji: "🔥" });
-  if (data.streak === 30) out.push({ id: "streak-30", label: "30-day writing streak", emoji: "🌟" });
+  // Use >= so already-earned milestones stay "true" after you pass the count
+  // (exact === made seed miss them, then edge cases could re-toast).
+  if (notes >= 1) out.push({ id: "note-1", label: "First note written", emoji: "📝" });
+  if (notes >= 10) out.push({ id: "note-10", label: "10 notes and counting", emoji: "✨" });
+  if (notes >= 100) out.push({ id: "note-100", label: "100 notes — that's a whole book!", emoji: "📚" });
+  if (data.journal.length >= 1) out.push({ id: "journal-1", label: "First journal entry", emoji: "🌸" });
+  if (data.letters.length >= 1) out.push({ id: "letter-1", label: "First letter written", emoji: "💌" });
+  if (data.memories.length >= 1) out.push({ id: "memory-1", label: "First memory saved", emoji: "📷" });
+  if (data.streak >= 7) out.push({ id: "streak-7", label: "7-day writing streak", emoji: "🔥" });
+  if (data.streak >= 30) out.push({ id: "streak-30", label: "30-day writing streak", emoji: "🌟" });
 
   // Habits — total completed days across all habits.
   const habitDaysTotal = (data.habits ?? []).reduce((sum, h) => sum + h.days.length, 0);
-  if (habitDaysTotal === 1) out.push({ id: "habit-1", label: "First habit day", emoji: "🌿" });
-  if (habitDaysTotal === 10) out.push({ id: "habit-10", label: "10 habit days", emoji: "🌱" });
-  if (habitDaysTotal === 50) out.push({ id: "habit-50", label: "50 habit days — a rhythm", emoji: "🌳" });
-  if (habitDaysTotal === 100) out.push({ id: "habit-100", label: "100 habit days", emoji: "🏆" });
+  if (habitDaysTotal >= 1) out.push({ id: "habit-1", label: "First habit day", emoji: "🌿" });
+  if (habitDaysTotal >= 10) out.push({ id: "habit-10", label: "10 habit days", emoji: "🌱" });
+  if (habitDaysTotal >= 50) out.push({ id: "habit-50", label: "50 habit days — a rhythm", emoji: "🌳" });
+  if (habitDaysTotal >= 100) out.push({ id: "habit-100", label: "100 habit days", emoji: "🏆" });
 
   // Capsules — a milestone the first time one is opened.
   const capsulesOpened = (data.capsules ?? []).filter((c) => c.opened).length;
-  if (capsulesOpened === 1) out.push({ id: "capsule-1", label: "First capsule opened", emoji: "🎁" });
-  if (capsulesOpened === 5) out.push({ id: "capsule-5", label: "5 capsules opened", emoji: "✨" });
+  if (capsulesOpened >= 1) out.push({ id: "capsule-1", label: "First capsule opened", emoji: "🎁" });
+  if (capsulesOpened >= 5) out.push({ id: "capsule-5", label: "5 capsules opened", emoji: "✨" });
 
   return out;
 }

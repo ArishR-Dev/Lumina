@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { clearLuminaLocalData } from "@/lib/lumina-store";
 
 type AuthState = {
   user: User | null;
@@ -41,6 +42,8 @@ export function bindAuthListener() {
     }
     if (event === "SIGNED_OUT") {
       useAuth.getState().setProfile({ displayName: null, avatarUrl: null });
+      // Belt-and-suspenders: wipe local notes if session ends without signOutClean.
+      clearLuminaLocalData();
     }
   });
 }
@@ -122,13 +125,10 @@ async function hydrateProfile(user: User) {
   });
 }
 
-export async function signOutClean() {
-  const { supabase } = await import("@/integrations/supabase/client");
-  await supabase.auth.signOut();
-  // Clear the persisted local store so a different signed-in user on the same
-  // device does not inherit the previous user's data.
+/** Wipe client data that must not follow the next Google account. */
+function wipeClientUserData() {
+  clearLuminaLocalData();
   try {
-    localStorage.removeItem("lumina-storage");
     const keysToRemove: string[] = [];
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
@@ -136,15 +136,32 @@ export async function signOutClean() {
         key &&
         (key.startsWith("lumina.privateAlbum") ||
           key.startsWith("lumina-private") ||
-          key.startsWith("private-album"))
+          key.startsWith("private-album") ||
+          key.startsWith("lumina.farewell") ||
+          key.startsWith("lumina-ashes") ||
+          key.startsWith("lumina-celebrated") ||
+          key === "lumina:splash-seen" ||
+          key.startsWith("lumina-read-"))
       ) {
         keysToRemove.push(key);
       }
     }
     for (const key of keysToRemove) localStorage.removeItem(key);
     sessionStorage.removeItem("lumina.privateAlbum.unlocked");
+    sessionStorage.removeItem("lumina.privateAlbum.justEntered");
   } catch {
     /* noop */
+  }
+}
+
+export async function signOutClean() {
+  // Clear memory + disk BEFORE navigating so beforeunload cannot rewrite
+  // the previous account's notes back into localStorage.
+  wipeClientUserData();
+  try {
+    await supabase.auth.signOut();
+  } catch {
+    /* still redirect to auth */
   }
   window.location.href = "/auth";
 }
