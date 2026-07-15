@@ -91,11 +91,11 @@ export function SecretGiftHost() {
     };
   }, [userId]);
 
-  // Re-show notification when unlocked but unopened and not yet dismissed
-
+  // Re-show notification only when store doesn't already show it (recordLoginDay handles fresh unlock)
   useEffect(() => {
     if (!progress || !config) return;
-
+    const { notifyOpen } = useSecretGift.getState();
+    if (notifyOpen) return;
     if (progress.gift_unlocked_at && !progress.gift_opened_at && !progress.notification_seen) {
       useSecretGift.setState({ notifyOpen: true });
     }

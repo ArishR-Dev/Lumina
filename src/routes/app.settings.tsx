@@ -65,7 +65,7 @@ function SettingsPage() {
 
   const onNameChange = (value: string) => {
     if (userId && value === "pattu") {
-      requestHiddenAdminAccess(true);
+      void requestHiddenAdminAccess(true);
       setName(nameBeforeTrigger.current);
       return;
     }

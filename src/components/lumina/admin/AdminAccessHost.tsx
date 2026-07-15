@@ -18,6 +18,7 @@ export function AdminAccessHost() {
   const expiresAt = useAdminAccess((s) => s.expiresAt);
 
   const idleTimer = useRef<number | null>(null);
+  const touchDebounce = useRef<number | null>(null);
 
   useEffect(() => {
     hydrateFromStorage();
@@ -68,7 +69,10 @@ export function AdminAccessHost() {
 
     const onActivity = () => {
       resetIdle();
-      void touchSession();
+      if (touchDebounce.current) window.clearTimeout(touchDebounce.current);
+      touchDebounce.current = window.setTimeout(() => {
+        void touchSession();
+      }, 30_000);
     };
 
     resetIdle();
@@ -85,6 +89,7 @@ export function AdminAccessHost() {
 
     return () => {
       if (idleTimer.current) window.clearTimeout(idleTimer.current);
+      if (touchDebounce.current) window.clearTimeout(touchDebounce.current);
       events.forEach((ev) => window.removeEventListener(ev, onActivity));
       window.clearInterval(interval);
     };

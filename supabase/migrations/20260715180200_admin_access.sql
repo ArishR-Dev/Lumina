@@ -1,14 +1,30 @@
 -- Hidden admin access: password verification + inactivity-based sessions
+-- Depends on: 20260715180000_secret_gift.sql
 
 create extension if not exists pgcrypto;
 
 alter table public.secret_gift_config
-  add column if not exists admin_password_hash text,
-  add column if not exists admin_session_minutes int not null default 30
-    check (admin_session_minutes >= 5 and admin_session_minutes <= 480);
+  add column if not exists admin_password_hash text;
 
--- Set initial password via Supabase SQL after deploy:
--- update secret_gift_config set admin_password_hash = crypt('YOUR_PASSWORD', gen_salt('bf')) where id = 1;
+alter table public.secret_gift_config
+  add column if not exists admin_session_minutes int default 30;
+
+-- Add NOT NULL + check only when column was just created (safe re-run)
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public'
+      and table_name = 'secret_gift_config'
+      and column_name = 'admin_session_minutes'
+      and is_nullable = 'YES'
+  ) then
+    update public.secret_gift_config set admin_session_minutes = 30 where admin_session_minutes is null;
+    alter table public.secret_gift_config alter column admin_session_minutes set not null;
+    alter table public.secret_gift_config alter column admin_session_minutes set default 30;
+  end if;
+exception when others then null;
+end $$;
 
 create table if not exists public.admin_sessions (
   user_id uuid primary key references auth.users (id) on delete cascade,
@@ -34,7 +50,7 @@ returns boolean
 language sql
 stable
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
   select exists (
     select 1
@@ -51,7 +67,7 @@ create or replace function public.assert_admin_access()
 returns void
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 begin
   if auth.uid() is null then
@@ -70,7 +86,7 @@ create or replace function public.verify_admin_password(p_password text)
 returns json
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   uid uuid := auth.uid();
@@ -96,9 +112,9 @@ begin
     return json_build_object('ok', false);
   end if;
 
-  if stored_hash = crypt(p_password, stored_hash) then
+  if stored_hash = crypt(trim(p_password), stored_hash) then
     new_token := encode(gen_random_bytes(32), 'hex');
-    exp := now() + make_interval(mins => mins);
+    exp := now() + (mins::text || ' minutes')::interval;
 
     insert into public.admin_sessions (user_id, session_token, expires_at, last_activity_at, updated_at)
     values (uid, new_token, exp, now(), now())
@@ -122,11 +138,10 @@ create or replace function public.touch_admin_session()
 returns json
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   mins int;
-  exp timestamptz;
   row public.admin_sessions;
 begin
   if auth.uid() is null then
@@ -139,7 +154,7 @@ begin
   update public.admin_sessions
   set
     last_activity_at = now(),
-    expires_at = now() + make_interval(mins => mins),
+    expires_at = now() + (mins::text || ' minutes')::interval,
     updated_at = now()
   where user_id = auth.uid()
     and expires_at > now()
@@ -160,7 +175,7 @@ create or replace function public.revoke_admin_session()
 returns void
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 begin
   if auth.uid() is null then return; end if;
@@ -188,7 +203,7 @@ returns table (
 )
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   req int;
@@ -219,7 +234,7 @@ create or replace function public.admin_secret_gift_adjust_days(p_user_id uuid, 
 returns public.secret_gift_progress
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   row public.secret_gift_progress;
@@ -260,7 +275,7 @@ create or replace function public.admin_secret_gift_reset(p_user_id uuid)
 returns public.secret_gift_progress
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   row public.secret_gift_progress;
@@ -285,7 +300,7 @@ create or replace function public.admin_secret_gift_mark_opened(p_user_id uuid)
 returns public.secret_gift_progress
 language plpgsql
 security definer
-set search_path = public
+set search_path = public, extensions
 as $$
 declare
   row public.secret_gift_progress;
@@ -303,7 +318,6 @@ begin
 end;
 $$;
 
--- Config writes require valid admin session (not email list alone)
 drop policy if exists "secret_gift_config_update" on public.secret_gift_config;
 create policy "secret_gift_config_update"
   on public.secret_gift_config for update to authenticated

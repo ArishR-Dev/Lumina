@@ -45,6 +45,7 @@ function AchievementsPage() {
 
   const config = useSecretGift((s) => s.config);
   const progress = useSecretGift((s) => s.progress);
+  const giftLoading = useSecretGift((s) => s.loading);
   const setUnlockOpen = useSecretGift((s) => s.setUnlockOpen);
 
   const specs: [string, string, string, number, number][] = [
@@ -98,13 +99,15 @@ function AchievementsPage() {
       />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {config && (
+        {config ? (
           <SecretGiftCard
             config={config}
             progress={progress}
             onOpenGift={() => setUnlockOpen(true)}
           />
-        )}
+        ) : giftLoading ? (
+          <GlassCard className="col-span-1 min-h-[220px] animate-pulse sm:col-span-2 lg:col-span-3" aria-hidden />
+        ) : null}
 
         {badges.map((b, i) => (
           <motion.div

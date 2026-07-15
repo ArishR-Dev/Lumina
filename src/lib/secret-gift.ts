@@ -98,6 +98,9 @@ function parseConfig(raw: Record<string, unknown>): SecretGiftConfig {
   };
 }
 
+const CONFIG_COLUMNS =
+  "id,required_login_days,gift_title,gift_description,custom_message,image_urls,video_urls,audio_urls,animation_key,one_time,admin_emails,admin_session_minutes,updated_at";
+
 export const useSecretGift = create<GiftState>((set, get) => ({
   config: null,
   progress: null,
@@ -110,7 +113,7 @@ export const useSecretGift = create<GiftState>((set, get) => ({
   refreshConfig: async () => {
     const { data, error } = await supabase
       .from("secret_gift_config")
-      .select("*")
+      .select(CONFIG_COLUMNS)
       .eq("id", 1)
       .maybeSingle();
     if (error) {
@@ -234,7 +237,7 @@ export async function adminSaveConfig(patch: Partial<SecretGiftConfig>) {
       updated_at: new Date().toISOString(),
     })
     .eq("id", 1)
-    .select("*")
+    .select(CONFIG_COLUMNS)
     .maybeSingle();
   if (error) throw error;
   return data ? parseConfig(data as Record<string, unknown>) : null;

@@ -46,6 +46,15 @@ function isFuture(iso: string | null): boolean {
   return new Date(iso).getTime() > Date.now();
 }
 
+function parseVerifyResult(data: unknown): { ok: boolean; expiresAt: string | null } {
+  if (!data || typeof data !== "object") return { ok: false, expiresAt: null };
+  const row = data as Record<string, unknown>;
+  const ok = row.ok === true;
+  const raw = row.expires_at ?? row.expiresAt;
+  const expiresAt = typeof raw === "string" && raw.length > 0 ? raw : null;
+  return { ok, expiresAt };
+}
+
 export const useAdminAccess = create<AdminAccessState>((set, get) => ({
   expiresAt: null,
   modalOpen: false,
@@ -79,17 +88,19 @@ export const useAdminAccess = create<AdminAccessState>((set, get) => ({
   },
 
   verifyPassword: async (password) => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return false;
+
     const { data, error } = await supabase.rpc("verify_admin_password", {
-      p_password: password,
+      p_password: password.trim(),
     });
-    if (error) {
-      console.warn("[admin-access] verify", error.message);
-      return false;
-    }
-    const result = data as { ok?: boolean; expires_at?: string } | null;
-    if (!result?.ok || !result.expires_at) return false;
-    writeStoredExpiry(result.expires_at);
-    set({ expiresAt: result.expires_at, modalOpen: false });
+    if (error) return false;
+    const { ok, expiresAt } = parseVerifyResult(data);
+    if (!ok || !expiresAt) return false;
+    writeStoredExpiry(expiresAt);
+    set({ expiresAt, modalOpen: false });
     return true;
   },
 
@@ -100,14 +111,14 @@ export const useAdminAccess = create<AdminAccessState>((set, get) => ({
       console.warn("[admin-access] touch", error.message);
       return false;
     }
-    const result = data as { ok?: boolean; expires_at?: string } | null;
-    if (!result?.ok || !result.expires_at) {
+    const result = parseVerifyResult(data);
+    if (!result.ok || !result.expiresAt) {
       writeStoredExpiry(null);
       set({ expiresAt: null });
       return false;
     }
-    writeStoredExpiry(result.expires_at);
-    set({ expiresAt: result.expires_at });
+    writeStoredExpiry(result.expiresAt);
+    set({ expiresAt: result.expiresAt });
     return true;
   },
 
@@ -122,8 +133,12 @@ export const useAdminAccess = create<AdminAccessState>((set, get) => ({
   },
 }));
 
-/** Opens the password modal — used by secret triggers. Does nothing if not logged in. */
-export function requestHiddenAdminAccess(navigateAfter = true) {
+/** Opens the password modal — used by secret triggers. Requires logged-in user. */
+export async function requestHiddenAdminAccess(navigateAfter = true) {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
   useAdminAccess.getState().requestAccess(navigateAfter);
 }
 
