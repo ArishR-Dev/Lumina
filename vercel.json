@@ -1,7 +1,18 @@
 {
-  "rewrites": [
+  "headers": [
     {
       "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin-allow-popups"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/((?!sw\\.js$|workbox-|assets/|.*\\.[a-zA-Z0-9]+$).*)",
       "destination": "/index.html"
     }
   ]

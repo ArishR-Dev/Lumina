@@ -1,6 +1,6 @@
 // Guarded Service Worker registration for Lumina.
-// Follows the Lovable PWA skill: never register in dev / preview / iframe,
-// always leaves a `?sw=off` kill switch, and only registers /sw.js.
+// Never register in dev / preview / iframe, leave a `?sw=off` kill switch,
+// and only register when /sw.js is actually deployable (avoids console 404 noise).
 
 const SW_URL = "/sw.js";
 
@@ -41,12 +41,26 @@ async function unregisterAppSW() {
   }
 }
 
+async function swIsAvailable(): Promise<boolean> {
+  try {
+    const res = await fetch(SW_URL, { method: "HEAD", cache: "no-store" });
+    if (!res.ok) return false;
+    const type = res.headers.get("content-type") ?? "";
+    // SPA fallbacks sometimes return HTML for missing files — treat that as absent.
+    if (type.includes("text/html")) return false;
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export function registerPwa(onUpdateAvailable: UpdateCallback): void {
   if (typeof window === "undefined") return;
   if (typeof navigator === "undefined" || !("serviceWorker" in navigator)) return;
 
   const isProd = import.meta.env.PROD;
-  const isKillSwitch = new URLSearchParams(window.location.search).has("sw") &&
+  const isKillSwitch =
+    new URLSearchParams(window.location.search).has("sw") &&
     new URLSearchParams(window.location.search).get("sw") === "off";
 
   if (!isProd || inIframe() || inLovablePreview() || isKillSwitch) {
@@ -54,30 +68,32 @@ export function registerPwa(onUpdateAvailable: UpdateCallback): void {
     return;
   }
 
-  // Lazy import so workbox-window never ships in dev.
-  void import("workbox-window").then(({ Workbox }) => {
-    const wb = new Workbox(SW_URL, { scope: "/" });
+  void (async () => {
+    if (!(await swIsAvailable())) {
+      void unregisterAppSW();
+      return;
+    }
 
-    wb.addEventListener("waiting", () => {
-      onUpdateAvailable();
-    });
+    try {
+      const { Workbox } = await import("workbox-window");
+      const wb = new Workbox(SW_URL, { scope: "/" });
 
-    wb.addEventListener("controlling", () => {
-      // Reload only after the user accepts the update.
-      window.location.reload();
-    });
+      wb.addEventListener("waiting", () => {
+        onUpdateAvailable();
+      });
 
-    // Expose an accept hook for the update-prompt UI.
-    (window as unknown as { __luminaAcceptUpdate?: () => void }).__luminaAcceptUpdate = () => {
-      wb.messageSkipWaiting();
-    };
+      wb.addEventListener("controlling", () => {
+        window.location.reload();
+      });
 
-    wb.register().catch((err) => {
-      // Missing sw.js on some hosts (404) — don't spam the console as a failure.
-      if (err instanceof TypeError && /404|bad HTTP response/i.test(String(err.message))) {
-        return;
-      }
-      console.warn("[Lumina PWA] registration failed", err);
-    });
-  });
+      (window as unknown as { __luminaAcceptUpdate?: () => void }).__luminaAcceptUpdate = () => {
+        wb.messageSkipWaiting();
+      };
+
+      await wb.register();
+    } catch {
+      /* missing or invalid SW — stay silent */
+      void unregisterAppSW();
+    }
+  })();
 }
