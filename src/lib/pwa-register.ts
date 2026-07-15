@@ -73,6 +73,10 @@ export function registerPwa(onUpdateAvailable: UpdateCallback): void {
     };
 
     wb.register().catch((err) => {
+      // Missing sw.js on some hosts (404) — don't spam the console as a failure.
+      if (err instanceof TypeError && /404|bad HTTP response/i.test(String(err.message))) {
+        return;
+      }
       console.warn("[Lumina PWA] registration failed", err);
     });
   });

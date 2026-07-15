@@ -97,16 +97,27 @@ function AuthForm() {
     setBusy(true);
     const loading = luminaDialog.showLoading({
       title: `Connecting with ${provider === "google" ? "Google" : "Apple"}…`,
-      description: "Opening a secure sign-in window.",
+      description:
+        provider === "google"
+          ? "Choose your Google account."
+          : "Opening a secure sign-in window.",
     });
     try {
-      const { data, error } =
-        provider === "google" ? await signInWithGoogle() : await signInWithApple();
-      if (error) {
-        toast.error(error.message || `Could not sign in with ${provider}`);
+      if (provider === "google") {
+        const { error } = await signInWithGoogle();
+        if (error) {
+          toast.error(error.message || "Could not sign in with Google");
+          return;
+        }
+        window.location.replace("/app/home");
         return;
       }
-      // Browser navigates to the provider; when it returns, `/auth/callback` sets the session.
+
+      const { data, error } = await signInWithApple();
+      if (error) {
+        toast.error(error.message || "Could not sign in with Apple");
+        return;
+      }
       if (data?.url) {
         window.location.assign(data.url);
         return;
