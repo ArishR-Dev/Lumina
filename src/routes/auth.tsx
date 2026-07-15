@@ -7,7 +7,8 @@ import { Petals } from "@/components/lumina/Petals";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/lumina-auth";
 import { getAuthRedirectUrl } from "@/lib/lumina-auth-redirect";
-import { signInWithApple, signInWithGoogle } from "@/lib/google-auth";
+import { signInWithApple } from "@/lib/google-auth";
+import { GoogleSignInButton } from "@/components/lumina/GoogleSignInButton";
 import { luminaDialog } from "@/lib/lumina-dialog";
 import { z } from "zod";
 
@@ -93,40 +94,14 @@ function AuthForm() {
     };
   }, []);
 
-  const onSocial = async (provider: "google" | "apple") => {
+  const onApple = async () => {
     setBusy(true);
-    const loading = luminaDialog.showLoading({
-      title: `Connecting with ${provider === "google" ? "Google" : "Apple"}…`,
-      description:
-        provider === "google"
-          ? "Choose your Google account."
-          : "Opening a secure sign-in window.",
-    });
     try {
-      if (provider === "google") {
-        const { error } = await signInWithGoogle();
-        if (error) {
-          toast.error(error.message || "Could not sign in with Google");
-          return;
-        }
-        window.location.replace("/app/home");
-        return;
-      }
-
-      const { data, error } = await signInWithApple();
-      if (error) {
-        toast.error(error.message || "Could not sign in with Apple");
-        return;
-      }
-      if (data?.url) {
-        window.location.assign(data.url);
-        return;
-      }
-      navigate({ to: "/app/home", replace: true });
+      const { error } = await signInWithApple();
+      toast.error(error?.message || "Apple Sign-In isn’t available yet.");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : String(e));
     } finally {
-      loading.close();
       setBusy(false);
     }
   };
@@ -235,15 +210,10 @@ function AuthForm() {
 
         {mode !== "forgot" && (
           <div className="mb-5 grid grid-cols-2 gap-2">
+            <GoogleSignInButton disabled={busy} />
             <button
-              onClick={() => onSocial("google")}
-              disabled={busy}
-              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/60 bg-white/70 px-3 py-2.5 text-sm font-medium transition hover:bg-white disabled:opacity-50 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10"
-            >
-              <GoogleIcon /> Google
-            </button>
-            <button
-              onClick={() => onSocial("apple")}
+              type="button"
+              onClick={() => void onApple()}
               disabled={busy}
               className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/60 bg-white/70 px-3 py-2.5 text-sm font-medium transition hover:bg-white disabled:opacity-50 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10"
             >
@@ -356,14 +326,6 @@ function AuthForm() {
         </div>
       </motion.div>
     </div>
-  );
-}
-
-function GoogleIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden>
-      <path fill="#EA4335" d="M12 10.2v3.9h5.5c-.24 1.4-1.7 4.1-5.5 4.1-3.3 0-6-2.75-6-6.15S8.7 5.9 12 5.9c1.9 0 3.15.8 3.87 1.5l2.65-2.55C16.86 3.3 14.63 2.3 12 2.3 6.86 2.3 2.7 6.46 2.7 11.6S6.86 20.9 12 20.9c6.9 0 9.16-4.85 9.16-7.35 0-.5-.05-.88-.11-1.35H12z" />
-    </svg>
   );
 }
 
