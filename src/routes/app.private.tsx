@@ -16,7 +16,7 @@ import { vault, type VaultItem } from "@/lib/private-album/vault";
 import { useLumina } from "@/lib/lumina-store";
 import { stripHtml } from "@/lib/lumina-timeline";
 import {
-  isAlbumUnlocked, lockAlbum, useAlbumUnlocked,
+  isAlbumUnlocked, lockAlbum, useAlbumUnlocked, setUnlockCinematicPlaying,
   hasPin, setPin, verifyPin, clearPin, normalizePin,
   isBiometricSupported, hasBiometric, enableBiometric, disableBiometric, verifyBiometric,
   getForgotQuestion, hasCustomForgotChallenge, setForgotChallenge, verifyForgotAnswer, clearForgotChallenge,
@@ -62,6 +62,11 @@ function PrivateAlbum() {
     catch { return false; }
   });
 
+
+  useEffect(() => {
+    // Belt-and-suspenders: never leave the Home unlock overlay armed.
+    setUnlockCinematicPlaying(false);
+  }, []);
 
   useEffect(() => {
     if (!entryFx) return;
@@ -702,12 +707,19 @@ function Preview({
         className="mx-2 flex max-h-[92dvh] w-full max-w-4xl flex-col overflow-hidden rounded-3xl bg-neutral-950 text-white shadow-2xl sm:mx-4"
         style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
       >
-        <div className="grid place-items-center bg-black" style={{ minHeight: "40vh" }}>
+        <div
+          className={cn(
+            "min-h-0 bg-black",
+            item.kind === "note"
+              ? "flex max-h-[min(70vh,calc(92dvh-5.5rem))] flex-1 flex-col"
+              : "grid min-h-[40vh] place-items-center",
+          )}
+        >
           {item.kind === "image" && url && <img src={url} alt={item.name} className="max-h-[70vh] w-auto object-contain" />}
           {item.kind === "video" && url && <video src={url} controls autoPlay className="max-h-[70vh] w-full" />}
           {item.kind === "audio" && url && <audio src={url} controls autoPlay className="w-full max-w-md" />}
           {item.kind === "note" && (
-            <div className="max-h-[60vh] w-full overflow-auto whitespace-pre-wrap p-6 text-sm leading-relaxed">
+            <div className="lumina-scroll h-full max-h-[min(70vh,calc(92dvh-5.5rem))] w-full overflow-y-auto overflow-x-hidden break-words px-6 py-8 text-sm leading-relaxed whitespace-pre-wrap sm:px-10">
               {item.text}
             </div>
           )}
@@ -836,17 +848,19 @@ function NoteDialog({ onSave, onClose }: { onSave: (name: string, text: string) 
         <div className="mb-3 text-xs uppercase tracking-[0.24em] text-muted-foreground">a private note</div>
         <input
           autoFocus
+          data-no-ds
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Title"
-          className="w-full rounded-2xl border border-white/60 bg-white/60 px-3 py-2.5 text-base outline-none dark:border-white/10 dark:bg-white/5"
+          className="lumina-vault-field w-full rounded-2xl border border-white/60 bg-white/60 px-3 py-2.5 text-base dark:border-white/10 dark:bg-white/5"
         />
         <textarea
+          data-no-ds
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="Write freely — this stays with you."
           rows={6}
-          className="mt-3 w-full rounded-2xl border border-white/60 bg-white/60 px-3 py-2.5 text-sm outline-none dark:border-white/10 dark:bg-white/5"
+          className="lumina-vault-field mt-3 w-full resize-y rounded-2xl border border-white/60 bg-white/60 px-3 py-2.5 text-sm dark:border-white/10 dark:bg-white/5"
         />
         <div className="mt-3 flex items-center justify-end gap-2">
           <button type="button" onClick={onClose} className="min-h-11 rounded-full px-4 text-sm text-muted-foreground">Cancel</button>

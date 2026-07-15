@@ -26,6 +26,9 @@ const SECRET_MOOD_ID = BUILTIN_MOODS[0].id;
 const SECRET_TAPS = 5;
 const SECRET_WINDOW_MS = 3000;
 
+// Module-level so React StrictMode remounts can't cancel vault entry.
+let unlockNavTimer: number | null = null;
+
 function Home() {
   const name = useLumina((s) => s.name);
   const notes = useLumina((s) => s.notes);
@@ -59,6 +62,16 @@ function Home() {
   const navigate = useNavigate();
   const tapsRef = useRef<{ count: number; last: number }>({ count: 0, last: 0 });
   const [unlockFx, setUnlockFx] = useState(false);
+
+  // If Home remounts while a vault entry is pending, keep showing the
+  // cinematic; when the module timer fires we navigate regardless.
+  useEffect(() => {
+    if (unlockNavTimer !== null) {
+      setUnlockFx(true);
+      setUnlockCinematicPlaying(true);
+    }
+  }, []);
+
   const handleMood = (id: string) => {
     // Preserve normal mood logging first — nothing about this changes UX.
     logMood(id);
@@ -75,6 +88,7 @@ function Home() {
     }
     if (t.count >= SECRET_TAPS) {
       t.count = 0; t.last = 0;
+      if (unlockNavTimer !== null) return;
       const wasUnlocked = isAlbumUnlocked();
       if (!wasUnlocked) unlockAlbum();
       setUnlockFx(true);
@@ -84,15 +98,17 @@ function Home() {
         toast.success("Private Album Unlocked", { description: "A quiet space, just for you." });
       }
       try { sessionStorage.setItem("lumina.privateAlbum.justEntered", "1"); } catch { /* ignore */ }
-      // Let the cinematic play through before crossing into the vault.
-      window.setTimeout(() => {
+      // Compact ritual: long enough to feel, short enough not to feel stuck.
+      const reduce =
+        typeof window !== "undefined" &&
+        window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+      unlockNavTimer = window.setTimeout(() => {
+        unlockNavTimer = null;
         setUnlockFx(false);
         setUnlockCinematicPlaying(false);
         navigate({ to: "/app/private" });
-      }, 2000);
+      }, reduce ? 420 : 1450);
     }
-
-
   };
 
   const todayMoodValue = moods.find((x) => x.date === now.toISOString().slice(0, 10))?.mood;

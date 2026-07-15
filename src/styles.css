@@ -2542,6 +2542,15 @@ html[data-ambient-paused] .petal-layer span {
     0 0 0 4px color-mix(in oklab, var(--primary, oklch(0.62 0.18 290)) 70%, transparent);
 }
 
+/* Vault / dialog fields — thin border focus only. Opt out of the stacked
+   global focus rings that make autofocus look like a thick neon halo. */
+.lumina-vault-field:focus,
+.lumina-vault-field:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: color-mix(in oklab, var(--primary) 55%, transparent);
+}
+
 
 
 /* Paper-ink placeholders — warm muted ink so writing prompts stay

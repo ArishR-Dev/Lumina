@@ -16,9 +16,9 @@ export function UnlockCinematic() {
       <motion.div
         key="private-unlock-cinematic-reduced"
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        animate={{ opacity: [0, 1, 1, 0] }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.2 }}
+        transition={{ duration: 0.4, times: [0, 0.2, 0.7, 1] }}
         className="pointer-events-none fixed inset-0 z-[60] grid place-items-center bg-[oklch(0.12_0.06_290)]"
         aria-hidden
       >
