@@ -15,61 +15,62 @@ import { z } from "zod";
 export const Route = createFileRoute("/auth")({
   component: AuthPage,
   ssr: false,
-head: () => ({
-  meta: [
-    { title: "Lumina Evermore" },
+  head: () => ({
+    meta: [
+      { title: "Lumina Evermore" },
 
-    {
-      name: "description",
-      content:
-        "Crafted with care 😸.... preserving the moments that mean the most to Shivani 😌.....",
-    },
+      {
+        name: "description",
+        content:
+          "Crafted with care 😸.... preserving the moments that mean the most to Shivani 😌.....",
+      },
 
-    { property: "og:type", content: "website" },
-    { property: "og:title", content: "Lumina Evermore" },
+      { property: "og:type", content: "website" },
+      { property: "og:title", content: "Lumina Evermore" },
 
-    {
-      property: "og:description",
-      content:
-        "Crafted with care 😸.... preserving the moments that mean the most to Shivani 😌.....",
-    },
+      {
+        property: "og:description",
+        content:
+          "Crafted with care 😸.... preserving the moments that mean the most to Shivani 😌.....",
+      },
 
-    {
-      property: "og:image",
-      content: "https://lumina-evermore.vercel.app/og-shivani.jpg",
-    },
+      {
+        property: "og:image",
+        content: "https://lumina-evermore.vercel.app/og-shivani.jpg",
+      },
 
-    {
-      property: "og:image:secure_url",
-      content: "https://lumina-evermore.vercel.app/og-shivani.jpg",
-    },
+      {
+        property: "og:image:secure_url",
+        content: "https://lumina-evermore.vercel.app/og-shivani.jpg",
+      },
 
-    { property: "og:image:width", content: "1200" },
-    { property: "og:image:height", content: "630" },
-    { property: "og:image:type", content: "image/jpeg" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:image:type", content: "image/jpeg" },
 
-    {
-      property: "og:url",
-      content: "https://lumina-evermore.vercel.app/auth",
-    },
+      {
+        property: "og:url",
+        content: "https://lumina-evermore.vercel.app/auth",
+      },
 
-    { property: "og:site_name", content: "Lumina Evermore" },
+      { property: "og:site_name", content: "Lumina Evermore" },
 
-    { name: "twitter:card", content: "summary_large_image" },
-    { name: "twitter:title", content: "Lumina Evermore" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Lumina Evermore" },
 
-    {
-      name: "twitter:description",
-      content:
-        "Crafted with care 😸.... preserving the moments that mean the most to Shivani 😌.....",
-    },
+      {
+        name: "twitter:description",
+        content:
+          "Crafted with care 😸.... preserving the moments that mean the most to Shivani 😌.....",
+      },
 
-    {
-      name: "twitter:image",
-      content: "https://lumina-evermore.vercel.app/og-shivani.jpg",
-    },
-  ],
-}),
+      {
+        name: "twitter:image",
+        content: "https://lumina-evermore.vercel.app/og-shivani.jpg",
+      },
+    ],
+  }),
+});
 type Mode = "sign-in" | "sign-up" | "forgot";
 
 const emailSchema = z.string().trim().email("Enter a valid email").max(255);
