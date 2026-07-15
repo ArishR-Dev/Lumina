@@ -76,7 +76,7 @@ export function SplashScreen() {
                 }}
               />
               <img
-                src="/icon-512.png"
+                src="/lumina-mark-512.png?v=evermore1"
                 alt=""
                 width={128}
                 height={128}
@@ -86,12 +86,12 @@ export function SplashScreen() {
             </div>
             <motion.div
               initial={{ opacity: 0, letterSpacing: "0.5em" }}
-              animate={{ opacity: 1, letterSpacing: "0.35em" }}
+              animate={{ opacity: 1, letterSpacing: "0.28em" }}
               transition={{ duration: 1, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
-              className="font-display text-2xl uppercase text-white/95"
+              className="font-display text-xl uppercase text-white/95 sm:text-2xl"
               style={{ textShadow: "0 0 40px rgba(255,220,235,0.35)" }}
             >
-              Lumina
+              Lumina Evermore
             </motion.div>
           </motion.div>
         </motion.div>

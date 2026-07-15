@@ -1,8 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
-import { Flower2, Sparkles, ArrowRight } from "lucide-react";
+import { Sparkles, ArrowRight } from "lucide-react";
 import { Petals } from "@/components/lumina/Petals";
+import { LuminaLogo } from "@/components/lumina/LuminaLogo";
 import { useAuth, bindAuthListener } from "@/lib/lumina-auth";
 
 export const Route = createFileRoute("/")({
@@ -10,11 +11,31 @@ export const Route = createFileRoute("/")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Lumina — a soft sanctuary for writing, reflection & memory" },
-      { name: "description", content: "Lumina is a beautiful private space to write notes, journal, log moods, and keep memories — kept softly, just for you." },
-      { property: "og:title", content: "Lumina — a soft sanctuary for writing, reflection & memory" },
-      { property: "og:description", content: "A beautiful private space to write, reflect, and remember." },
+      { title: "Lumina Evermore" },
+      {
+        name: "description",
+        content: "Crafted with care 😸..... preserving the moments that mean the most to Shivani 😌.....",
+      },
+      { property: "og:type", content: "website" },
+      { property: "og:title", content: "Lumina Evermore" },
+      {
+        property: "og:description",
+        content: "Crafted with care 😸.... preserving the moments that mean the most to Shivani 😌.....",
+      },
+      { property: "og:image", content: "https://lumina-evermore.vercel.app/og-shivani.png" },
+      { property: "og:image:secure_url", content: "https://lumina-evermore.vercel.app/og-shivani.png" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:image:type", content: "image/png" },
       { property: "og:url", content: "https://lumina-evermore.vercel.app/" },
+      { property: "og:site_name", content: "Lumina Evermore" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Lumina Evermore" },
+      {
+        name: "twitter:description",
+        content: "Crafted with care 😸.... preserving the moments that mean the most to Shivani 😌.....",
+      },
+      { name: "twitter:image", content: "https://lumina-evermore.vercel.app/og-shivani.png" },
     ],
     links: [{ rel: "canonical", href: "https://lumina-evermore.vercel.app/" }],
   }),
@@ -51,10 +72,13 @@ function Landing() {
           initial={{ opacity: 0, y: 12, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          className="glass mb-8 inline-flex items-center gap-2 rounded-full px-5 py-2 text-xs tracking-[0.24em] text-muted-foreground uppercase"
+          className="mb-8 flex flex-col items-center gap-5"
         >
-          <Sparkles className="h-3.5 w-3.5 text-[oklch(0.7_0.15_340)]" />
-          A little corner just for you
+          <LuminaLogo size={88} className="h-[5.5rem] w-[5.5rem]" />
+          <div className="glass inline-flex items-center gap-2 rounded-full px-5 py-2 text-xs tracking-[0.24em] text-muted-foreground uppercase">
+            <Sparkles className="h-3.5 w-3.5 text-[oklch(0.7_0.15_340)]" />
+            Lumina Evermore
+          </div>
         </motion.div>
 
         <motion.h1
@@ -106,7 +130,7 @@ function Landing() {
                 animation: "shimmer 4s linear infinite",
               }}
             >
-              <Flower2 className="h-4 w-4" />
+              <LuminaLogo size={18} decorative className="h-4 w-4 rounded-md shadow-none" />
               Begin Writing
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </motion.span>

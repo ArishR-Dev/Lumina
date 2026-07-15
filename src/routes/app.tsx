@@ -15,7 +15,7 @@ import { useScrollPause } from "@/hooks/use-scroll-pause";
 
 
 import { Toaster } from "@/components/ui/sonner";
-import { Flower2 } from "lucide-react";
+import { LuminaLogo } from "@/components/lumina/LuminaLogo";
 import { useAuth, bindAuthListener } from "@/lib/lumina-auth";
 import { useLuminaSync } from "@/lib/lumina-sync";
 import { luminaDialog } from "@/lib/lumina-dialog";
@@ -114,9 +114,7 @@ function AppLayout() {
           animate={{ opacity: 1, scale: 1 }}
           className="glass flex flex-col items-center gap-3 rounded-3xl px-8 py-6"
         >
-          <div className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-[oklch(0.86_0.12_340)] to-[oklch(0.82_0.1_290)] text-white shadow-md">
-            <Flower2 className="h-6 w-6 animate-pulse" />
-          </div>
+          <LuminaLogo size={48} decorative className="h-12 w-12 animate-pulse" />
           <div className="font-hand text-lg text-muted-foreground">preparing your sanctuary…</div>
         </motion.div>
       </div>

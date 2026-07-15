@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import {
   Home, StickyNote, BookHeart, MessageCircleHeart, Mail, Camera,
   Calendar, CheckSquare, Sparkles, Star, LayoutDashboard,
-  Settings, PanelLeftClose, PanelLeftOpen, Flower2, Search, Smile,
+  Settings, PanelLeftClose, PanelLeftOpen, Search, Smile,
   Gift, Award, Clock, Pin,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -11,6 +11,7 @@ import { useLumina } from "@/lib/lumina-store";
 import { UserChip } from "@/components/lumina/UserChip";
 import { SyncPill } from "@/components/lumina/SyncPill";
 import { FarewellEntry } from "@/components/lumina/FarewellEntry";
+import { LuminaLogo } from "@/components/lumina/LuminaLogo";
 
 const items = [
   { to: "/app/home", label: "Home", icon: Home },
@@ -46,9 +47,7 @@ export function Sidebar({ onOpenSearch }: { onOpenSearch?: () => void }) {
 
 
       <div className="mb-6 flex items-center gap-3 px-2">
-        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl text-white shadow-md" style={{ background: "linear-gradient(135deg, var(--primary), color-mix(in oklab, var(--blossom, var(--primary)) 80%, transparent))" }}>
-          <Flower2 className="h-5 w-5" />
-        </div>
+        <LuminaLogo size={40} decorative className="h-10 w-10 shrink-0" />
         {open && (
           <motion.div
             initial={{ opacity: 0, x: -6 }}
@@ -56,7 +55,7 @@ export function Sidebar({ onOpenSearch }: { onOpenSearch?: () => void }) {
             className="min-w-0"
           >
             <div className="font-display text-xl leading-none text-gradient">Lumina</div>
-            <div className="mt-0.5 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">sanctuary</div>
+            <div className="mt-0.5 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Evermore</div>
           </motion.div>
         )}
       </div>

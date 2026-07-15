@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>Lumina — You're offline</title>
-    <meta name="theme-color" content="#fdf3f7" />
-    <link rel="icon" href="/favicon.ico" />
-    <link rel="manifest" href="/manifest.webmanifest" />
+    <title>Lumina Evermore — You're offline</title>
+    <meta name="theme-color" content="#1a1033" />
+    <link rel="icon" href="/favicon.ico?v=evermore1" />
+    <link rel="manifest" href="/manifest.webmanifest?v=evermore1" />
     <style>
       :root { color-scheme: light; }
       * { box-sizing: border-box; }
@@ -43,13 +43,13 @@
         width: 72px; height: 72px;
         margin: 0 auto 22px;
         border-radius: 22px;
-        background: linear-gradient(135deg, #ffd7e6, #fbb4cc);
-        display: grid; place-items: center;
-        font-family: "Fraunces", Georgia, serif;
-        font-size: 40px;
-        font-weight: 600;
-        color: #b0577a;
-        box-shadow: inset 0 0 24px rgba(255,255,255,0.6), 0 8px 24px -12px rgba(176, 87, 122, 0.6);
+        overflow: hidden;
+        box-shadow: 0 8px 24px -12px rgba(90, 40, 120, 0.6);
+      }
+      .glyph img {
+        width: 100%; height: 100%;
+        display: block;
+        object-fit: cover;
       }
       h1 {
         font-family: "Fraunces", Georgia, serif;
@@ -99,7 +99,9 @@
   <body>
     <main>
       <section class="card" role="status" aria-live="polite">
-        <div class="glyph" aria-hidden="true">L</div>
+        <div class="glyph" aria-hidden="true">
+          <img src="/lumina-mark-512.png?v=evermore1" width="72" height="72" alt="" />
+        </div>
         <h1>You're offline</h1>
         <p>Your downloaded memories are still here.</p>
         <p>We'll reconnect as soon as you're back online.</p>

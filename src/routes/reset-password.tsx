@@ -2,7 +2,8 @@ import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Flower2, Lock, Loader2, ArrowLeft } from "lucide-react";
+import { Lock, Loader2, ArrowLeft } from "lucide-react";
+import { LuminaLogo } from "@/components/lumina/LuminaLogo";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { Petals } from "@/components/lumina/Petals";
@@ -105,9 +106,7 @@ function ResetPasswordPage() {
         className="glass w-full max-w-md rounded-3xl p-8 sm:p-10"
       >
         <div className="mb-6 flex flex-col items-center text-center">
-          <div className="grid h-14 w-14 place-items-center rounded-3xl bg-gradient-to-br from-[oklch(0.86_0.12_340)] to-[oklch(0.82_0.1_290)] text-white shadow-lg">
-            <Flower2 className="h-6 w-6" />
-          </div>
+          <LuminaLogo size={56} decorative className="h-14 w-14" />
           <h1 className="mt-4 font-display text-3xl">Set a new password</h1>
           <p className="mt-1.5 text-sm text-muted-foreground">
             {linkError

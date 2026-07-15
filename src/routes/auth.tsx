@@ -2,7 +2,8 @@ import { createFileRoute, useNavigate, Link, Outlet, useRouterState } from "@tan
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Flower2, Mail, Lock, Loader2, ArrowLeft } from "lucide-react";
+import { Mail, Lock, Loader2, ArrowLeft } from "lucide-react";
+import { LuminaLogo } from "@/components/lumina/LuminaLogo";
 import { Petals } from "@/components/lumina/Petals";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/lumina-auth";
@@ -180,9 +181,7 @@ function AuthForm() {
         className="glass relative w-full max-w-md rounded-3xl p-8 sm:p-10"
       >
         <div className="mb-6 flex flex-col items-center text-center">
-          <div className="grid h-14 w-14 place-items-center rounded-3xl bg-gradient-to-br from-[oklch(0.86_0.12_340)] to-[oklch(0.82_0.1_290)] text-white shadow-lg">
-            <Flower2 className="h-6 w-6" />
-          </div>
+          <LuminaLogo size={56} decorative className="h-14 w-14" />
           <h1 className="mt-4 font-display text-3xl leading-tight">
             {mode === "sign-up" ? "Begin your Lumina" : mode === "forgot" ? "Reset your password" : "Welcome back"}
           </h1>
