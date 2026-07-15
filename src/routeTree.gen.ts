@@ -54,6 +54,7 @@ import { Route as AppJournalIdRouteImport } from './routes/app.journal.$id'
 import { Route as AppFarewellVoiceRouteImport } from './routes/app.farewell.voice'
 import { Route as AppFarewellCustomRouteImport } from './routes/app.farewell.custom'
 import { Route as AppCapsulesIdRouteImport } from './routes/app.capsules.$id'
+import { Route as AppAdminGiftsRouteImport } from './routes/app.admin.gifts'
 import { Route as AppFarewellPickCategoryRouteImport } from './routes/app.farewell.pick.$category'
 import { Route as AppFarewellEntityIdRouteImport } from './routes/app.farewell.$entity.$id'
 import { Route as AppFarewellPreviewEntityIdRouteImport } from './routes/app.farewell.preview.$entity.$id'
@@ -283,6 +284,11 @@ const AppCapsulesIdRoute = AppCapsulesIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AppCapsulesRoute,
 } as any)
+const AppAdminGiftsRoute = AppAdminGiftsRouteImport.update({
+  id: '/admin/gifts',
+  path: '/admin/gifts',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppFarewellPickCategoryRoute = AppFarewellPickCategoryRouteImport.update({
   id: '/farewell/pick/$category',
   path: '/farewell/pick/$category',
@@ -327,6 +333,7 @@ export interface FileRoutesByFullPath {
   '/app/timeline': typeof AppTimelineRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/app/': typeof AppIndexRoute
+  '/app/admin/gifts': typeof AppAdminGiftsRoute
   '/app/capsules/$id': typeof AppCapsulesIdRoute
   '/app/farewell/custom': typeof AppFarewellCustomRoute
   '/app/farewell/voice': typeof AppFarewellVoiceRoute
@@ -369,6 +376,7 @@ export interface FileRoutesByTo {
   '/app/timeline': typeof AppTimelineRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/app': typeof AppIndexRoute
+  '/app/admin/gifts': typeof AppAdminGiftsRoute
   '/app/capsules/$id': typeof AppCapsulesIdRoute
   '/app/farewell/custom': typeof AppFarewellCustomRoute
   '/app/farewell/voice': typeof AppFarewellVoiceRoute
@@ -420,6 +428,7 @@ export interface FileRoutesById {
   '/app/timeline': typeof AppTimelineRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/app/': typeof AppIndexRoute
+  '/app/admin/gifts': typeof AppAdminGiftsRoute
   '/app/capsules/$id': typeof AppCapsulesIdRoute
   '/app/farewell/custom': typeof AppFarewellCustomRoute
   '/app/farewell/voice': typeof AppFarewellVoiceRoute
@@ -472,6 +481,7 @@ export interface FileRouteTypes {
     | '/app/timeline'
     | '/auth/callback'
     | '/app/'
+    | '/app/admin/gifts'
     | '/app/capsules/$id'
     | '/app/farewell/custom'
     | '/app/farewell/voice'
@@ -514,6 +524,7 @@ export interface FileRouteTypes {
     | '/app/timeline'
     | '/auth/callback'
     | '/app'
+    | '/app/admin/gifts'
     | '/app/capsules/$id'
     | '/app/farewell/custom'
     | '/app/farewell/voice'
@@ -564,6 +575,7 @@ export interface FileRouteTypes {
     | '/app/timeline'
     | '/auth/callback'
     | '/app/'
+    | '/app/admin/gifts'
     | '/app/capsules/$id'
     | '/app/farewell/custom'
     | '/app/farewell/voice'
@@ -913,6 +925,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCapsulesIdRouteImport
       parentRoute: typeof AppCapsulesRoute
     }
+    '/app/admin/gifts': {
+      id: '/app/admin/gifts'
+      path: '/admin/gifts'
+      fullPath: '/app/admin/gifts'
+      preLoaderRoute: typeof AppAdminGiftsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/farewell/pick/$category': {
       id: '/app/farewell/pick/$category'
       path: '/farewell/pick/$category'
@@ -1058,6 +1077,7 @@ interface AppRouteChildren {
   AppThoughtsRoute: typeof AppThoughtsRouteWithChildren
   AppTimelineRoute: typeof AppTimelineRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppAdminGiftsRoute: typeof AppAdminGiftsRoute
   AppFarewellCustomRoute: typeof AppFarewellCustomRoute
   AppFarewellVoiceRoute: typeof AppFarewellVoiceRoute
   AppTagsTagRoute: typeof AppTagsTagRoute
@@ -1088,6 +1108,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppThoughtsRoute: AppThoughtsRouteWithChildren,
   AppTimelineRoute: AppTimelineRoute,
   AppIndexRoute: AppIndexRoute,
+  AppAdminGiftsRoute: AppAdminGiftsRoute,
   AppFarewellCustomRoute: AppFarewellCustomRoute,
   AppFarewellVoiceRoute: AppFarewellVoiceRoute,
   AppTagsTagRoute: AppTagsTagRoute,

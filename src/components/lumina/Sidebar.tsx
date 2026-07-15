@@ -1,10 +1,26 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import {
-  Home, StickyNote, BookHeart, MessageCircleHeart, Mail, Camera,
-  Calendar, CheckSquare, Sparkles, Star, LayoutDashboard,
-  Settings, PanelLeftClose, PanelLeftOpen, Search, Smile,
-  Gift, Award, Clock, Pin,
+  Home,
+  StickyNote,
+  BookHeart,
+  MessageCircleHeart,
+  Mail,
+  Camera,
+  Calendar,
+  CheckSquare,
+  Sparkles,
+  Star,
+  LayoutDashboard,
+  Settings,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Search,
+  Smile,
+  Gift,
+  Award,
+  Clock,
+  Pin,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLumina } from "@/lib/lumina-store";
@@ -44,8 +60,6 @@ export function Sidebar({ onOpenSearch }: { onOpenSearch?: () => void }) {
       transition={{ type: "spring", stiffness: 180, damping: 22 }}
       className="glass z-20 hidden h-[calc(100dvh-1.5rem)] shrink-0 flex-col overflow-hidden rounded-3xl p-4 md:flex"
     >
-
-
       <div className="mb-6 flex items-center gap-3 px-2">
         <LuminaLogo size={40} decorative className="h-10 w-10 shrink-0" />
         {open && (
@@ -55,7 +69,9 @@ export function Sidebar({ onOpenSearch }: { onOpenSearch?: () => void }) {
             className="min-w-0"
           >
             <div className="font-display text-xl leading-none text-gradient">Lumina</div>
-            <div className="mt-0.5 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Evermore</div>
+            <div className="mt-0.5 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+              Evermore
+            </div>
           </motion.div>
         )}
       </div>
@@ -71,7 +87,9 @@ export function Sidebar({ onOpenSearch }: { onOpenSearch?: () => void }) {
         {open && (
           <>
             <span className="flex-1 text-left">Search…</span>
-            <kbd className="rounded-md border border-white/60 bg-white/60 px-1.5 py-0.5 text-[10px] uppercase tracking-widest dark:border-white/10 dark:bg-white/5">⌘K</kbd>
+            <kbd className="rounded-md border border-white/60 bg-white/60 px-1.5 py-0.5 text-[10px] uppercase tracking-widest dark:border-white/10 dark:bg-white/5">
+              ⌘K
+            </kbd>
           </>
         )}
       </button>
@@ -95,7 +113,10 @@ export function Sidebar({ onOpenSearch }: { onOpenSearch?: () => void }) {
                 <motion.span
                   layoutId="nav-active"
                   className="absolute inset-0 -z-10 rounded-2xl"
-                  style={{ background: "linear-gradient(90deg, color-mix(in oklab, var(--primary) 55%, transparent), color-mix(in oklab, var(--blossom, var(--primary)) 45%, transparent))" }}
+                  style={{
+                    background:
+                      "linear-gradient(90deg, color-mix(in oklab, var(--primary) 55%, transparent), color-mix(in oklab, var(--blossom, var(--primary)) 45%, transparent))",
+                  }}
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 />
               )}
@@ -120,7 +141,6 @@ export function Sidebar({ onOpenSearch }: { onOpenSearch?: () => void }) {
           {open && <span>Collapse</span>}
         </button>
       </div>
-
     </motion.aside>
   );
 }

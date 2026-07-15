@@ -10,6 +10,8 @@ import { CommandPalette } from "@/components/lumina/CommandPalette";
 import { ThemeApplier } from "@/components/lumina/ThemeApplier";
 import { SeasonalDecor } from "@/components/lumina/SeasonalDecor";
 import { Celebration } from "@/components/lumina/Celebration";
+import { SecretGiftHost } from "@/components/lumina/secret-gift/SecretGiftHost";
+import { AdminAccessHost } from "@/components/lumina/admin/AdminAccessHost";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useScrollPause } from "@/hooks/use-scroll-pause";
 
@@ -131,6 +133,8 @@ function AppLayout() {
         mobileOffset={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 88px)" }}
       />
       <Celebration />
+      <SecretGiftHost />
+      <AdminAccessHost />
 
       <AnimatePresence initial={false}>
         {immersive ? (

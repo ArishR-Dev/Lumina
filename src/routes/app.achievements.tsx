@@ -1,8 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
+import { Gift } from "lucide-react";
 import { PageHeader } from "@/components/lumina/PageHeader";
 import { GlassCard } from "@/components/lumina/GlassCard";
+import { SecretGiftCard } from "@/components/lumina/secret-gift/SecretGiftCard";
 import { useLumina } from "@/lib/lumina-store";
+import { useSecretGift } from "@/lib/secret-gift";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/app/achievements")({ component: AchievementsPage });
@@ -12,7 +15,7 @@ type Badge = {
   emoji: string;
   name: string;
   hint: string;
-  progress: number; // 0..1
+  progress: number;
   value: number;
   goal: number;
   earned: boolean;
@@ -22,7 +25,10 @@ function computeStreak(dates: string[]) {
   const set = new Set(dates);
   let s = 0;
   const d = new Date();
-  while (set.has(d.toISOString().slice(0, 10))) { s++; d.setDate(d.getDate() - 1); }
+  while (set.has(d.toISOString().slice(0, 10))) {
+    s++;
+    d.setDate(d.getDate() - 1);
+  }
   return s;
 }
 
@@ -36,6 +42,10 @@ function AchievementsPage() {
   const streak = computeStreak(journal.map((j) => j.date));
   const habitDays = habits.reduce((a, h) => a + h.days.length, 0);
   const doneTasks = tasks.filter((t) => t.done).length;
+
+  const config = useSecretGift((s) => s.config);
+  const progress = useSecretGift((s) => s.progress);
+  const setUnlockOpen = useSecretGift((s) => s.setUnlockOpen);
 
   const specs: [string, string, string, number, number][] = [
     ["note-1", "📝", "First Note", 1, notes.length],
@@ -64,6 +74,7 @@ function AchievementsPage() {
   }));
 
   const earned = badges.filter((b) => b.earned).length;
+  const readyUnopened = !!progress?.gift_unlocked_at && !progress?.gift_opened_at;
 
   return (
     <div className="space-y-6">
@@ -71,8 +82,30 @@ function AchievementsPage() {
         eyebrow="little proofs of showing up"
         title="Achievements"
         subtitle={`${earned} of ${badges.length} earned · quietly, kindly, in your own time.`}
+        actions={
+          readyUnopened ? (
+            <button
+              type="button"
+              onClick={() => setUnlockOpen(true)}
+              className="relative inline-flex min-h-11 items-center gap-2 rounded-full border border-[oklch(0.85_0.14_85_/0.45)] bg-[oklch(0.85_0.14_85_/0.15)] px-4 text-sm text-[oklch(0.45_0.1_70)] shadow-[0_0_24px_oklch(0.85_0.16_85_/0.35)] dark:text-[oklch(0.92_0.1_85)]"
+              aria-label="Open secret gift"
+            >
+              <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 animate-pulse rounded-full bg-[oklch(0.82_0.16_85)]" />
+              <Gift className="h-4 w-4" /> Gift ready
+            </button>
+          ) : undefined
+        }
       />
+
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {config && (
+          <SecretGiftCard
+            config={config}
+            progress={progress}
+            onOpenGift={() => setUnlockOpen(true)}
+          />
+        )}
+
         {badges.map((b, i) => (
           <motion.div
             key={b.id}
@@ -80,8 +113,7 @@ function AchievementsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.03 }}
           >
-            <GlassCard className={cn("flex items-center gap-4", !b.earned && "opacity-70")}
-            >
+            <GlassCard className={cn("flex items-center gap-4", !b.earned && "opacity-70")}>
               <div
                 className={cn(
                   "grid h-16 w-16 shrink-0 place-items-center rounded-full text-3xl shadow-inner",

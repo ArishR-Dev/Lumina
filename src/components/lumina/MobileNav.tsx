@@ -2,15 +2,28 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import {
-  Home, StickyNote, BookHeart, CheckSquare, MoreHorizontal,
-  MessageCircleHeart, Mail, Camera, Calendar, Sparkles,
-  Star, LayoutDashboard, Settings, Clock, Smile, Search, Pin,
-  Gift, Award,
+  Home,
+  StickyNote,
+  BookHeart,
+  CheckSquare,
+  MoreHorizontal,
+  MessageCircleHeart,
+  Mail,
+  Camera,
+  Calendar,
+  Sparkles,
+  Star,
+  LayoutDashboard,
+  Settings,
+  Clock,
+  Smile,
+  Search,
+  Pin,
+  Gift,
+  Award,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import {
-  Sheet, SheetContent, SheetHeader, SheetTitle,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { FarewellEntry } from "./FarewellEntry";
 
 const primary = [
@@ -36,10 +49,6 @@ const more = [
   { to: "/app/settings", label: "Settings", icon: Settings },
 ] as const;
 
-// The mobile More sheet reuses the exact desktop Farewell card via
-// <FarewellEntry featured reduceMotion onNavigate={…} />. Keeping a single
-// component means desktop and mobile stay visually identical by construction.
-
 export function MobileNav({ onOpenSearch }: { onOpenSearch?: () => void }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -52,7 +61,6 @@ export function MobileNav({ onOpenSearch }: { onOpenSearch?: () => void }) {
 
   return (
     <>
-      {/* Bottom nav — 5 items exactly: Home / Notes / Journal / Tasks / More */}
       <nav
         className="fixed inset-x-0 bottom-0 z-40 md:hidden"
         style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
@@ -75,14 +83,24 @@ export function MobileNav({ onOpenSearch }: { onOpenSearch?: () => void }) {
                     <motion.span
                       layoutId="mnav-active"
                       className="absolute inset-0 -z-10 rounded-2xl"
-                      style={{ background: "linear-gradient(135deg, color-mix(in oklab, var(--primary) 60%, transparent), color-mix(in oklab, var(--blossom, var(--primary)) 50%, transparent))" }}
+                      style={{
+                        background:
+                          "linear-gradient(135deg, color-mix(in oklab, var(--primary) 60%, transparent), color-mix(in oklab, var(--blossom, var(--primary)) 50%, transparent))",
+                      }}
                       transition={{ type: "spring", stiffness: 300, damping: 28 }}
                     />
                   )}
                   <motion.span
                     animate={active ? { scale: 1.12, y: -1 } : { scale: 1, y: 0 }}
                     transition={{ type: "spring", stiffness: 380, damping: 22 }}
-                    style={active ? { filter: "drop-shadow(0 0 6px color-mix(in oklab, var(--primary) 55%, transparent))" } : undefined}
+                    style={
+                      active
+                        ? {
+                            filter:
+                              "drop-shadow(0 0 6px color-mix(in oklab, var(--primary) 55%, transparent))",
+                          }
+                        : undefined
+                    }
                   >
                     <Icon className="h-5 w-5" />
                   </motion.span>
@@ -116,7 +134,6 @@ export function MobileNav({ onOpenSearch }: { onOpenSearch?: () => void }) {
             <SheetTitle className="font-display text-2xl">Sanctuary</SheetTitle>
           </SheetHeader>
 
-          {/* Featured Farewell card — the exact desktop component, reused */}
           <div className="mb-5">
             <FarewellEntry featured reduceMotion onNavigate={() => setSheetOpen(false)} />
           </div>
@@ -145,7 +162,13 @@ export function MobileNav({ onOpenSearch }: { onOpenSearch?: () => void }) {
                     active && "bg-white/80 shadow-sm dark:bg-white/10",
                   )}
                 >
-                  <span className="grid h-11 w-11 place-items-center rounded-2xl text-foreground shadow-sm transition group-hover:scale-105" style={{ background: "linear-gradient(135deg, color-mix(in oklab, var(--primary) 45%, transparent), color-mix(in oklab, var(--blossom, var(--primary)) 40%, transparent))" }}>
+                  <span
+                    className="grid h-11 w-11 place-items-center rounded-2xl text-foreground shadow-sm transition group-hover:scale-105"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, color-mix(in oklab, var(--primary) 45%, transparent), color-mix(in oklab, var(--blossom, var(--primary)) 40%, transparent))",
+                    }}
+                  >
                     <Icon className="h-5 w-5" />
                   </span>
                   <span className="font-medium">{m.label}</span>
