@@ -41,6 +41,48 @@ function AuthPage() {
     if (!loading && user) navigate({ to: "/app/home", replace: true });
   }, [user, loading, navigate]);
 
+  // If Supabase redirects back to /auth?code=... (misconfigured redirect path),
+  // finish the PKCE exchange here instead of stranding the user.
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const code = url.searchParams.get("code");
+    const oauthError =
+      url.searchParams.get("error_description") ?? url.searchParams.get("error");
+
+    if (oauthError) {
+      toast.error(oauthError);
+      window.history.replaceState({}, document.title, "/auth");
+      return;
+    }
+
+    if (!code) return;
+
+    let cancelled = false;
+    void (async () => {
+      setBusy(true);
+      try {
+        const { error } = await supabase.auth.exchangeCodeForSession(code);
+        if (error) {
+          const { data } = await supabase.auth.getSession();
+          if (!data.session) throw error;
+        }
+        window.history.replaceState({}, document.title, "/auth");
+        if (!cancelled) window.location.replace("/app/home");
+      } catch (err) {
+        if (!cancelled) {
+          toast.error(err instanceof Error ? err.message : String(err));
+          window.history.replaceState({}, document.title, "/auth");
+        }
+      } finally {
+        if (!cancelled) setBusy(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const onSocial = async (provider: "google" | "apple") => {
     setBusy(true);
     const loading = luminaDialog.showLoading({
