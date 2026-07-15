@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/public/:path*",
+      "destination": "https://heart-warming-magic.lovable.app/api/public/:path*"
+    },
+    {
+      "source": "/~oauth/:path*",
+      "destination": "https://heart-warming-magic.lovable.app/~oauth/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
